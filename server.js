@@ -1,4 +1,4 @@
-import {} from 'dotenv/config'
+//import {} from 'dotenv/config'
 import typeDefs from './typeDefs'
 import resolvers from './resolvers'
 import { ApolloServer } from 'apollo-server-express'
