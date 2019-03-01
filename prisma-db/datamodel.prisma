@@ -1,4 +1,63 @@
 type User {
   id: ID! @unique
-  name: String!
+  fullName: String!
+  email: String! @unique
+  password: String!
+  age: Int!
+  phone: Int
+  gender: Gender
+  avatar: String # url to an image. might add enum to get small or big.
+  Appointments: [Appointment!] # example : [appointmentId1, appointmentId2, etc...] refrence ids to the appointment table.
+  #messages
 }
+
+type Service {
+  id: ID! @unique
+  fullName: String!
+  Bio: String
+  type: ServiceType!
+  email: String! @unique
+  password: String!
+  Birthday: DateTime!
+  phone: Int
+  gender: Gender
+  avatar: String # url to an image. might add enum to get small or big.
+  Appointments: [Appointment!]
+}
+#
+#type Doctor implements Service {
+#  type: String!
+#  #more info
+#}
+
+type Appointment {
+  id: ID! @unique
+  serviceId: Service!
+  userId: User!
+  date: AppointmentDate! #!
+  sessions: Int!
+}
+enum Gender {
+  MALE
+  FEMALE
+}
+enum ServiceType {
+  Doctor
+  LAWYER
+}
+#
+##union AppointmentSessionType = DoctorSessionType | LawyerSessionType
+#
+## each service has its types so
+type AppointmentDate {
+  day: String!
+  startTime: DateTime!
+  endTime: DateTime!
+}
+#
+#enum DoctorSession {
+#  ROUTINE_CHECKUP
+#  SICK_VISIT
+#  VACCINATIONS
+#}
+#

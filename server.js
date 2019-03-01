@@ -1,7 +1,7 @@
 //import {} from 'dotenv/config'
 import typeDefs from './typeDefs'
 import resolvers from './resolvers'
-import { ApolloServer } from 'apollo-server-express'
+import { ApolloServer, SchemaError } from 'apollo-server-express'
 import express from 'express'
 import bodyParser from 'body-parser'
 
