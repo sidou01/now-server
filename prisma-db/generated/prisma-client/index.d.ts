@@ -15,8 +15,8 @@ export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
 
 export interface Exists {
   appointment: (where?: AppointmentWhereInput) => Promise<boolean>;
-  appointmentDate: (where?: AppointmentDateWhereInput) => Promise<boolean>;
-  service: (where?: ServiceWhereInput) => Promise<boolean>;
+  serviceA: (where?: ServiceAWhereInput) => Promise<boolean>;
+  serviceB: (where?: ServiceBWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
 }
 
@@ -58,43 +58,44 @@ export interface Prisma {
     first?: Int;
     last?: Int;
   }) => AppointmentConnectionPromise;
-  appointmentDates: (args?: {
-    where?: AppointmentDateWhereInput;
-    orderBy?: AppointmentDateOrderByInput;
+  serviceA: (where: ServiceAWhereUniqueInput) => ServiceAPromise;
+  serviceAs: (args?: {
+    where?: ServiceAWhereInput;
+    orderBy?: ServiceAOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
     first?: Int;
     last?: Int;
-  }) => FragmentableArray<AppointmentDate>;
-  appointmentDatesConnection: (args?: {
-    where?: AppointmentDateWhereInput;
-    orderBy?: AppointmentDateOrderByInput;
+  }) => FragmentableArray<ServiceA>;
+  serviceAsConnection: (args?: {
+    where?: ServiceAWhereInput;
+    orderBy?: ServiceAOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
     first?: Int;
     last?: Int;
-  }) => AppointmentDateConnectionPromise;
-  service: (where: ServiceWhereUniqueInput) => ServicePromise;
-  services: (args?: {
-    where?: ServiceWhereInput;
-    orderBy?: ServiceOrderByInput;
+  }) => ServiceAConnectionPromise;
+  serviceB: (where: ServiceBWhereUniqueInput) => ServiceBPromise;
+  serviceBs: (args?: {
+    where?: ServiceBWhereInput;
+    orderBy?: ServiceBOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
     first?: Int;
     last?: Int;
-  }) => FragmentableArray<Service>;
-  servicesConnection: (args?: {
-    where?: ServiceWhereInput;
-    orderBy?: ServiceOrderByInput;
+  }) => FragmentableArray<ServiceB>;
+  serviceBsConnection: (args?: {
+    where?: ServiceBWhereInput;
+    orderBy?: ServiceBOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
     first?: Int;
     last?: Int;
-  }) => ServiceConnectionPromise;
+  }) => ServiceBConnectionPromise;
   user: (where: UserWhereUniqueInput) => UserPromise;
   users: (args?: {
     where?: UserWhereInput;
@@ -138,32 +139,38 @@ export interface Prisma {
   deleteManyAppointments: (
     where?: AppointmentWhereInput
   ) => BatchPayloadPromise;
-  createAppointmentDate: (
-    data: AppointmentDateCreateInput
-  ) => AppointmentDatePromise;
-  updateManyAppointmentDates: (args: {
-    data: AppointmentDateUpdateManyMutationInput;
-    where?: AppointmentDateWhereInput;
+  createServiceA: (data: ServiceACreateInput) => ServiceAPromise;
+  updateServiceA: (args: {
+    data: ServiceAUpdateInput;
+    where: ServiceAWhereUniqueInput;
+  }) => ServiceAPromise;
+  updateManyServiceAs: (args: {
+    data: ServiceAUpdateManyMutationInput;
+    where?: ServiceAWhereInput;
   }) => BatchPayloadPromise;
-  deleteManyAppointmentDates: (
-    where?: AppointmentDateWhereInput
-  ) => BatchPayloadPromise;
-  createService: (data: ServiceCreateInput) => ServicePromise;
-  updateService: (args: {
-    data: ServiceUpdateInput;
-    where: ServiceWhereUniqueInput;
-  }) => ServicePromise;
-  updateManyServices: (args: {
-    data: ServiceUpdateManyMutationInput;
-    where?: ServiceWhereInput;
+  upsertServiceA: (args: {
+    where: ServiceAWhereUniqueInput;
+    create: ServiceACreateInput;
+    update: ServiceAUpdateInput;
+  }) => ServiceAPromise;
+  deleteServiceA: (where: ServiceAWhereUniqueInput) => ServiceAPromise;
+  deleteManyServiceAs: (where?: ServiceAWhereInput) => BatchPayloadPromise;
+  createServiceB: (data: ServiceBCreateInput) => ServiceBPromise;
+  updateServiceB: (args: {
+    data: ServiceBUpdateInput;
+    where: ServiceBWhereUniqueInput;
+  }) => ServiceBPromise;
+  updateManyServiceBs: (args: {
+    data: ServiceBUpdateManyMutationInput;
+    where?: ServiceBWhereInput;
   }) => BatchPayloadPromise;
-  upsertService: (args: {
-    where: ServiceWhereUniqueInput;
-    create: ServiceCreateInput;
-    update: ServiceUpdateInput;
-  }) => ServicePromise;
-  deleteService: (where: ServiceWhereUniqueInput) => ServicePromise;
-  deleteManyServices: (where?: ServiceWhereInput) => BatchPayloadPromise;
+  upsertServiceB: (args: {
+    where: ServiceBWhereUniqueInput;
+    create: ServiceBCreateInput;
+    update: ServiceBUpdateInput;
+  }) => ServiceBPromise;
+  deleteServiceB: (where: ServiceBWhereUniqueInput) => ServiceBPromise;
+  deleteManyServiceBs: (where?: ServiceBWhereInput) => BatchPayloadPromise;
   createUser: (data: UserCreateInput) => UserPromise;
   updateUser: (args: {
     data: UserUpdateInput;
@@ -192,12 +199,12 @@ export interface Subscription {
   appointment: (
     where?: AppointmentSubscriptionWhereInput
   ) => AppointmentSubscriptionPayloadSubscription;
-  appointmentDate: (
-    where?: AppointmentDateSubscriptionWhereInput
-  ) => AppointmentDateSubscriptionPayloadSubscription;
-  service: (
-    where?: ServiceSubscriptionWhereInput
-  ) => ServiceSubscriptionPayloadSubscription;
+  serviceA: (
+    where?: ServiceASubscriptionWhereInput
+  ) => ServiceASubscriptionPayloadSubscription;
+  serviceB: (
+    where?: ServiceBSubscriptionWhereInput
+  ) => ServiceBSubscriptionPayloadSubscription;
   user: (
     where?: UserSubscriptionWhereInput
   ) => UserSubscriptionPayloadSubscription;
@@ -211,43 +218,37 @@ export interface ClientConstructor<T> {
  * Types
  */
 
-export type ServiceType = "Doctor" | "LAWYER";
+export type Service = "ServiceA" | "ServiceB";
 
 export type Gender = "MALE" | "FEMALE";
+
+export type AppointmentType = "VERY_SHORT" | "SHORT" | "LONG";
 
 export type AppointmentOrderByInput =
   | "id_ASC"
   | "id_DESC"
-  | "sessions_ASC"
-  | "sessions_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC"
-  | "updatedAt_ASC"
-  | "updatedAt_DESC";
-
-export type AppointmentDateOrderByInput =
+  | "serviceId_ASC"
+  | "serviceId_DESC"
   | "day_ASC"
   | "day_DESC"
   | "startTime_ASC"
   | "startTime_DESC"
   | "endTime_ASC"
   | "endTime_DESC"
-  | "id_ASC"
-  | "id_DESC"
+  | "type_ASC"
+  | "type_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
   | "updatedAt_DESC";
 
-export type ServiceOrderByInput =
+export type ServiceAOrderByInput =
   | "id_ASC"
   | "id_DESC"
   | "fullName_ASC"
   | "fullName_DESC"
   | "Bio_ASC"
   | "Bio_DESC"
-  | "type_ASC"
-  | "type_DESC"
   | "email_ASC"
   | "email_DESC"
   | "password_ASC"
@@ -260,6 +261,34 @@ export type ServiceOrderByInput =
   | "gender_DESC"
   | "avatar_ASC"
   | "avatar_DESC"
+  | "serviceA_ASC"
+  | "serviceA_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC";
+
+export type ServiceBOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "fullName_ASC"
+  | "fullName_DESC"
+  | "Bio_ASC"
+  | "Bio_DESC"
+  | "email_ASC"
+  | "email_DESC"
+  | "password_ASC"
+  | "password_DESC"
+  | "Birthday_ASC"
+  | "Birthday_DESC"
+  | "phone_ASC"
+  | "phone_DESC"
+  | "gender_ASC"
+  | "gender_DESC"
+  | "avatar_ASC"
+  | "avatar_DESC"
+  | "serviceB_ASC"
+  | "serviceB_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -291,6 +320,8 @@ export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
 export type AppointmentWhereUniqueInput = AtLeastOne<{
   id: ID_Input;
+  startTime?: String;
+  endTime?: String;
 }>;
 
 export interface AppointmentWhereInput {
@@ -308,137 +339,60 @@ export interface AppointmentWhereInput {
   id_not_starts_with?: ID_Input;
   id_ends_with?: ID_Input;
   id_not_ends_with?: ID_Input;
-  serviceId?: ServiceWhereInput;
+  serviceId?: Service;
+  serviceId_not?: Service;
+  serviceId_in?: Service[] | Service;
+  serviceId_not_in?: Service[] | Service;
   userId?: UserWhereInput;
-  date?: AppointmentDateWhereInput;
-  sessions?: Int;
-  sessions_not?: Int;
-  sessions_in?: Int[] | Int;
-  sessions_not_in?: Int[] | Int;
-  sessions_lt?: Int;
-  sessions_lte?: Int;
-  sessions_gt?: Int;
-  sessions_gte?: Int;
+  day?: String;
+  day_not?: String;
+  day_in?: String[] | String;
+  day_not_in?: String[] | String;
+  day_lt?: String;
+  day_lte?: String;
+  day_gt?: String;
+  day_gte?: String;
+  day_contains?: String;
+  day_not_contains?: String;
+  day_starts_with?: String;
+  day_not_starts_with?: String;
+  day_ends_with?: String;
+  day_not_ends_with?: String;
+  startTime?: String;
+  startTime_not?: String;
+  startTime_in?: String[] | String;
+  startTime_not_in?: String[] | String;
+  startTime_lt?: String;
+  startTime_lte?: String;
+  startTime_gt?: String;
+  startTime_gte?: String;
+  startTime_contains?: String;
+  startTime_not_contains?: String;
+  startTime_starts_with?: String;
+  startTime_not_starts_with?: String;
+  startTime_ends_with?: String;
+  startTime_not_ends_with?: String;
+  endTime?: String;
+  endTime_not?: String;
+  endTime_in?: String[] | String;
+  endTime_not_in?: String[] | String;
+  endTime_lt?: String;
+  endTime_lte?: String;
+  endTime_gt?: String;
+  endTime_gte?: String;
+  endTime_contains?: String;
+  endTime_not_contains?: String;
+  endTime_starts_with?: String;
+  endTime_not_starts_with?: String;
+  endTime_ends_with?: String;
+  endTime_not_ends_with?: String;
+  type?: AppointmentType;
+  type_not?: AppointmentType;
+  type_in?: AppointmentType[] | AppointmentType;
+  type_not_in?: AppointmentType[] | AppointmentType;
   AND?: AppointmentWhereInput[] | AppointmentWhereInput;
   OR?: AppointmentWhereInput[] | AppointmentWhereInput;
   NOT?: AppointmentWhereInput[] | AppointmentWhereInput;
-}
-
-export interface ServiceWhereInput {
-  id?: ID_Input;
-  id_not?: ID_Input;
-  id_in?: ID_Input[] | ID_Input;
-  id_not_in?: ID_Input[] | ID_Input;
-  id_lt?: ID_Input;
-  id_lte?: ID_Input;
-  id_gt?: ID_Input;
-  id_gte?: ID_Input;
-  id_contains?: ID_Input;
-  id_not_contains?: ID_Input;
-  id_starts_with?: ID_Input;
-  id_not_starts_with?: ID_Input;
-  id_ends_with?: ID_Input;
-  id_not_ends_with?: ID_Input;
-  fullName?: String;
-  fullName_not?: String;
-  fullName_in?: String[] | String;
-  fullName_not_in?: String[] | String;
-  fullName_lt?: String;
-  fullName_lte?: String;
-  fullName_gt?: String;
-  fullName_gte?: String;
-  fullName_contains?: String;
-  fullName_not_contains?: String;
-  fullName_starts_with?: String;
-  fullName_not_starts_with?: String;
-  fullName_ends_with?: String;
-  fullName_not_ends_with?: String;
-  Bio?: String;
-  Bio_not?: String;
-  Bio_in?: String[] | String;
-  Bio_not_in?: String[] | String;
-  Bio_lt?: String;
-  Bio_lte?: String;
-  Bio_gt?: String;
-  Bio_gte?: String;
-  Bio_contains?: String;
-  Bio_not_contains?: String;
-  Bio_starts_with?: String;
-  Bio_not_starts_with?: String;
-  Bio_ends_with?: String;
-  Bio_not_ends_with?: String;
-  type?: ServiceType;
-  type_not?: ServiceType;
-  type_in?: ServiceType[] | ServiceType;
-  type_not_in?: ServiceType[] | ServiceType;
-  email?: String;
-  email_not?: String;
-  email_in?: String[] | String;
-  email_not_in?: String[] | String;
-  email_lt?: String;
-  email_lte?: String;
-  email_gt?: String;
-  email_gte?: String;
-  email_contains?: String;
-  email_not_contains?: String;
-  email_starts_with?: String;
-  email_not_starts_with?: String;
-  email_ends_with?: String;
-  email_not_ends_with?: String;
-  password?: String;
-  password_not?: String;
-  password_in?: String[] | String;
-  password_not_in?: String[] | String;
-  password_lt?: String;
-  password_lte?: String;
-  password_gt?: String;
-  password_gte?: String;
-  password_contains?: String;
-  password_not_contains?: String;
-  password_starts_with?: String;
-  password_not_starts_with?: String;
-  password_ends_with?: String;
-  password_not_ends_with?: String;
-  Birthday?: DateTimeInput;
-  Birthday_not?: DateTimeInput;
-  Birthday_in?: DateTimeInput[] | DateTimeInput;
-  Birthday_not_in?: DateTimeInput[] | DateTimeInput;
-  Birthday_lt?: DateTimeInput;
-  Birthday_lte?: DateTimeInput;
-  Birthday_gt?: DateTimeInput;
-  Birthday_gte?: DateTimeInput;
-  phone?: Int;
-  phone_not?: Int;
-  phone_in?: Int[] | Int;
-  phone_not_in?: Int[] | Int;
-  phone_lt?: Int;
-  phone_lte?: Int;
-  phone_gt?: Int;
-  phone_gte?: Int;
-  gender?: Gender;
-  gender_not?: Gender;
-  gender_in?: Gender[] | Gender;
-  gender_not_in?: Gender[] | Gender;
-  avatar?: String;
-  avatar_not?: String;
-  avatar_in?: String[] | String;
-  avatar_not_in?: String[] | String;
-  avatar_lt?: String;
-  avatar_lte?: String;
-  avatar_gt?: String;
-  avatar_gte?: String;
-  avatar_contains?: String;
-  avatar_not_contains?: String;
-  avatar_starts_with?: String;
-  avatar_not_starts_with?: String;
-  avatar_ends_with?: String;
-  avatar_not_ends_with?: String;
-  Appointments_every?: AppointmentWhereInput;
-  Appointments_some?: AppointmentWhereInput;
-  Appointments_none?: AppointmentWhereInput;
-  AND?: ServiceWhereInput[] | ServiceWhereInput;
-  OR?: ServiceWhereInput[] | ServiceWhereInput;
-  NOT?: ServiceWhereInput[] | ServiceWhereInput;
 }
 
 export interface UserWhereInput {
@@ -540,46 +494,281 @@ export interface UserWhereInput {
   NOT?: UserWhereInput[] | UserWhereInput;
 }
 
-export interface AppointmentDateWhereInput {
-  day?: String;
-  day_not?: String;
-  day_in?: String[] | String;
-  day_not_in?: String[] | String;
-  day_lt?: String;
-  day_lte?: String;
-  day_gt?: String;
-  day_gte?: String;
-  day_contains?: String;
-  day_not_contains?: String;
-  day_starts_with?: String;
-  day_not_starts_with?: String;
-  day_ends_with?: String;
-  day_not_ends_with?: String;
-  startTime?: DateTimeInput;
-  startTime_not?: DateTimeInput;
-  startTime_in?: DateTimeInput[] | DateTimeInput;
-  startTime_not_in?: DateTimeInput[] | DateTimeInput;
-  startTime_lt?: DateTimeInput;
-  startTime_lte?: DateTimeInput;
-  startTime_gt?: DateTimeInput;
-  startTime_gte?: DateTimeInput;
-  endTime?: DateTimeInput;
-  endTime_not?: DateTimeInput;
-  endTime_in?: DateTimeInput[] | DateTimeInput;
-  endTime_not_in?: DateTimeInput[] | DateTimeInput;
-  endTime_lt?: DateTimeInput;
-  endTime_lte?: DateTimeInput;
-  endTime_gt?: DateTimeInput;
-  endTime_gte?: DateTimeInput;
-  AND?: AppointmentDateWhereInput[] | AppointmentDateWhereInput;
-  OR?: AppointmentDateWhereInput[] | AppointmentDateWhereInput;
-  NOT?: AppointmentDateWhereInput[] | AppointmentDateWhereInput;
-}
-
-export type ServiceWhereUniqueInput = AtLeastOne<{
+export type ServiceAWhereUniqueInput = AtLeastOne<{
   id: ID_Input;
   email?: String;
 }>;
+
+export interface ServiceAWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  fullName?: String;
+  fullName_not?: String;
+  fullName_in?: String[] | String;
+  fullName_not_in?: String[] | String;
+  fullName_lt?: String;
+  fullName_lte?: String;
+  fullName_gt?: String;
+  fullName_gte?: String;
+  fullName_contains?: String;
+  fullName_not_contains?: String;
+  fullName_starts_with?: String;
+  fullName_not_starts_with?: String;
+  fullName_ends_with?: String;
+  fullName_not_ends_with?: String;
+  Bio?: String;
+  Bio_not?: String;
+  Bio_in?: String[] | String;
+  Bio_not_in?: String[] | String;
+  Bio_lt?: String;
+  Bio_lte?: String;
+  Bio_gt?: String;
+  Bio_gte?: String;
+  Bio_contains?: String;
+  Bio_not_contains?: String;
+  Bio_starts_with?: String;
+  Bio_not_starts_with?: String;
+  Bio_ends_with?: String;
+  Bio_not_ends_with?: String;
+  email?: String;
+  email_not?: String;
+  email_in?: String[] | String;
+  email_not_in?: String[] | String;
+  email_lt?: String;
+  email_lte?: String;
+  email_gt?: String;
+  email_gte?: String;
+  email_contains?: String;
+  email_not_contains?: String;
+  email_starts_with?: String;
+  email_not_starts_with?: String;
+  email_ends_with?: String;
+  email_not_ends_with?: String;
+  password?: String;
+  password_not?: String;
+  password_in?: String[] | String;
+  password_not_in?: String[] | String;
+  password_lt?: String;
+  password_lte?: String;
+  password_gt?: String;
+  password_gte?: String;
+  password_contains?: String;
+  password_not_contains?: String;
+  password_starts_with?: String;
+  password_not_starts_with?: String;
+  password_ends_with?: String;
+  password_not_ends_with?: String;
+  Birthday?: String;
+  Birthday_not?: String;
+  Birthday_in?: String[] | String;
+  Birthday_not_in?: String[] | String;
+  Birthday_lt?: String;
+  Birthday_lte?: String;
+  Birthday_gt?: String;
+  Birthday_gte?: String;
+  Birthday_contains?: String;
+  Birthday_not_contains?: String;
+  Birthday_starts_with?: String;
+  Birthday_not_starts_with?: String;
+  Birthday_ends_with?: String;
+  Birthday_not_ends_with?: String;
+  phone?: Int;
+  phone_not?: Int;
+  phone_in?: Int[] | Int;
+  phone_not_in?: Int[] | Int;
+  phone_lt?: Int;
+  phone_lte?: Int;
+  phone_gt?: Int;
+  phone_gte?: Int;
+  gender?: Gender;
+  gender_not?: Gender;
+  gender_in?: Gender[] | Gender;
+  gender_not_in?: Gender[] | Gender;
+  avatar?: String;
+  avatar_not?: String;
+  avatar_in?: String[] | String;
+  avatar_not_in?: String[] | String;
+  avatar_lt?: String;
+  avatar_lte?: String;
+  avatar_gt?: String;
+  avatar_gte?: String;
+  avatar_contains?: String;
+  avatar_not_contains?: String;
+  avatar_starts_with?: String;
+  avatar_not_starts_with?: String;
+  avatar_ends_with?: String;
+  avatar_not_ends_with?: String;
+  Appointments_every?: AppointmentWhereInput;
+  Appointments_some?: AppointmentWhereInput;
+  Appointments_none?: AppointmentWhereInput;
+  serviceA?: String;
+  serviceA_not?: String;
+  serviceA_in?: String[] | String;
+  serviceA_not_in?: String[] | String;
+  serviceA_lt?: String;
+  serviceA_lte?: String;
+  serviceA_gt?: String;
+  serviceA_gte?: String;
+  serviceA_contains?: String;
+  serviceA_not_contains?: String;
+  serviceA_starts_with?: String;
+  serviceA_not_starts_with?: String;
+  serviceA_ends_with?: String;
+  serviceA_not_ends_with?: String;
+  AND?: ServiceAWhereInput[] | ServiceAWhereInput;
+  OR?: ServiceAWhereInput[] | ServiceAWhereInput;
+  NOT?: ServiceAWhereInput[] | ServiceAWhereInput;
+}
+
+export type ServiceBWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+  email?: String;
+}>;
+
+export interface ServiceBWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  fullName?: String;
+  fullName_not?: String;
+  fullName_in?: String[] | String;
+  fullName_not_in?: String[] | String;
+  fullName_lt?: String;
+  fullName_lte?: String;
+  fullName_gt?: String;
+  fullName_gte?: String;
+  fullName_contains?: String;
+  fullName_not_contains?: String;
+  fullName_starts_with?: String;
+  fullName_not_starts_with?: String;
+  fullName_ends_with?: String;
+  fullName_not_ends_with?: String;
+  Bio?: String;
+  Bio_not?: String;
+  Bio_in?: String[] | String;
+  Bio_not_in?: String[] | String;
+  Bio_lt?: String;
+  Bio_lte?: String;
+  Bio_gt?: String;
+  Bio_gte?: String;
+  Bio_contains?: String;
+  Bio_not_contains?: String;
+  Bio_starts_with?: String;
+  Bio_not_starts_with?: String;
+  Bio_ends_with?: String;
+  Bio_not_ends_with?: String;
+  email?: String;
+  email_not?: String;
+  email_in?: String[] | String;
+  email_not_in?: String[] | String;
+  email_lt?: String;
+  email_lte?: String;
+  email_gt?: String;
+  email_gte?: String;
+  email_contains?: String;
+  email_not_contains?: String;
+  email_starts_with?: String;
+  email_not_starts_with?: String;
+  email_ends_with?: String;
+  email_not_ends_with?: String;
+  password?: String;
+  password_not?: String;
+  password_in?: String[] | String;
+  password_not_in?: String[] | String;
+  password_lt?: String;
+  password_lte?: String;
+  password_gt?: String;
+  password_gte?: String;
+  password_contains?: String;
+  password_not_contains?: String;
+  password_starts_with?: String;
+  password_not_starts_with?: String;
+  password_ends_with?: String;
+  password_not_ends_with?: String;
+  Birthday?: String;
+  Birthday_not?: String;
+  Birthday_in?: String[] | String;
+  Birthday_not_in?: String[] | String;
+  Birthday_lt?: String;
+  Birthday_lte?: String;
+  Birthday_gt?: String;
+  Birthday_gte?: String;
+  Birthday_contains?: String;
+  Birthday_not_contains?: String;
+  Birthday_starts_with?: String;
+  Birthday_not_starts_with?: String;
+  Birthday_ends_with?: String;
+  Birthday_not_ends_with?: String;
+  phone?: Int;
+  phone_not?: Int;
+  phone_in?: Int[] | Int;
+  phone_not_in?: Int[] | Int;
+  phone_lt?: Int;
+  phone_lte?: Int;
+  phone_gt?: Int;
+  phone_gte?: Int;
+  gender?: Gender;
+  gender_not?: Gender;
+  gender_in?: Gender[] | Gender;
+  gender_not_in?: Gender[] | Gender;
+  avatar?: String;
+  avatar_not?: String;
+  avatar_in?: String[] | String;
+  avatar_not_in?: String[] | String;
+  avatar_lt?: String;
+  avatar_lte?: String;
+  avatar_gt?: String;
+  avatar_gte?: String;
+  avatar_contains?: String;
+  avatar_not_contains?: String;
+  avatar_starts_with?: String;
+  avatar_not_starts_with?: String;
+  avatar_ends_with?: String;
+  avatar_not_ends_with?: String;
+  Appointments_every?: AppointmentWhereInput;
+  Appointments_some?: AppointmentWhereInput;
+  Appointments_none?: AppointmentWhereInput;
+  serviceB?: String;
+  serviceB_not?: String;
+  serviceB_in?: String[] | String;
+  serviceB_not_in?: String[] | String;
+  serviceB_lt?: String;
+  serviceB_lte?: String;
+  serviceB_gt?: String;
+  serviceB_gte?: String;
+  serviceB_contains?: String;
+  serviceB_not_contains?: String;
+  serviceB_starts_with?: String;
+  serviceB_not_starts_with?: String;
+  serviceB_ends_with?: String;
+  serviceB_not_ends_with?: String;
+  AND?: ServiceBWhereInput[] | ServiceBWhereInput;
+  OR?: ServiceBWhereInput[] | ServiceBWhereInput;
+  NOT?: ServiceBWhereInput[] | ServiceBWhereInput;
+}
 
 export type UserWhereUniqueInput = AtLeastOne<{
   id: ID_Input;
@@ -587,27 +776,12 @@ export type UserWhereUniqueInput = AtLeastOne<{
 }>;
 
 export interface AppointmentCreateInput {
-  serviceId: ServiceCreateOneWithoutAppointmentsInput;
+  serviceId: Service;
   userId: UserCreateOneWithoutAppointmentsInput;
-  date: AppointmentDateCreateOneInput;
-  sessions: Int;
-}
-
-export interface ServiceCreateOneWithoutAppointmentsInput {
-  create?: ServiceCreateWithoutAppointmentsInput;
-  connect?: ServiceWhereUniqueInput;
-}
-
-export interface ServiceCreateWithoutAppointmentsInput {
-  fullName: String;
-  Bio?: String;
-  type: ServiceType;
-  email: String;
-  password: String;
-  Birthday: DateTimeInput;
-  phone?: Int;
-  gender?: Gender;
-  avatar?: String;
+  day: String;
+  startTime: String;
+  endTime: String;
+  type: AppointmentType;
 }
 
 export interface UserCreateOneWithoutAppointmentsInput {
@@ -625,45 +799,13 @@ export interface UserCreateWithoutAppointmentsInput {
   avatar?: String;
 }
 
-export interface AppointmentDateCreateOneInput {
-  create?: AppointmentDateCreateInput;
-}
-
-export interface AppointmentDateCreateInput {
-  day: String;
-  startTime: DateTimeInput;
-  endTime: DateTimeInput;
-}
-
 export interface AppointmentUpdateInput {
-  serviceId?: ServiceUpdateOneRequiredWithoutAppointmentsInput;
+  serviceId?: Service;
   userId?: UserUpdateOneRequiredWithoutAppointmentsInput;
-  date?: AppointmentDateUpdateOneRequiredInput;
-  sessions?: Int;
-}
-
-export interface ServiceUpdateOneRequiredWithoutAppointmentsInput {
-  create?: ServiceCreateWithoutAppointmentsInput;
-  update?: ServiceUpdateWithoutAppointmentsDataInput;
-  upsert?: ServiceUpsertWithoutAppointmentsInput;
-  connect?: ServiceWhereUniqueInput;
-}
-
-export interface ServiceUpdateWithoutAppointmentsDataInput {
-  fullName?: String;
-  Bio?: String;
-  type?: ServiceType;
-  email?: String;
-  password?: String;
-  Birthday?: DateTimeInput;
-  phone?: Int;
-  gender?: Gender;
-  avatar?: String;
-}
-
-export interface ServiceUpsertWithoutAppointmentsInput {
-  update: ServiceUpdateWithoutAppointmentsDataInput;
-  create: ServiceCreateWithoutAppointmentsInput;
+  day?: String;
+  startTime?: String;
+  endTime?: String;
+  type?: AppointmentType;
 }
 
 export interface UserUpdateOneRequiredWithoutAppointmentsInput {
@@ -688,106 +830,80 @@ export interface UserUpsertWithoutAppointmentsInput {
   create: UserCreateWithoutAppointmentsInput;
 }
 
-export interface AppointmentDateUpdateOneRequiredInput {
-  create?: AppointmentDateCreateInput;
-  update?: AppointmentDateUpdateDataInput;
-  upsert?: AppointmentDateUpsertNestedInput;
-}
-
-export interface AppointmentDateUpdateDataInput {
-  day?: String;
-  startTime?: DateTimeInput;
-  endTime?: DateTimeInput;
-}
-
-export interface AppointmentDateUpsertNestedInput {
-  update: AppointmentDateUpdateDataInput;
-  create: AppointmentDateCreateInput;
-}
-
 export interface AppointmentUpdateManyMutationInput {
-  sessions?: Int;
-}
-
-export interface AppointmentDateUpdateManyMutationInput {
+  serviceId?: Service;
   day?: String;
-  startTime?: DateTimeInput;
-  endTime?: DateTimeInput;
+  startTime?: String;
+  endTime?: String;
+  type?: AppointmentType;
 }
 
-export interface ServiceCreateInput {
+export interface ServiceACreateInput {
   fullName: String;
   Bio?: String;
-  type: ServiceType;
   email: String;
   password: String;
-  Birthday: DateTimeInput;
+  Birthday: String;
   phone?: Int;
   gender?: Gender;
   avatar?: String;
-  Appointments?: AppointmentCreateManyWithoutServiceIdInput;
+  Appointments?: AppointmentCreateManyInput;
+  serviceA: String;
 }
 
-export interface AppointmentCreateManyWithoutServiceIdInput {
-  create?:
-    | AppointmentCreateWithoutServiceIdInput[]
-    | AppointmentCreateWithoutServiceIdInput;
+export interface AppointmentCreateManyInput {
+  create?: AppointmentCreateInput[] | AppointmentCreateInput;
   connect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
 }
 
-export interface AppointmentCreateWithoutServiceIdInput {
-  userId: UserCreateOneWithoutAppointmentsInput;
-  date: AppointmentDateCreateOneInput;
-  sessions: Int;
-}
-
-export interface ServiceUpdateInput {
+export interface ServiceAUpdateInput {
   fullName?: String;
   Bio?: String;
-  type?: ServiceType;
   email?: String;
   password?: String;
-  Birthday?: DateTimeInput;
+  Birthday?: String;
   phone?: Int;
   gender?: Gender;
   avatar?: String;
-  Appointments?: AppointmentUpdateManyWithoutServiceIdInput;
+  Appointments?: AppointmentUpdateManyInput;
+  serviceA?: String;
 }
 
-export interface AppointmentUpdateManyWithoutServiceIdInput {
-  create?:
-    | AppointmentCreateWithoutServiceIdInput[]
-    | AppointmentCreateWithoutServiceIdInput;
+export interface AppointmentUpdateManyInput {
+  create?: AppointmentCreateInput[] | AppointmentCreateInput;
+  update?:
+    | AppointmentUpdateWithWhereUniqueNestedInput[]
+    | AppointmentUpdateWithWhereUniqueNestedInput;
+  upsert?:
+    | AppointmentUpsertWithWhereUniqueNestedInput[]
+    | AppointmentUpsertWithWhereUniqueNestedInput;
   delete?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
   connect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
   disconnect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
-  update?:
-    | AppointmentUpdateWithWhereUniqueWithoutServiceIdInput[]
-    | AppointmentUpdateWithWhereUniqueWithoutServiceIdInput;
-  upsert?:
-    | AppointmentUpsertWithWhereUniqueWithoutServiceIdInput[]
-    | AppointmentUpsertWithWhereUniqueWithoutServiceIdInput;
   deleteMany?: AppointmentScalarWhereInput[] | AppointmentScalarWhereInput;
   updateMany?:
     | AppointmentUpdateManyWithWhereNestedInput[]
     | AppointmentUpdateManyWithWhereNestedInput;
 }
 
-export interface AppointmentUpdateWithWhereUniqueWithoutServiceIdInput {
+export interface AppointmentUpdateWithWhereUniqueNestedInput {
   where: AppointmentWhereUniqueInput;
-  data: AppointmentUpdateWithoutServiceIdDataInput;
+  data: AppointmentUpdateDataInput;
 }
 
-export interface AppointmentUpdateWithoutServiceIdDataInput {
+export interface AppointmentUpdateDataInput {
+  serviceId?: Service;
   userId?: UserUpdateOneRequiredWithoutAppointmentsInput;
-  date?: AppointmentDateUpdateOneRequiredInput;
-  sessions?: Int;
+  day?: String;
+  startTime?: String;
+  endTime?: String;
+  type?: AppointmentType;
 }
 
-export interface AppointmentUpsertWithWhereUniqueWithoutServiceIdInput {
+export interface AppointmentUpsertWithWhereUniqueNestedInput {
   where: AppointmentWhereUniqueInput;
-  update: AppointmentUpdateWithoutServiceIdDataInput;
-  create: AppointmentCreateWithoutServiceIdInput;
+  update: AppointmentUpdateDataInput;
+  create: AppointmentCreateInput;
 }
 
 export interface AppointmentScalarWhereInput {
@@ -805,14 +921,56 @@ export interface AppointmentScalarWhereInput {
   id_not_starts_with?: ID_Input;
   id_ends_with?: ID_Input;
   id_not_ends_with?: ID_Input;
-  sessions?: Int;
-  sessions_not?: Int;
-  sessions_in?: Int[] | Int;
-  sessions_not_in?: Int[] | Int;
-  sessions_lt?: Int;
-  sessions_lte?: Int;
-  sessions_gt?: Int;
-  sessions_gte?: Int;
+  serviceId?: Service;
+  serviceId_not?: Service;
+  serviceId_in?: Service[] | Service;
+  serviceId_not_in?: Service[] | Service;
+  day?: String;
+  day_not?: String;
+  day_in?: String[] | String;
+  day_not_in?: String[] | String;
+  day_lt?: String;
+  day_lte?: String;
+  day_gt?: String;
+  day_gte?: String;
+  day_contains?: String;
+  day_not_contains?: String;
+  day_starts_with?: String;
+  day_not_starts_with?: String;
+  day_ends_with?: String;
+  day_not_ends_with?: String;
+  startTime?: String;
+  startTime_not?: String;
+  startTime_in?: String[] | String;
+  startTime_not_in?: String[] | String;
+  startTime_lt?: String;
+  startTime_lte?: String;
+  startTime_gt?: String;
+  startTime_gte?: String;
+  startTime_contains?: String;
+  startTime_not_contains?: String;
+  startTime_starts_with?: String;
+  startTime_not_starts_with?: String;
+  startTime_ends_with?: String;
+  startTime_not_ends_with?: String;
+  endTime?: String;
+  endTime_not?: String;
+  endTime_in?: String[] | String;
+  endTime_not_in?: String[] | String;
+  endTime_lt?: String;
+  endTime_lte?: String;
+  endTime_gt?: String;
+  endTime_gte?: String;
+  endTime_contains?: String;
+  endTime_not_contains?: String;
+  endTime_starts_with?: String;
+  endTime_not_starts_with?: String;
+  endTime_ends_with?: String;
+  endTime_not_ends_with?: String;
+  type?: AppointmentType;
+  type_not?: AppointmentType;
+  type_in?: AppointmentType[] | AppointmentType;
+  type_not_in?: AppointmentType[] | AppointmentType;
   AND?: AppointmentScalarWhereInput[] | AppointmentScalarWhereInput;
   OR?: AppointmentScalarWhereInput[] | AppointmentScalarWhereInput;
   NOT?: AppointmentScalarWhereInput[] | AppointmentScalarWhereInput;
@@ -824,19 +982,61 @@ export interface AppointmentUpdateManyWithWhereNestedInput {
 }
 
 export interface AppointmentUpdateManyDataInput {
-  sessions?: Int;
+  serviceId?: Service;
+  day?: String;
+  startTime?: String;
+  endTime?: String;
+  type?: AppointmentType;
 }
 
-export interface ServiceUpdateManyMutationInput {
+export interface ServiceAUpdateManyMutationInput {
   fullName?: String;
   Bio?: String;
-  type?: ServiceType;
   email?: String;
   password?: String;
-  Birthday?: DateTimeInput;
+  Birthday?: String;
   phone?: Int;
   gender?: Gender;
   avatar?: String;
+  serviceA?: String;
+}
+
+export interface ServiceBCreateInput {
+  fullName: String;
+  Bio?: String;
+  email: String;
+  password: String;
+  Birthday: String;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  Appointments?: AppointmentCreateManyInput;
+  serviceB: String;
+}
+
+export interface ServiceBUpdateInput {
+  fullName?: String;
+  Bio?: String;
+  email?: String;
+  password?: String;
+  Birthday?: String;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  Appointments?: AppointmentUpdateManyInput;
+  serviceB?: String;
+}
+
+export interface ServiceBUpdateManyMutationInput {
+  fullName?: String;
+  Bio?: String;
+  email?: String;
+  password?: String;
+  Birthday?: String;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  serviceB?: String;
 }
 
 export interface UserCreateInput {
@@ -858,9 +1058,11 @@ export interface AppointmentCreateManyWithoutUserIdInput {
 }
 
 export interface AppointmentCreateWithoutUserIdInput {
-  serviceId: ServiceCreateOneWithoutAppointmentsInput;
-  date: AppointmentDateCreateOneInput;
-  sessions: Int;
+  serviceId: Service;
+  day: String;
+  startTime: String;
+  endTime: String;
+  type: AppointmentType;
 }
 
 export interface UserUpdateInput {
@@ -899,9 +1101,11 @@ export interface AppointmentUpdateWithWhereUniqueWithoutUserIdInput {
 }
 
 export interface AppointmentUpdateWithoutUserIdDataInput {
-  serviceId?: ServiceUpdateOneRequiredWithoutAppointmentsInput;
-  date?: AppointmentDateUpdateOneRequiredInput;
-  sessions?: Int;
+  serviceId?: Service;
+  day?: String;
+  startTime?: String;
+  endTime?: String;
+  type?: AppointmentType;
 }
 
 export interface AppointmentUpsertWithWhereUniqueWithoutUserIdInput {
@@ -931,32 +1135,26 @@ export interface AppointmentSubscriptionWhereInput {
   NOT?: AppointmentSubscriptionWhereInput[] | AppointmentSubscriptionWhereInput;
 }
 
-export interface AppointmentDateSubscriptionWhereInput {
+export interface ServiceASubscriptionWhereInput {
   mutation_in?: MutationType[] | MutationType;
   updatedFields_contains?: String;
   updatedFields_contains_every?: String[] | String;
   updatedFields_contains_some?: String[] | String;
-  node?: AppointmentDateWhereInput;
-  AND?:
-    | AppointmentDateSubscriptionWhereInput[]
-    | AppointmentDateSubscriptionWhereInput;
-  OR?:
-    | AppointmentDateSubscriptionWhereInput[]
-    | AppointmentDateSubscriptionWhereInput;
-  NOT?:
-    | AppointmentDateSubscriptionWhereInput[]
-    | AppointmentDateSubscriptionWhereInput;
+  node?: ServiceAWhereInput;
+  AND?: ServiceASubscriptionWhereInput[] | ServiceASubscriptionWhereInput;
+  OR?: ServiceASubscriptionWhereInput[] | ServiceASubscriptionWhereInput;
+  NOT?: ServiceASubscriptionWhereInput[] | ServiceASubscriptionWhereInput;
 }
 
-export interface ServiceSubscriptionWhereInput {
+export interface ServiceBSubscriptionWhereInput {
   mutation_in?: MutationType[] | MutationType;
   updatedFields_contains?: String;
   updatedFields_contains_every?: String[] | String;
   updatedFields_contains_some?: String[] | String;
-  node?: ServiceWhereInput;
-  AND?: ServiceSubscriptionWhereInput[] | ServiceSubscriptionWhereInput;
-  OR?: ServiceSubscriptionWhereInput[] | ServiceSubscriptionWhereInput;
-  NOT?: ServiceSubscriptionWhereInput[] | ServiceSubscriptionWhereInput;
+  node?: ServiceBWhereInput;
+  AND?: ServiceBSubscriptionWhereInput[] | ServiceBSubscriptionWhereInput;
+  OR?: ServiceBSubscriptionWhereInput[] | ServiceBSubscriptionWhereInput;
+  NOT?: ServiceBSubscriptionWhereInput[] | ServiceBSubscriptionWhereInput;
 }
 
 export interface UserSubscriptionWhereInput {
@@ -976,84 +1174,33 @@ export interface NodeNode {
 
 export interface Appointment {
   id: ID_Output;
-  sessions: Int;
+  serviceId: Service;
+  day: String;
+  startTime: String;
+  endTime: String;
+  type: AppointmentType;
 }
 
 export interface AppointmentPromise extends Promise<Appointment>, Fragmentable {
   id: () => Promise<ID_Output>;
-  serviceId: <T = ServicePromise>() => T;
+  serviceId: () => Promise<Service>;
   userId: <T = UserPromise>() => T;
-  date: <T = AppointmentDatePromise>() => T;
-  sessions: () => Promise<Int>;
+  day: () => Promise<String>;
+  startTime: () => Promise<String>;
+  endTime: () => Promise<String>;
+  type: () => Promise<AppointmentType>;
 }
 
 export interface AppointmentSubscription
   extends Promise<AsyncIterator<Appointment>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  serviceId: <T = ServiceSubscription>() => T;
+  serviceId: () => Promise<AsyncIterator<Service>>;
   userId: <T = UserSubscription>() => T;
-  date: <T = AppointmentDateSubscription>() => T;
-  sessions: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface Service {
-  id: ID_Output;
-  fullName: String;
-  Bio?: String;
-  type: ServiceType;
-  email: String;
-  password: String;
-  Birthday: DateTimeOutput;
-  phone?: Int;
-  gender?: Gender;
-  avatar?: String;
-}
-
-export interface ServicePromise extends Promise<Service>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  fullName: () => Promise<String>;
-  Bio: () => Promise<String>;
-  type: () => Promise<ServiceType>;
-  email: () => Promise<String>;
-  password: () => Promise<String>;
-  Birthday: () => Promise<DateTimeOutput>;
-  phone: () => Promise<Int>;
-  gender: () => Promise<Gender>;
-  avatar: () => Promise<String>;
-  Appointments: <T = FragmentableArray<Appointment>>(args?: {
-    where?: AppointmentWhereInput;
-    orderBy?: AppointmentOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-}
-
-export interface ServiceSubscription
-  extends Promise<AsyncIterator<Service>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  fullName: () => Promise<AsyncIterator<String>>;
-  Bio: () => Promise<AsyncIterator<String>>;
-  type: () => Promise<AsyncIterator<ServiceType>>;
-  email: () => Promise<AsyncIterator<String>>;
-  password: () => Promise<AsyncIterator<String>>;
-  Birthday: () => Promise<AsyncIterator<DateTimeOutput>>;
-  phone: () => Promise<AsyncIterator<Int>>;
-  gender: () => Promise<AsyncIterator<Gender>>;
-  avatar: () => Promise<AsyncIterator<String>>;
-  Appointments: <T = Promise<AsyncIterator<AppointmentSubscription>>>(args?: {
-    where?: AppointmentWhereInput;
-    orderBy?: AppointmentOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
+  day: () => Promise<AsyncIterator<String>>;
+  startTime: () => Promise<AsyncIterator<String>>;
+  endTime: () => Promise<AsyncIterator<String>>;
+  type: () => Promise<AsyncIterator<AppointmentType>>;
 }
 
 export interface User {
@@ -1107,28 +1254,6 @@ export interface UserSubscription
     first?: Int;
     last?: Int;
   }) => T;
-}
-
-export interface AppointmentDate {
-  day: String;
-  startTime: DateTimeOutput;
-  endTime: DateTimeOutput;
-}
-
-export interface AppointmentDatePromise
-  extends Promise<AppointmentDate>,
-    Fragmentable {
-  day: () => Promise<String>;
-  startTime: () => Promise<DateTimeOutput>;
-  endTime: () => Promise<DateTimeOutput>;
-}
-
-export interface AppointmentDateSubscription
-  extends Promise<AsyncIterator<AppointmentDate>>,
-    Fragmentable {
-  day: () => Promise<AsyncIterator<String>>;
-  startTime: () => Promise<AsyncIterator<DateTimeOutput>>;
-  endTime: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
 export interface AppointmentConnection {
@@ -1210,112 +1335,232 @@ export interface AggregateAppointmentSubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface AppointmentDateConnection {
-  pageInfo: PageInfo;
-  edges: AppointmentDateEdge[];
+export interface ServiceA {
+  id: ID_Output;
+  fullName: String;
+  Bio?: String;
+  email: String;
+  password: String;
+  Birthday: String;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  serviceA: String;
 }
 
-export interface AppointmentDateConnectionPromise
-  extends Promise<AppointmentDateConnection>,
+export interface ServiceAPromise extends Promise<ServiceA>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  fullName: () => Promise<String>;
+  Bio: () => Promise<String>;
+  email: () => Promise<String>;
+  password: () => Promise<String>;
+  Birthday: () => Promise<String>;
+  phone: () => Promise<Int>;
+  gender: () => Promise<Gender>;
+  avatar: () => Promise<String>;
+  Appointments: <T = FragmentableArray<Appointment>>(args?: {
+    where?: AppointmentWhereInput;
+    orderBy?: AppointmentOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  serviceA: () => Promise<String>;
+}
+
+export interface ServiceASubscription
+  extends Promise<AsyncIterator<ServiceA>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  fullName: () => Promise<AsyncIterator<String>>;
+  Bio: () => Promise<AsyncIterator<String>>;
+  email: () => Promise<AsyncIterator<String>>;
+  password: () => Promise<AsyncIterator<String>>;
+  Birthday: () => Promise<AsyncIterator<String>>;
+  phone: () => Promise<AsyncIterator<Int>>;
+  gender: () => Promise<AsyncIterator<Gender>>;
+  avatar: () => Promise<AsyncIterator<String>>;
+  Appointments: <T = Promise<AsyncIterator<AppointmentSubscription>>>(args?: {
+    where?: AppointmentWhereInput;
+    orderBy?: AppointmentOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  serviceA: () => Promise<AsyncIterator<String>>;
+}
+
+export interface ServiceAConnection {
+  pageInfo: PageInfo;
+  edges: ServiceAEdge[];
+}
+
+export interface ServiceAConnectionPromise
+  extends Promise<ServiceAConnection>,
     Fragmentable {
   pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<AppointmentDateEdge>>() => T;
-  aggregate: <T = AggregateAppointmentDatePromise>() => T;
+  edges: <T = FragmentableArray<ServiceAEdge>>() => T;
+  aggregate: <T = AggregateServiceAPromise>() => T;
 }
 
-export interface AppointmentDateConnectionSubscription
-  extends Promise<AsyncIterator<AppointmentDateConnection>>,
+export interface ServiceAConnectionSubscription
+  extends Promise<AsyncIterator<ServiceAConnection>>,
     Fragmentable {
   pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<AppointmentDateEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateAppointmentDateSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<ServiceAEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateServiceASubscription>() => T;
 }
 
-export interface AppointmentDateEdge {
-  node: AppointmentDate;
+export interface ServiceAEdge {
+  node: ServiceA;
   cursor: String;
 }
 
-export interface AppointmentDateEdgePromise
-  extends Promise<AppointmentDateEdge>,
+export interface ServiceAEdgePromise
+  extends Promise<ServiceAEdge>,
     Fragmentable {
-  node: <T = AppointmentDatePromise>() => T;
+  node: <T = ServiceAPromise>() => T;
   cursor: () => Promise<String>;
 }
 
-export interface AppointmentDateEdgeSubscription
-  extends Promise<AsyncIterator<AppointmentDateEdge>>,
+export interface ServiceAEdgeSubscription
+  extends Promise<AsyncIterator<ServiceAEdge>>,
     Fragmentable {
-  node: <T = AppointmentDateSubscription>() => T;
+  node: <T = ServiceASubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface AggregateAppointmentDate {
+export interface AggregateServiceA {
   count: Int;
 }
 
-export interface AggregateAppointmentDatePromise
-  extends Promise<AggregateAppointmentDate>,
+export interface AggregateServiceAPromise
+  extends Promise<AggregateServiceA>,
     Fragmentable {
   count: () => Promise<Int>;
 }
 
-export interface AggregateAppointmentDateSubscription
-  extends Promise<AsyncIterator<AggregateAppointmentDate>>,
+export interface AggregateServiceASubscription
+  extends Promise<AsyncIterator<AggregateServiceA>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface ServiceConnection {
-  pageInfo: PageInfo;
-  edges: ServiceEdge[];
+export interface ServiceB {
+  id: ID_Output;
+  fullName: String;
+  Bio?: String;
+  email: String;
+  password: String;
+  Birthday: String;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  serviceB: String;
 }
 
-export interface ServiceConnectionPromise
-  extends Promise<ServiceConnection>,
+export interface ServiceBPromise extends Promise<ServiceB>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  fullName: () => Promise<String>;
+  Bio: () => Promise<String>;
+  email: () => Promise<String>;
+  password: () => Promise<String>;
+  Birthday: () => Promise<String>;
+  phone: () => Promise<Int>;
+  gender: () => Promise<Gender>;
+  avatar: () => Promise<String>;
+  Appointments: <T = FragmentableArray<Appointment>>(args?: {
+    where?: AppointmentWhereInput;
+    orderBy?: AppointmentOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  serviceB: () => Promise<String>;
+}
+
+export interface ServiceBSubscription
+  extends Promise<AsyncIterator<ServiceB>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  fullName: () => Promise<AsyncIterator<String>>;
+  Bio: () => Promise<AsyncIterator<String>>;
+  email: () => Promise<AsyncIterator<String>>;
+  password: () => Promise<AsyncIterator<String>>;
+  Birthday: () => Promise<AsyncIterator<String>>;
+  phone: () => Promise<AsyncIterator<Int>>;
+  gender: () => Promise<AsyncIterator<Gender>>;
+  avatar: () => Promise<AsyncIterator<String>>;
+  Appointments: <T = Promise<AsyncIterator<AppointmentSubscription>>>(args?: {
+    where?: AppointmentWhereInput;
+    orderBy?: AppointmentOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  serviceB: () => Promise<AsyncIterator<String>>;
+}
+
+export interface ServiceBConnection {
+  pageInfo: PageInfo;
+  edges: ServiceBEdge[];
+}
+
+export interface ServiceBConnectionPromise
+  extends Promise<ServiceBConnection>,
     Fragmentable {
   pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<ServiceEdge>>() => T;
-  aggregate: <T = AggregateServicePromise>() => T;
+  edges: <T = FragmentableArray<ServiceBEdge>>() => T;
+  aggregate: <T = AggregateServiceBPromise>() => T;
 }
 
-export interface ServiceConnectionSubscription
-  extends Promise<AsyncIterator<ServiceConnection>>,
+export interface ServiceBConnectionSubscription
+  extends Promise<AsyncIterator<ServiceBConnection>>,
     Fragmentable {
   pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<ServiceEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateServiceSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<ServiceBEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateServiceBSubscription>() => T;
 }
 
-export interface ServiceEdge {
-  node: Service;
+export interface ServiceBEdge {
+  node: ServiceB;
   cursor: String;
 }
 
-export interface ServiceEdgePromise extends Promise<ServiceEdge>, Fragmentable {
-  node: <T = ServicePromise>() => T;
+export interface ServiceBEdgePromise
+  extends Promise<ServiceBEdge>,
+    Fragmentable {
+  node: <T = ServiceBPromise>() => T;
   cursor: () => Promise<String>;
 }
 
-export interface ServiceEdgeSubscription
-  extends Promise<AsyncIterator<ServiceEdge>>,
+export interface ServiceBEdgeSubscription
+  extends Promise<AsyncIterator<ServiceBEdge>>,
     Fragmentable {
-  node: <T = ServiceSubscription>() => T;
+  node: <T = ServiceBSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface AggregateService {
+export interface AggregateServiceB {
   count: Int;
 }
 
-export interface AggregateServicePromise
-  extends Promise<AggregateService>,
+export interface AggregateServiceBPromise
+  extends Promise<AggregateServiceB>,
     Fragmentable {
   count: () => Promise<Int>;
 }
 
-export interface AggregateServiceSubscription
-  extends Promise<AsyncIterator<AggregateService>>,
+export interface AggregateServiceBSubscription
+  extends Promise<AsyncIterator<AggregateServiceB>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
 }
@@ -1417,136 +1662,169 @@ export interface AppointmentSubscriptionPayloadSubscription
 
 export interface AppointmentPreviousValues {
   id: ID_Output;
-  sessions: Int;
+  serviceId: Service;
+  day: String;
+  startTime: String;
+  endTime: String;
+  type: AppointmentType;
 }
 
 export interface AppointmentPreviousValuesPromise
   extends Promise<AppointmentPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  sessions: () => Promise<Int>;
+  serviceId: () => Promise<Service>;
+  day: () => Promise<String>;
+  startTime: () => Promise<String>;
+  endTime: () => Promise<String>;
+  type: () => Promise<AppointmentType>;
 }
 
 export interface AppointmentPreviousValuesSubscription
   extends Promise<AsyncIterator<AppointmentPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  sessions: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface AppointmentDateSubscriptionPayload {
-  mutation: MutationType;
-  node: AppointmentDate;
-  updatedFields: String[];
-  previousValues: AppointmentDatePreviousValues;
-}
-
-export interface AppointmentDateSubscriptionPayloadPromise
-  extends Promise<AppointmentDateSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = AppointmentDatePromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = AppointmentDatePreviousValuesPromise>() => T;
-}
-
-export interface AppointmentDateSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<AppointmentDateSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = AppointmentDateSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = AppointmentDatePreviousValuesSubscription>() => T;
-}
-
-export interface AppointmentDatePreviousValues {
-  day: String;
-  startTime: DateTimeOutput;
-  endTime: DateTimeOutput;
-}
-
-export interface AppointmentDatePreviousValuesPromise
-  extends Promise<AppointmentDatePreviousValues>,
-    Fragmentable {
-  day: () => Promise<String>;
-  startTime: () => Promise<DateTimeOutput>;
-  endTime: () => Promise<DateTimeOutput>;
-}
-
-export interface AppointmentDatePreviousValuesSubscription
-  extends Promise<AsyncIterator<AppointmentDatePreviousValues>>,
-    Fragmentable {
+  serviceId: () => Promise<AsyncIterator<Service>>;
   day: () => Promise<AsyncIterator<String>>;
-  startTime: () => Promise<AsyncIterator<DateTimeOutput>>;
-  endTime: () => Promise<AsyncIterator<DateTimeOutput>>;
+  startTime: () => Promise<AsyncIterator<String>>;
+  endTime: () => Promise<AsyncIterator<String>>;
+  type: () => Promise<AsyncIterator<AppointmentType>>;
 }
 
-export interface ServiceSubscriptionPayload {
+export interface ServiceASubscriptionPayload {
   mutation: MutationType;
-  node: Service;
+  node: ServiceA;
   updatedFields: String[];
-  previousValues: ServicePreviousValues;
+  previousValues: ServiceAPreviousValues;
 }
 
-export interface ServiceSubscriptionPayloadPromise
-  extends Promise<ServiceSubscriptionPayload>,
+export interface ServiceASubscriptionPayloadPromise
+  extends Promise<ServiceASubscriptionPayload>,
     Fragmentable {
   mutation: () => Promise<MutationType>;
-  node: <T = ServicePromise>() => T;
+  node: <T = ServiceAPromise>() => T;
   updatedFields: () => Promise<String[]>;
-  previousValues: <T = ServicePreviousValuesPromise>() => T;
+  previousValues: <T = ServiceAPreviousValuesPromise>() => T;
 }
 
-export interface ServiceSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<ServiceSubscriptionPayload>>,
+export interface ServiceASubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<ServiceASubscriptionPayload>>,
     Fragmentable {
   mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = ServiceSubscription>() => T;
+  node: <T = ServiceASubscription>() => T;
   updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = ServicePreviousValuesSubscription>() => T;
+  previousValues: <T = ServiceAPreviousValuesSubscription>() => T;
 }
 
-export interface ServicePreviousValues {
+export interface ServiceAPreviousValues {
   id: ID_Output;
   fullName: String;
   Bio?: String;
-  type: ServiceType;
   email: String;
   password: String;
-  Birthday: DateTimeOutput;
+  Birthday: String;
   phone?: Int;
   gender?: Gender;
   avatar?: String;
+  serviceA: String;
 }
 
-export interface ServicePreviousValuesPromise
-  extends Promise<ServicePreviousValues>,
+export interface ServiceAPreviousValuesPromise
+  extends Promise<ServiceAPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
   fullName: () => Promise<String>;
   Bio: () => Promise<String>;
-  type: () => Promise<ServiceType>;
   email: () => Promise<String>;
   password: () => Promise<String>;
-  Birthday: () => Promise<DateTimeOutput>;
+  Birthday: () => Promise<String>;
   phone: () => Promise<Int>;
   gender: () => Promise<Gender>;
   avatar: () => Promise<String>;
+  serviceA: () => Promise<String>;
 }
 
-export interface ServicePreviousValuesSubscription
-  extends Promise<AsyncIterator<ServicePreviousValues>>,
+export interface ServiceAPreviousValuesSubscription
+  extends Promise<AsyncIterator<ServiceAPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   fullName: () => Promise<AsyncIterator<String>>;
   Bio: () => Promise<AsyncIterator<String>>;
-  type: () => Promise<AsyncIterator<ServiceType>>;
   email: () => Promise<AsyncIterator<String>>;
   password: () => Promise<AsyncIterator<String>>;
-  Birthday: () => Promise<AsyncIterator<DateTimeOutput>>;
+  Birthday: () => Promise<AsyncIterator<String>>;
   phone: () => Promise<AsyncIterator<Int>>;
   gender: () => Promise<AsyncIterator<Gender>>;
   avatar: () => Promise<AsyncIterator<String>>;
+  serviceA: () => Promise<AsyncIterator<String>>;
+}
+
+export interface ServiceBSubscriptionPayload {
+  mutation: MutationType;
+  node: ServiceB;
+  updatedFields: String[];
+  previousValues: ServiceBPreviousValues;
+}
+
+export interface ServiceBSubscriptionPayloadPromise
+  extends Promise<ServiceBSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = ServiceBPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = ServiceBPreviousValuesPromise>() => T;
+}
+
+export interface ServiceBSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<ServiceBSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = ServiceBSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = ServiceBPreviousValuesSubscription>() => T;
+}
+
+export interface ServiceBPreviousValues {
+  id: ID_Output;
+  fullName: String;
+  Bio?: String;
+  email: String;
+  password: String;
+  Birthday: String;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  serviceB: String;
+}
+
+export interface ServiceBPreviousValuesPromise
+  extends Promise<ServiceBPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  fullName: () => Promise<String>;
+  Bio: () => Promise<String>;
+  email: () => Promise<String>;
+  password: () => Promise<String>;
+  Birthday: () => Promise<String>;
+  phone: () => Promise<Int>;
+  gender: () => Promise<Gender>;
+  avatar: () => Promise<String>;
+  serviceB: () => Promise<String>;
+}
+
+export interface ServiceBPreviousValuesSubscription
+  extends Promise<AsyncIterator<ServiceBPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  fullName: () => Promise<AsyncIterator<String>>;
+  Bio: () => Promise<AsyncIterator<String>>;
+  email: () => Promise<AsyncIterator<String>>;
+  password: () => Promise<AsyncIterator<String>>;
+  Birthday: () => Promise<AsyncIterator<String>>;
+  phone: () => Promise<AsyncIterator<Int>>;
+  gender: () => Promise<AsyncIterator<Gender>>;
+  avatar: () => Promise<AsyncIterator<String>>;
+  serviceB: () => Promise<AsyncIterator<String>>;
 }
 
 export interface UserSubscriptionPayload {
@@ -1623,16 +1901,6 @@ The `String` scalar type represents textual data, represented as UTF-8 character
 export type String = string;
 
 /*
-DateTime scalar input type, allowing Date
-*/
-export type DateTimeInput = Date | string;
-
-/*
-DateTime scalar output type, which is always a string
-*/
-export type DateTimeOutput = string;
-
-/*
 The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. 
 */
 export type Int = number;
@@ -1654,7 +1922,7 @@ export const models: Model[] = [
     embedded: false
   },
   {
-    name: "AppointmentDate",
+    name: "AppointmentType",
     embedded: false
   },
   {
@@ -1666,7 +1934,11 @@ export const models: Model[] = [
     embedded: false
   },
   {
-    name: "ServiceType",
+    name: "ServiceA",
+    embedded: false
+  },
+  {
+    name: "ServiceB",
     embedded: false
   },
   {

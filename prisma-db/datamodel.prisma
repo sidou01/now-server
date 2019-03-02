@@ -7,57 +7,46 @@ type User {
   phone: Int
   gender: Gender
   avatar: String # url to an image. might add enum to get small or big.
-  Appointments: [Appointment!] # example : [appointmentId1, appointmentId2, etc...] refrence ids to the appointment table.
-  #messages
+  Appointments: [Appointment!]
 }
 
 type Service {
+  #common data fields for each service
+  #service type to indicate type of service since prisma doesn't support unions yet.
   id: ID! @unique
   fullName: String!
   Bio: String
-  type: ServiceType!
   email: String! @unique
   password: String!
-  Birthday: DateTime!
+  Birthday: String!
   phone: Int
   gender: Gender
-  avatar: String # url to an image. might add enum to get small or big.
+  avatar: String
   Appointments: [Appointment!]
+  type: ServiceType!
 }
-#
-#type Doctor implements Service {
-#  type: String!
-#  #more info
-#}
+
+enum ServiceType {
+  DOCTOR
+  LAWYER
+}
 
 type Appointment {
   id: ID! @unique
   serviceId: Service!
   userId: User!
-  date: AppointmentDate! #!
-  sessions: Int!
+  day: String!
+  startTime: String! @unique
+  endTime: String! @unique
+  type: AppointmentType!
+}
+
+enum AppointmentType {
+  VERY_SHORT #15m
+  SHORT #30m
+  LONG #1h
 }
 enum Gender {
   MALE
   FEMALE
 }
-enum ServiceType {
-  Doctor
-  LAWYER
-}
-#
-##union AppointmentSessionType = DoctorSessionType | LawyerSessionType
-#
-## each service has its types so
-type AppointmentDate {
-  day: String!
-  startTime: DateTime!
-  endTime: DateTime!
-}
-#
-#enum DoctorSession {
-#  ROUTINE_CHECKUP
-#  SICK_VISIT
-#  VACCINATIONS
-#}
-#

@@ -1,11 +1,5 @@
 import { gql } from 'apollo-server'
 
-/*
-1- Sub to a post and get comments back
-2- Pagination for users and posts and comments
-3- Add facebook/google auth (not mandatory)
-*/
-
 const typeDefs = gql`
   type Query {
     hello: String!
@@ -14,6 +8,7 @@ const typeDefs = gql`
     register(
       fullName: String!
       email: String!
+      password: String!
       age: String!
       phone: Int
       avtar: String
@@ -25,6 +20,7 @@ const typeDefs = gql`
     id: ID!
     fullName: String!
     email: String!
+    password: String!
     age: Int!
     phone: Int
     gender: Gender
@@ -36,32 +32,32 @@ const typeDefs = gql`
     id: ID!
     fullName: String!
     Bio: String
-    type: ServiceType!
     email: String!
+    password: String!
     Birthday: String!
     phone: Int
     gender: Gender
     avatar: String
     Appointments: [Appointment!]
+    type: ServiceType!
   }
 
   type Appointment {
     id: ID!
     serviceId: Service!
     userId: User!
-    date: AppointmentDate!
-    sessions: Int!
-  }
-
-  enum ServiceType {
-    Doctor
-    LAWYER
-  }
-  type AppointmentDate {
     day: String!
     startTime: String!
     endTime: String!
+    type: AppointmentType!
   }
+
+  enum AppointmentType {
+    VERY_SHORT #15m
+    SHORT #30m
+    LONG #1h
+  }
+
   enum Gender {
     MALE
     FEMALE

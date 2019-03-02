@@ -3,11 +3,11 @@ module.exports = {
   count: Int!
 }
 
-type AggregateAppointmentDate {
+type AggregateServiceA {
   count: Int!
 }
 
-type AggregateService {
+type AggregateServiceB {
   count: Int!
 }
 
@@ -19,8 +19,10 @@ type Appointment {
   id: ID!
   serviceId: Service!
   userId: User!
-  date: AppointmentDate!
-  sessions: Int!
+  day: String!
+  startTime: String!
+  endTime: String!
+  type: AppointmentType!
 }
 
 type AppointmentConnection {
@@ -30,14 +32,16 @@ type AppointmentConnection {
 }
 
 input AppointmentCreateInput {
-  serviceId: ServiceCreateOneWithoutAppointmentsInput!
+  serviceId: Service!
   userId: UserCreateOneWithoutAppointmentsInput!
-  date: AppointmentDateCreateOneInput!
-  sessions: Int!
+  day: String!
+  startTime: String!
+  endTime: String!
+  type: AppointmentType!
 }
 
-input AppointmentCreateManyWithoutServiceIdInput {
-  create: [AppointmentCreateWithoutServiceIdInput!]
+input AppointmentCreateManyInput {
+  create: [AppointmentCreateInput!]
   connect: [AppointmentWhereUniqueInput!]
 }
 
@@ -46,141 +50,12 @@ input AppointmentCreateManyWithoutUserIdInput {
   connect: [AppointmentWhereUniqueInput!]
 }
 
-input AppointmentCreateWithoutServiceIdInput {
-  userId: UserCreateOneWithoutAppointmentsInput!
-  date: AppointmentDateCreateOneInput!
-  sessions: Int!
-}
-
 input AppointmentCreateWithoutUserIdInput {
-  serviceId: ServiceCreateOneWithoutAppointmentsInput!
-  date: AppointmentDateCreateOneInput!
-  sessions: Int!
-}
-
-type AppointmentDate {
+  serviceId: Service!
   day: String!
-  startTime: DateTime!
-  endTime: DateTime!
-}
-
-type AppointmentDateConnection {
-  pageInfo: PageInfo!
-  edges: [AppointmentDateEdge]!
-  aggregate: AggregateAppointmentDate!
-}
-
-input AppointmentDateCreateInput {
-  day: String!
-  startTime: DateTime!
-  endTime: DateTime!
-}
-
-input AppointmentDateCreateOneInput {
-  create: AppointmentDateCreateInput
-}
-
-type AppointmentDateEdge {
-  node: AppointmentDate!
-  cursor: String!
-}
-
-enum AppointmentDateOrderByInput {
-  day_ASC
-  day_DESC
-  startTime_ASC
-  startTime_DESC
-  endTime_ASC
-  endTime_DESC
-  id_ASC
-  id_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-}
-
-type AppointmentDatePreviousValues {
-  day: String!
-  startTime: DateTime!
-  endTime: DateTime!
-}
-
-type AppointmentDateSubscriptionPayload {
-  mutation: MutationType!
-  node: AppointmentDate
-  updatedFields: [String!]
-  previousValues: AppointmentDatePreviousValues
-}
-
-input AppointmentDateSubscriptionWhereInput {
-  mutation_in: [MutationType!]
-  updatedFields_contains: String
-  updatedFields_contains_every: [String!]
-  updatedFields_contains_some: [String!]
-  node: AppointmentDateWhereInput
-  AND: [AppointmentDateSubscriptionWhereInput!]
-  OR: [AppointmentDateSubscriptionWhereInput!]
-  NOT: [AppointmentDateSubscriptionWhereInput!]
-}
-
-input AppointmentDateUpdateDataInput {
-  day: String
-  startTime: DateTime
-  endTime: DateTime
-}
-
-input AppointmentDateUpdateManyMutationInput {
-  day: String
-  startTime: DateTime
-  endTime: DateTime
-}
-
-input AppointmentDateUpdateOneRequiredInput {
-  create: AppointmentDateCreateInput
-  update: AppointmentDateUpdateDataInput
-  upsert: AppointmentDateUpsertNestedInput
-}
-
-input AppointmentDateUpsertNestedInput {
-  update: AppointmentDateUpdateDataInput!
-  create: AppointmentDateCreateInput!
-}
-
-input AppointmentDateWhereInput {
-  day: String
-  day_not: String
-  day_in: [String!]
-  day_not_in: [String!]
-  day_lt: String
-  day_lte: String
-  day_gt: String
-  day_gte: String
-  day_contains: String
-  day_not_contains: String
-  day_starts_with: String
-  day_not_starts_with: String
-  day_ends_with: String
-  day_not_ends_with: String
-  startTime: DateTime
-  startTime_not: DateTime
-  startTime_in: [DateTime!]
-  startTime_not_in: [DateTime!]
-  startTime_lt: DateTime
-  startTime_lte: DateTime
-  startTime_gt: DateTime
-  startTime_gte: DateTime
-  endTime: DateTime
-  endTime_not: DateTime
-  endTime_in: [DateTime!]
-  endTime_not_in: [DateTime!]
-  endTime_lt: DateTime
-  endTime_lte: DateTime
-  endTime_gt: DateTime
-  endTime_gte: DateTime
-  AND: [AppointmentDateWhereInput!]
-  OR: [AppointmentDateWhereInput!]
-  NOT: [AppointmentDateWhereInput!]
+  startTime: String!
+  endTime: String!
+  type: AppointmentType!
 }
 
 type AppointmentEdge {
@@ -191,8 +66,16 @@ type AppointmentEdge {
 enum AppointmentOrderByInput {
   id_ASC
   id_DESC
-  sessions_ASC
-  sessions_DESC
+  serviceId_ASC
+  serviceId_DESC
+  day_ASC
+  day_DESC
+  startTime_ASC
+  startTime_DESC
+  endTime_ASC
+  endTime_DESC
+  type_ASC
+  type_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -201,7 +84,11 @@ enum AppointmentOrderByInput {
 
 type AppointmentPreviousValues {
   id: ID!
-  sessions: Int!
+  serviceId: Service!
+  day: String!
+  startTime: String!
+  endTime: String!
+  type: AppointmentType!
 }
 
 input AppointmentScalarWhereInput {
@@ -219,14 +106,56 @@ input AppointmentScalarWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
-  sessions: Int
-  sessions_not: Int
-  sessions_in: [Int!]
-  sessions_not_in: [Int!]
-  sessions_lt: Int
-  sessions_lte: Int
-  sessions_gt: Int
-  sessions_gte: Int
+  serviceId: Service
+  serviceId_not: Service
+  serviceId_in: [Service!]
+  serviceId_not_in: [Service!]
+  day: String
+  day_not: String
+  day_in: [String!]
+  day_not_in: [String!]
+  day_lt: String
+  day_lte: String
+  day_gt: String
+  day_gte: String
+  day_contains: String
+  day_not_contains: String
+  day_starts_with: String
+  day_not_starts_with: String
+  day_ends_with: String
+  day_not_ends_with: String
+  startTime: String
+  startTime_not: String
+  startTime_in: [String!]
+  startTime_not_in: [String!]
+  startTime_lt: String
+  startTime_lte: String
+  startTime_gt: String
+  startTime_gte: String
+  startTime_contains: String
+  startTime_not_contains: String
+  startTime_starts_with: String
+  startTime_not_starts_with: String
+  startTime_ends_with: String
+  startTime_not_ends_with: String
+  endTime: String
+  endTime_not: String
+  endTime_in: [String!]
+  endTime_not_in: [String!]
+  endTime_lt: String
+  endTime_lte: String
+  endTime_gt: String
+  endTime_gte: String
+  endTime_contains: String
+  endTime_not_contains: String
+  endTime_starts_with: String
+  endTime_not_starts_with: String
+  endTime_ends_with: String
+  endTime_not_ends_with: String
+  type: AppointmentType
+  type_not: AppointmentType
+  type_in: [AppointmentType!]
+  type_not_in: [AppointmentType!]
   AND: [AppointmentScalarWhereInput!]
   OR: [AppointmentScalarWhereInput!]
   NOT: [AppointmentScalarWhereInput!]
@@ -250,30 +179,55 @@ input AppointmentSubscriptionWhereInput {
   NOT: [AppointmentSubscriptionWhereInput!]
 }
 
-input AppointmentUpdateInput {
-  serviceId: ServiceUpdateOneRequiredWithoutAppointmentsInput
+enum AppointmentType {
+  VERY_SHORT
+  SHORT
+  LONG
+}
+
+input AppointmentUpdateDataInput {
+  serviceId: Service
   userId: UserUpdateOneRequiredWithoutAppointmentsInput
-  date: AppointmentDateUpdateOneRequiredInput
-  sessions: Int
+  day: String
+  startTime: String
+  endTime: String
+  type: AppointmentType
+}
+
+input AppointmentUpdateInput {
+  serviceId: Service
+  userId: UserUpdateOneRequiredWithoutAppointmentsInput
+  day: String
+  startTime: String
+  endTime: String
+  type: AppointmentType
 }
 
 input AppointmentUpdateManyDataInput {
-  sessions: Int
+  serviceId: Service
+  day: String
+  startTime: String
+  endTime: String
+  type: AppointmentType
 }
 
-input AppointmentUpdateManyMutationInput {
-  sessions: Int
-}
-
-input AppointmentUpdateManyWithoutServiceIdInput {
-  create: [AppointmentCreateWithoutServiceIdInput!]
+input AppointmentUpdateManyInput {
+  create: [AppointmentCreateInput!]
+  update: [AppointmentUpdateWithWhereUniqueNestedInput!]
+  upsert: [AppointmentUpsertWithWhereUniqueNestedInput!]
   delete: [AppointmentWhereUniqueInput!]
   connect: [AppointmentWhereUniqueInput!]
   disconnect: [AppointmentWhereUniqueInput!]
-  update: [AppointmentUpdateWithWhereUniqueWithoutServiceIdInput!]
-  upsert: [AppointmentUpsertWithWhereUniqueWithoutServiceIdInput!]
   deleteMany: [AppointmentScalarWhereInput!]
   updateMany: [AppointmentUpdateManyWithWhereNestedInput!]
+}
+
+input AppointmentUpdateManyMutationInput {
+  serviceId: Service
+  day: String
+  startTime: String
+  endTime: String
+  type: AppointmentType
 }
 
 input AppointmentUpdateManyWithoutUserIdInput {
@@ -292,21 +246,17 @@ input AppointmentUpdateManyWithWhereNestedInput {
   data: AppointmentUpdateManyDataInput!
 }
 
-input AppointmentUpdateWithoutServiceIdDataInput {
-  userId: UserUpdateOneRequiredWithoutAppointmentsInput
-  date: AppointmentDateUpdateOneRequiredInput
-  sessions: Int
-}
-
 input AppointmentUpdateWithoutUserIdDataInput {
-  serviceId: ServiceUpdateOneRequiredWithoutAppointmentsInput
-  date: AppointmentDateUpdateOneRequiredInput
-  sessions: Int
+  serviceId: Service
+  day: String
+  startTime: String
+  endTime: String
+  type: AppointmentType
 }
 
-input AppointmentUpdateWithWhereUniqueWithoutServiceIdInput {
+input AppointmentUpdateWithWhereUniqueNestedInput {
   where: AppointmentWhereUniqueInput!
-  data: AppointmentUpdateWithoutServiceIdDataInput!
+  data: AppointmentUpdateDataInput!
 }
 
 input AppointmentUpdateWithWhereUniqueWithoutUserIdInput {
@@ -314,10 +264,10 @@ input AppointmentUpdateWithWhereUniqueWithoutUserIdInput {
   data: AppointmentUpdateWithoutUserIdDataInput!
 }
 
-input AppointmentUpsertWithWhereUniqueWithoutServiceIdInput {
+input AppointmentUpsertWithWhereUniqueNestedInput {
   where: AppointmentWhereUniqueInput!
-  update: AppointmentUpdateWithoutServiceIdDataInput!
-  create: AppointmentCreateWithoutServiceIdInput!
+  update: AppointmentUpdateDataInput!
+  create: AppointmentCreateInput!
 }
 
 input AppointmentUpsertWithWhereUniqueWithoutUserIdInput {
@@ -341,17 +291,57 @@ input AppointmentWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
-  serviceId: ServiceWhereInput
+  serviceId: Service
+  serviceId_not: Service
+  serviceId_in: [Service!]
+  serviceId_not_in: [Service!]
   userId: UserWhereInput
-  date: AppointmentDateWhereInput
-  sessions: Int
-  sessions_not: Int
-  sessions_in: [Int!]
-  sessions_not_in: [Int!]
-  sessions_lt: Int
-  sessions_lte: Int
-  sessions_gt: Int
-  sessions_gte: Int
+  day: String
+  day_not: String
+  day_in: [String!]
+  day_not_in: [String!]
+  day_lt: String
+  day_lte: String
+  day_gt: String
+  day_gte: String
+  day_contains: String
+  day_not_contains: String
+  day_starts_with: String
+  day_not_starts_with: String
+  day_ends_with: String
+  day_not_ends_with: String
+  startTime: String
+  startTime_not: String
+  startTime_in: [String!]
+  startTime_not_in: [String!]
+  startTime_lt: String
+  startTime_lte: String
+  startTime_gt: String
+  startTime_gte: String
+  startTime_contains: String
+  startTime_not_contains: String
+  startTime_starts_with: String
+  startTime_not_starts_with: String
+  startTime_ends_with: String
+  startTime_not_ends_with: String
+  endTime: String
+  endTime_not: String
+  endTime_in: [String!]
+  endTime_not_in: [String!]
+  endTime_lt: String
+  endTime_lte: String
+  endTime_gt: String
+  endTime_gte: String
+  endTime_contains: String
+  endTime_not_contains: String
+  endTime_starts_with: String
+  endTime_not_starts_with: String
+  endTime_ends_with: String
+  endTime_not_ends_with: String
+  type: AppointmentType
+  type_not: AppointmentType
+  type_in: [AppointmentType!]
+  type_not_in: [AppointmentType!]
   AND: [AppointmentWhereInput!]
   OR: [AppointmentWhereInput!]
   NOT: [AppointmentWhereInput!]
@@ -359,13 +349,13 @@ input AppointmentWhereInput {
 
 input AppointmentWhereUniqueInput {
   id: ID
+  startTime: String
+  endTime: String
 }
 
 type BatchPayload {
   count: Long!
 }
-
-scalar DateTime
 
 enum Gender {
   MALE
@@ -381,15 +371,18 @@ type Mutation {
   upsertAppointment(where: AppointmentWhereUniqueInput!, create: AppointmentCreateInput!, update: AppointmentUpdateInput!): Appointment!
   deleteAppointment(where: AppointmentWhereUniqueInput!): Appointment
   deleteManyAppointments(where: AppointmentWhereInput): BatchPayload!
-  createAppointmentDate(data: AppointmentDateCreateInput!): AppointmentDate!
-  updateManyAppointmentDates(data: AppointmentDateUpdateManyMutationInput!, where: AppointmentDateWhereInput): BatchPayload!
-  deleteManyAppointmentDates(where: AppointmentDateWhereInput): BatchPayload!
-  createService(data: ServiceCreateInput!): Service!
-  updateService(data: ServiceUpdateInput!, where: ServiceWhereUniqueInput!): Service
-  updateManyServices(data: ServiceUpdateManyMutationInput!, where: ServiceWhereInput): BatchPayload!
-  upsertService(where: ServiceWhereUniqueInput!, create: ServiceCreateInput!, update: ServiceUpdateInput!): Service!
-  deleteService(where: ServiceWhereUniqueInput!): Service
-  deleteManyServices(where: ServiceWhereInput): BatchPayload!
+  createServiceA(data: ServiceACreateInput!): ServiceA!
+  updateServiceA(data: ServiceAUpdateInput!, where: ServiceAWhereUniqueInput!): ServiceA
+  updateManyServiceAs(data: ServiceAUpdateManyMutationInput!, where: ServiceAWhereInput): BatchPayload!
+  upsertServiceA(where: ServiceAWhereUniqueInput!, create: ServiceACreateInput!, update: ServiceAUpdateInput!): ServiceA!
+  deleteServiceA(where: ServiceAWhereUniqueInput!): ServiceA
+  deleteManyServiceAs(where: ServiceAWhereInput): BatchPayload!
+  createServiceB(data: ServiceBCreateInput!): ServiceB!
+  updateServiceB(data: ServiceBUpdateInput!, where: ServiceBWhereUniqueInput!): ServiceB
+  updateManyServiceBs(data: ServiceBUpdateManyMutationInput!, where: ServiceBWhereInput): BatchPayload!
+  upsertServiceB(where: ServiceBWhereUniqueInput!, create: ServiceBCreateInput!, update: ServiceBUpdateInput!): ServiceB!
+  deleteServiceB(where: ServiceBWhereUniqueInput!): ServiceB
+  deleteManyServiceBs(where: ServiceBWhereInput): BatchPayload!
   createUser(data: UserCreateInput!): User!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
@@ -419,81 +412,68 @@ type Query {
   appointment(where: AppointmentWhereUniqueInput!): Appointment
   appointments(where: AppointmentWhereInput, orderBy: AppointmentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Appointment]!
   appointmentsConnection(where: AppointmentWhereInput, orderBy: AppointmentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): AppointmentConnection!
-  appointmentDates(where: AppointmentDateWhereInput, orderBy: AppointmentDateOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [AppointmentDate]!
-  appointmentDatesConnection(where: AppointmentDateWhereInput, orderBy: AppointmentDateOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): AppointmentDateConnection!
-  service(where: ServiceWhereUniqueInput!): Service
-  services(where: ServiceWhereInput, orderBy: ServiceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Service]!
-  servicesConnection(where: ServiceWhereInput, orderBy: ServiceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ServiceConnection!
+  serviceA(where: ServiceAWhereUniqueInput!): ServiceA
+  serviceAs(where: ServiceAWhereInput, orderBy: ServiceAOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ServiceA]!
+  serviceAsConnection(where: ServiceAWhereInput, orderBy: ServiceAOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ServiceAConnection!
+  serviceB(where: ServiceBWhereUniqueInput!): ServiceB
+  serviceBs(where: ServiceBWhereInput, orderBy: ServiceBOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ServiceB]!
+  serviceBsConnection(where: ServiceBWhereInput, orderBy: ServiceBOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ServiceBConnection!
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   node(id: ID!): Node
 }
 
-type Service {
+enum Service {
+  ServiceA
+  ServiceB
+}
+
+type ServiceA {
   id: ID!
   fullName: String!
   Bio: String
-  type: ServiceType!
   email: String!
   password: String!
-  Birthday: DateTime!
+  Birthday: String!
   phone: Int
   gender: Gender
   avatar: String
   Appointments(where: AppointmentWhereInput, orderBy: AppointmentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Appointment!]
+  serviceA: String!
 }
 
-type ServiceConnection {
+type ServiceAConnection {
   pageInfo: PageInfo!
-  edges: [ServiceEdge]!
-  aggregate: AggregateService!
+  edges: [ServiceAEdge]!
+  aggregate: AggregateServiceA!
 }
 
-input ServiceCreateInput {
+input ServiceACreateInput {
   fullName: String!
   Bio: String
-  type: ServiceType!
   email: String!
   password: String!
-  Birthday: DateTime!
+  Birthday: String!
   phone: Int
   gender: Gender
   avatar: String
-  Appointments: AppointmentCreateManyWithoutServiceIdInput
+  Appointments: AppointmentCreateManyInput
+  serviceA: String!
 }
 
-input ServiceCreateOneWithoutAppointmentsInput {
-  create: ServiceCreateWithoutAppointmentsInput
-  connect: ServiceWhereUniqueInput
-}
-
-input ServiceCreateWithoutAppointmentsInput {
-  fullName: String!
-  Bio: String
-  type: ServiceType!
-  email: String!
-  password: String!
-  Birthday: DateTime!
-  phone: Int
-  gender: Gender
-  avatar: String
-}
-
-type ServiceEdge {
-  node: Service!
+type ServiceAEdge {
+  node: ServiceA!
   cursor: String!
 }
 
-enum ServiceOrderByInput {
+enum ServiceAOrderByInput {
   id_ASC
   id_DESC
   fullName_ASC
   fullName_DESC
   Bio_ASC
   Bio_DESC
-  type_ASC
-  type_DESC
   email_ASC
   email_DESC
   password_ASC
@@ -506,98 +486,71 @@ enum ServiceOrderByInput {
   gender_DESC
   avatar_ASC
   avatar_DESC
+  serviceA_ASC
+  serviceA_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
 }
 
-type ServicePreviousValues {
+type ServiceAPreviousValues {
   id: ID!
   fullName: String!
   Bio: String
-  type: ServiceType!
   email: String!
   password: String!
-  Birthday: DateTime!
+  Birthday: String!
   phone: Int
   gender: Gender
   avatar: String
+  serviceA: String!
 }
 
-type ServiceSubscriptionPayload {
+type ServiceASubscriptionPayload {
   mutation: MutationType!
-  node: Service
+  node: ServiceA
   updatedFields: [String!]
-  previousValues: ServicePreviousValues
+  previousValues: ServiceAPreviousValues
 }
 
-input ServiceSubscriptionWhereInput {
+input ServiceASubscriptionWhereInput {
   mutation_in: [MutationType!]
   updatedFields_contains: String
   updatedFields_contains_every: [String!]
   updatedFields_contains_some: [String!]
-  node: ServiceWhereInput
-  AND: [ServiceSubscriptionWhereInput!]
-  OR: [ServiceSubscriptionWhereInput!]
-  NOT: [ServiceSubscriptionWhereInput!]
+  node: ServiceAWhereInput
+  AND: [ServiceASubscriptionWhereInput!]
+  OR: [ServiceASubscriptionWhereInput!]
+  NOT: [ServiceASubscriptionWhereInput!]
 }
 
-enum ServiceType {
-  Doctor
-  LAWYER
-}
-
-input ServiceUpdateInput {
+input ServiceAUpdateInput {
   fullName: String
   Bio: String
-  type: ServiceType
   email: String
   password: String
-  Birthday: DateTime
+  Birthday: String
   phone: Int
   gender: Gender
   avatar: String
-  Appointments: AppointmentUpdateManyWithoutServiceIdInput
+  Appointments: AppointmentUpdateManyInput
+  serviceA: String
 }
 
-input ServiceUpdateManyMutationInput {
+input ServiceAUpdateManyMutationInput {
   fullName: String
   Bio: String
-  type: ServiceType
   email: String
   password: String
-  Birthday: DateTime
+  Birthday: String
   phone: Int
   gender: Gender
   avatar: String
+  serviceA: String
 }
 
-input ServiceUpdateOneRequiredWithoutAppointmentsInput {
-  create: ServiceCreateWithoutAppointmentsInput
-  update: ServiceUpdateWithoutAppointmentsDataInput
-  upsert: ServiceUpsertWithoutAppointmentsInput
-  connect: ServiceWhereUniqueInput
-}
-
-input ServiceUpdateWithoutAppointmentsDataInput {
-  fullName: String
-  Bio: String
-  type: ServiceType
-  email: String
-  password: String
-  Birthday: DateTime
-  phone: Int
-  gender: Gender
-  avatar: String
-}
-
-input ServiceUpsertWithoutAppointmentsInput {
-  update: ServiceUpdateWithoutAppointmentsDataInput!
-  create: ServiceCreateWithoutAppointmentsInput!
-}
-
-input ServiceWhereInput {
+input ServiceAWhereInput {
   id: ID
   id_not: ID
   id_in: [ID!]
@@ -640,10 +593,6 @@ input ServiceWhereInput {
   Bio_not_starts_with: String
   Bio_ends_with: String
   Bio_not_ends_with: String
-  type: ServiceType
-  type_not: ServiceType
-  type_in: [ServiceType!]
-  type_not_in: [ServiceType!]
   email: String
   email_not: String
   email_in: [String!]
@@ -672,14 +621,20 @@ input ServiceWhereInput {
   password_not_starts_with: String
   password_ends_with: String
   password_not_ends_with: String
-  Birthday: DateTime
-  Birthday_not: DateTime
-  Birthday_in: [DateTime!]
-  Birthday_not_in: [DateTime!]
-  Birthday_lt: DateTime
-  Birthday_lte: DateTime
-  Birthday_gt: DateTime
-  Birthday_gte: DateTime
+  Birthday: String
+  Birthday_not: String
+  Birthday_in: [String!]
+  Birthday_not_in: [String!]
+  Birthday_lt: String
+  Birthday_lte: String
+  Birthday_gt: String
+  Birthday_gte: String
+  Birthday_contains: String
+  Birthday_not_contains: String
+  Birthday_starts_with: String
+  Birthday_not_starts_with: String
+  Birthday_ends_with: String
+  Birthday_not_ends_with: String
   phone: Int
   phone_not: Int
   phone_in: [Int!]
@@ -709,20 +664,293 @@ input ServiceWhereInput {
   Appointments_every: AppointmentWhereInput
   Appointments_some: AppointmentWhereInput
   Appointments_none: AppointmentWhereInput
-  AND: [ServiceWhereInput!]
-  OR: [ServiceWhereInput!]
-  NOT: [ServiceWhereInput!]
+  serviceA: String
+  serviceA_not: String
+  serviceA_in: [String!]
+  serviceA_not_in: [String!]
+  serviceA_lt: String
+  serviceA_lte: String
+  serviceA_gt: String
+  serviceA_gte: String
+  serviceA_contains: String
+  serviceA_not_contains: String
+  serviceA_starts_with: String
+  serviceA_not_starts_with: String
+  serviceA_ends_with: String
+  serviceA_not_ends_with: String
+  AND: [ServiceAWhereInput!]
+  OR: [ServiceAWhereInput!]
+  NOT: [ServiceAWhereInput!]
 }
 
-input ServiceWhereUniqueInput {
+input ServiceAWhereUniqueInput {
+  id: ID
+  email: String
+}
+
+type ServiceB {
+  id: ID!
+  fullName: String!
+  Bio: String
+  email: String!
+  password: String!
+  Birthday: String!
+  phone: Int
+  gender: Gender
+  avatar: String
+  Appointments(where: AppointmentWhereInput, orderBy: AppointmentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Appointment!]
+  serviceB: String!
+}
+
+type ServiceBConnection {
+  pageInfo: PageInfo!
+  edges: [ServiceBEdge]!
+  aggregate: AggregateServiceB!
+}
+
+input ServiceBCreateInput {
+  fullName: String!
+  Bio: String
+  email: String!
+  password: String!
+  Birthday: String!
+  phone: Int
+  gender: Gender
+  avatar: String
+  Appointments: AppointmentCreateManyInput
+  serviceB: String!
+}
+
+type ServiceBEdge {
+  node: ServiceB!
+  cursor: String!
+}
+
+enum ServiceBOrderByInput {
+  id_ASC
+  id_DESC
+  fullName_ASC
+  fullName_DESC
+  Bio_ASC
+  Bio_DESC
+  email_ASC
+  email_DESC
+  password_ASC
+  password_DESC
+  Birthday_ASC
+  Birthday_DESC
+  phone_ASC
+  phone_DESC
+  gender_ASC
+  gender_DESC
+  avatar_ASC
+  avatar_DESC
+  serviceB_ASC
+  serviceB_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type ServiceBPreviousValues {
+  id: ID!
+  fullName: String!
+  Bio: String
+  email: String!
+  password: String!
+  Birthday: String!
+  phone: Int
+  gender: Gender
+  avatar: String
+  serviceB: String!
+}
+
+type ServiceBSubscriptionPayload {
+  mutation: MutationType!
+  node: ServiceB
+  updatedFields: [String!]
+  previousValues: ServiceBPreviousValues
+}
+
+input ServiceBSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: ServiceBWhereInput
+  AND: [ServiceBSubscriptionWhereInput!]
+  OR: [ServiceBSubscriptionWhereInput!]
+  NOT: [ServiceBSubscriptionWhereInput!]
+}
+
+input ServiceBUpdateInput {
+  fullName: String
+  Bio: String
+  email: String
+  password: String
+  Birthday: String
+  phone: Int
+  gender: Gender
+  avatar: String
+  Appointments: AppointmentUpdateManyInput
+  serviceB: String
+}
+
+input ServiceBUpdateManyMutationInput {
+  fullName: String
+  Bio: String
+  email: String
+  password: String
+  Birthday: String
+  phone: Int
+  gender: Gender
+  avatar: String
+  serviceB: String
+}
+
+input ServiceBWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  fullName: String
+  fullName_not: String
+  fullName_in: [String!]
+  fullName_not_in: [String!]
+  fullName_lt: String
+  fullName_lte: String
+  fullName_gt: String
+  fullName_gte: String
+  fullName_contains: String
+  fullName_not_contains: String
+  fullName_starts_with: String
+  fullName_not_starts_with: String
+  fullName_ends_with: String
+  fullName_not_ends_with: String
+  Bio: String
+  Bio_not: String
+  Bio_in: [String!]
+  Bio_not_in: [String!]
+  Bio_lt: String
+  Bio_lte: String
+  Bio_gt: String
+  Bio_gte: String
+  Bio_contains: String
+  Bio_not_contains: String
+  Bio_starts_with: String
+  Bio_not_starts_with: String
+  Bio_ends_with: String
+  Bio_not_ends_with: String
+  email: String
+  email_not: String
+  email_in: [String!]
+  email_not_in: [String!]
+  email_lt: String
+  email_lte: String
+  email_gt: String
+  email_gte: String
+  email_contains: String
+  email_not_contains: String
+  email_starts_with: String
+  email_not_starts_with: String
+  email_ends_with: String
+  email_not_ends_with: String
+  password: String
+  password_not: String
+  password_in: [String!]
+  password_not_in: [String!]
+  password_lt: String
+  password_lte: String
+  password_gt: String
+  password_gte: String
+  password_contains: String
+  password_not_contains: String
+  password_starts_with: String
+  password_not_starts_with: String
+  password_ends_with: String
+  password_not_ends_with: String
+  Birthday: String
+  Birthday_not: String
+  Birthday_in: [String!]
+  Birthday_not_in: [String!]
+  Birthday_lt: String
+  Birthday_lte: String
+  Birthday_gt: String
+  Birthday_gte: String
+  Birthday_contains: String
+  Birthday_not_contains: String
+  Birthday_starts_with: String
+  Birthday_not_starts_with: String
+  Birthday_ends_with: String
+  Birthday_not_ends_with: String
+  phone: Int
+  phone_not: Int
+  phone_in: [Int!]
+  phone_not_in: [Int!]
+  phone_lt: Int
+  phone_lte: Int
+  phone_gt: Int
+  phone_gte: Int
+  gender: Gender
+  gender_not: Gender
+  gender_in: [Gender!]
+  gender_not_in: [Gender!]
+  avatar: String
+  avatar_not: String
+  avatar_in: [String!]
+  avatar_not_in: [String!]
+  avatar_lt: String
+  avatar_lte: String
+  avatar_gt: String
+  avatar_gte: String
+  avatar_contains: String
+  avatar_not_contains: String
+  avatar_starts_with: String
+  avatar_not_starts_with: String
+  avatar_ends_with: String
+  avatar_not_ends_with: String
+  Appointments_every: AppointmentWhereInput
+  Appointments_some: AppointmentWhereInput
+  Appointments_none: AppointmentWhereInput
+  serviceB: String
+  serviceB_not: String
+  serviceB_in: [String!]
+  serviceB_not_in: [String!]
+  serviceB_lt: String
+  serviceB_lte: String
+  serviceB_gt: String
+  serviceB_gte: String
+  serviceB_contains: String
+  serviceB_not_contains: String
+  serviceB_starts_with: String
+  serviceB_not_starts_with: String
+  serviceB_ends_with: String
+  serviceB_not_ends_with: String
+  AND: [ServiceBWhereInput!]
+  OR: [ServiceBWhereInput!]
+  NOT: [ServiceBWhereInput!]
+}
+
+input ServiceBWhereUniqueInput {
   id: ID
   email: String
 }
 
 type Subscription {
   appointment(where: AppointmentSubscriptionWhereInput): AppointmentSubscriptionPayload
-  appointmentDate(where: AppointmentDateSubscriptionWhereInput): AppointmentDateSubscriptionPayload
-  service(where: ServiceSubscriptionWhereInput): ServiceSubscriptionPayload
+  serviceA(where: ServiceASubscriptionWhereInput): ServiceASubscriptionPayload
+  serviceB(where: ServiceBSubscriptionWhereInput): ServiceBSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
 

@@ -9,7 +9,7 @@ var models = [
     embedded: false
   },
   {
-    name: "AppointmentDate",
+    name: "AppointmentType",
     embedded: false
   },
   {
@@ -21,7 +21,11 @@ var models = [
     embedded: false
   },
   {
-    name: "ServiceType",
+    name: "ServiceA",
+    embedded: false
+  },
+  {
+    name: "ServiceB",
     embedded: false
   },
   {
