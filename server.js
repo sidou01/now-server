@@ -6,7 +6,6 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import { prisma } from './prisma-db/generated/prisma-client'
 import jwt from 'jsonwebtoken'
-console.log(process.env.JWT_SECRET)
 
 const getUser = (token, secret) => {
   if (!token) return null

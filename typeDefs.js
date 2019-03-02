@@ -2,16 +2,17 @@ import { gql } from 'apollo-server'
 
 const typeDefs = gql`
   type Query {
-    hello: String!
+    me: User
   }
   type Mutation {
     register(
       fullName: String!
       email: String!
       password: String!
-      age: String!
+      age: Int!
       phone: Int
-      avtar: String
+      avatar: String
+      gender: Gender
     ): User!
     login(email: String!, password: String!): String!
   }
@@ -61,6 +62,10 @@ const typeDefs = gql`
   enum Gender {
     MALE
     FEMALE
+  }
+  enum ServiceType {
+    DOCTOR
+    LAWYER
   }
 `
 export default typeDefs
