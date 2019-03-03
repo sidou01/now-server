@@ -30,6 +30,7 @@ const port = 4000
 //sendgrid confirmation:
 
 app.get('/email/confirmation/:token', async (req, res) => {
+  console.log(process.env.SENDGRID_API_KEY)
   const decoded = jwt.verify(req.params.token, process.env.JWT_EMAIL_SECRET)
   const userFromDb = await prisma.updateUser({
     data: {

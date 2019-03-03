@@ -14,7 +14,7 @@ const resolvers = {
     register: async (
       _,
       { fullName, email, password, age, phone, avatar, gender },
-      { prisma }
+      { prisma, transporter }
     ) => {
       const isUser = await prisma.user({ email })
       if (isUser) throw new Error('user already exists')
@@ -36,13 +36,14 @@ const resolvers = {
         { userEmail: email },
         process.env.JWT_EMAIL_SECRET,
         (err, emailToken) => {
-          sgMail.setApiKey(SENDGRID_API_KEY)
+          sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+          const url = `http://localhost:4000/email/confirmation/${emailToken}`
           const msg = {
             to: `${createdUser.email}`,
-            from: 'now@example.com',
+            from: 'now@company.com',
             subject: 'Confirmation Email',
             text: 'Confirm your mail using this link',
-            html: `follow this link <a href=http://localhost:4000/email/confirmation/${emailToken}>Confirm Email</a>`
+            html: `follow this link <a href=${url}>Confirm Email</a>`
           }
 
           sgMail.send(msg)
