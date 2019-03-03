@@ -7,9 +7,6 @@ import bodyParser from 'body-parser'
 import { prisma } from './prisma-db/generated/prisma-client'
 import jwt from 'jsonwebtoken'
 
-export const SENDGRID_API_KEY =
-  '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'
-
 const getUser = (token, secret) => {
   if (!token) return null
   const decoded = jwt.verify(token, secret)
@@ -44,7 +41,7 @@ app.get('/email/confirmation/:token', async (req, res) => {
   })
   if (userFromDb.email) {
     console.log(userFromDb)
-    res.redirect('/app/login')
+    return res.json('Email verified you can login now.')
   } else
     return res.json(
       'error something went wrong with your email verification (maybe your email expired)'

@@ -1,8 +1,8 @@
 import {} from 'dotenv/config'
+import {} from 'dotenv/config'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import sgMail from '@sendgrid/mail'
-import { SENDGRID_API_KEY } from './server.js'
 import { AuthenticationError } from 'apollo-server'
 
 const resolvers = {
