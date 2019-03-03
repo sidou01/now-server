@@ -7,6 +7,7 @@ type User {
   phone: Int
   gender: Gender
   avatar: String # url to an image. might add enum to get small or big.
+  confirmation: Boolean! @default(value: "false")
   AppointmentsA: [AppointmentA!]
   AppointmentsB: [AppointmentB!]
 }

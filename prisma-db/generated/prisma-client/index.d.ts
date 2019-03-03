@@ -364,6 +364,8 @@ export type UserOrderByInput =
   | "gender_DESC"
   | "avatar_ASC"
   | "avatar_DESC"
+  | "confirmation_ASC"
+  | "confirmation_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -655,6 +657,8 @@ export interface UserWhereInput {
   avatar_not_starts_with?: String;
   avatar_ends_with?: String;
   avatar_not_ends_with?: String;
+  confirmation?: Boolean;
+  confirmation_not?: Boolean;
   AppointmentsA_every?: AppointmentAWhereInput;
   AppointmentsA_some?: AppointmentAWhereInput;
   AppointmentsA_none?: AppointmentAWhereInput;
@@ -912,6 +916,7 @@ export interface UserCreateWithoutAppointmentsAInput {
   phone?: Int;
   gender?: Gender;
   avatar?: String;
+  confirmation?: Boolean;
   AppointmentsB?: AppointmentBCreateManyWithoutUserIdInput;
 }
 
@@ -993,6 +998,7 @@ export interface UserUpdateWithoutAppointmentsADataInput {
   phone?: Int;
   gender?: Gender;
   avatar?: String;
+  confirmation?: Boolean;
   AppointmentsB?: AppointmentBUpdateManyWithoutUserIdInput;
 }
 
@@ -1169,6 +1175,7 @@ export interface UserCreateWithoutAppointmentsBInput {
   phone?: Int;
   gender?: Gender;
   avatar?: String;
+  confirmation?: Boolean;
   AppointmentsA?: AppointmentACreateManyWithoutUserIdInput;
 }
 
@@ -1211,6 +1218,7 @@ export interface UserUpdateWithoutAppointmentsBDataInput {
   phone?: Int;
   gender?: Gender;
   avatar?: String;
+  confirmation?: Boolean;
   AppointmentsA?: AppointmentAUpdateManyWithoutUserIdInput;
 }
 
@@ -1526,6 +1534,7 @@ export interface UserCreateInput {
   phone?: Int;
   gender?: Gender;
   avatar?: String;
+  confirmation?: Boolean;
   AppointmentsA?: AppointmentACreateManyWithoutUserIdInput;
   AppointmentsB?: AppointmentBCreateManyWithoutUserIdInput;
 }
@@ -1538,6 +1547,7 @@ export interface UserUpdateInput {
   phone?: Int;
   gender?: Gender;
   avatar?: String;
+  confirmation?: Boolean;
   AppointmentsA?: AppointmentAUpdateManyWithoutUserIdInput;
   AppointmentsB?: AppointmentBUpdateManyWithoutUserIdInput;
 }
@@ -1550,6 +1560,7 @@ export interface UserUpdateManyMutationInput {
   phone?: Int;
   gender?: Gender;
   avatar?: String;
+  confirmation?: Boolean;
 }
 
 export interface AppointmentASubscriptionWhereInput {
@@ -1720,6 +1731,7 @@ export interface User {
   phone?: Int;
   gender?: Gender;
   avatar?: String;
+  confirmation: Boolean;
 }
 
 export interface UserPromise extends Promise<User>, Fragmentable {
@@ -1731,6 +1743,7 @@ export interface UserPromise extends Promise<User>, Fragmentable {
   phone: () => Promise<Int>;
   gender: () => Promise<Gender>;
   avatar: () => Promise<String>;
+  confirmation: () => Promise<Boolean>;
   AppointmentsA: <T = FragmentableArray<AppointmentA>>(args?: {
     where?: AppointmentAWhereInput;
     orderBy?: AppointmentAOrderByInput;
@@ -1762,6 +1775,7 @@ export interface UserSubscription
   phone: () => Promise<AsyncIterator<Int>>;
   gender: () => Promise<AsyncIterator<Gender>>;
   avatar: () => Promise<AsyncIterator<String>>;
+  confirmation: () => Promise<AsyncIterator<Boolean>>;
   AppointmentsA: <T = Promise<AsyncIterator<AppointmentASubscription>>>(args?: {
     where?: AppointmentAWhereInput;
     orderBy?: AppointmentAOrderByInput;
@@ -2457,6 +2471,7 @@ export interface UserPreviousValues {
   phone?: Int;
   gender?: Gender;
   avatar?: String;
+  confirmation: Boolean;
 }
 
 export interface UserPreviousValuesPromise
@@ -2470,6 +2485,7 @@ export interface UserPreviousValuesPromise
   phone: () => Promise<Int>;
   gender: () => Promise<Gender>;
   avatar: () => Promise<String>;
+  confirmation: () => Promise<Boolean>;
 }
 
 export interface UserPreviousValuesSubscription
@@ -2483,6 +2499,7 @@ export interface UserPreviousValuesSubscription
   phone: () => Promise<AsyncIterator<Int>>;
   gender: () => Promise<AsyncIterator<Gender>>;
   avatar: () => Promise<AsyncIterator<String>>;
+  confirmation: () => Promise<AsyncIterator<Boolean>>;
 }
 
 /*

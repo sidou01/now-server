@@ -1,5 +1,8 @@
+import {} from 'dotenv/config'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import sgMail from '@sendgrid/mail'
+import { SENDGRID_API_KEY } from './server.js'
 import { AuthenticationError } from 'apollo-server'
 
 const resolvers = {
@@ -13,21 +16,13 @@ const resolvers = {
       { fullName, email, password, age, phone, avatar, gender },
       { prisma }
     ) => {
-      //check for optional fields
-      /*
-      let isPhone = false
-      let isAvatar = false
-
-      if(phone) isPhone = true
-      if(avatar) isAvatar = true
-      */
-
       const isUser = await prisma.user({ email })
       if (isUser) throw new Error('user already exists')
       let saltRounds = 10
 
       const hashedPassword = await bcrypt.hash(password, saltRounds)
-      return await prisma.createUser({
+
+      const createdUser = await prisma.createUser({
         fullName,
         email,
         password: hashedPassword,
@@ -36,6 +31,26 @@ const resolvers = {
         avatar,
         gender
       })
+
+      jwt.sign(
+        { userEmail: email },
+        process.env.JWT_EMAIL_SECRET,
+        (err, emailToken) => {
+          sgMail.setApiKey(SENDGRID_API_KEY)
+          const msg = {
+            to: `${createdUser.email}`,
+            from: 'now@example.com',
+            subject: 'Confirmation Email',
+            text: 'Confirm your mail using this link',
+            html: `follow this link <a href=http://localhost:4000/email/confirmation/${emailToken}>Confirm Email</a>`
+          }
+
+          sgMail.send(msg)
+          console.log('email sent i guess?')
+        }
+      )
+
+      return createdUser
     },
     login: async (_, { email, password }, { prisma, jwt_secret }) => {
       const user = await prisma.user({ email })
@@ -43,7 +58,9 @@ const resolvers = {
       const auth = await bcrypt.compare(password, user.password)
       if (!auth) throw new Error('your email or password is wrong')
 
-      const { id, fullName, age, phone, avatar } = user
+      const { id, fullName, age, phone, avatar, confirmation } = user
+      if (!confirmation)
+        throw new AuthenticationError('you must confirm your email first!')
       const token = jwt.sign(
         {
           id,

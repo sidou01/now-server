@@ -1330,6 +1330,7 @@ type User {
   phone: Int
   gender: Gender
   avatar: String
+  confirmation: Boolean!
   AppointmentsA(where: AppointmentAWhereInput, orderBy: AppointmentAOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [AppointmentA!]
   AppointmentsB(where: AppointmentBWhereInput, orderBy: AppointmentBOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [AppointmentB!]
 }
@@ -1348,6 +1349,7 @@ input UserCreateInput {
   phone: Int
   gender: Gender
   avatar: String
+  confirmation: Boolean
   AppointmentsA: AppointmentACreateManyWithoutUserIdInput
   AppointmentsB: AppointmentBCreateManyWithoutUserIdInput
 }
@@ -1370,6 +1372,7 @@ input UserCreateWithoutAppointmentsAInput {
   phone: Int
   gender: Gender
   avatar: String
+  confirmation: Boolean
   AppointmentsB: AppointmentBCreateManyWithoutUserIdInput
 }
 
@@ -1381,6 +1384,7 @@ input UserCreateWithoutAppointmentsBInput {
   phone: Int
   gender: Gender
   avatar: String
+  confirmation: Boolean
   AppointmentsA: AppointmentACreateManyWithoutUserIdInput
 }
 
@@ -1406,6 +1410,8 @@ enum UserOrderByInput {
   gender_DESC
   avatar_ASC
   avatar_DESC
+  confirmation_ASC
+  confirmation_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -1421,6 +1427,7 @@ type UserPreviousValues {
   phone: Int
   gender: Gender
   avatar: String
+  confirmation: Boolean!
 }
 
 type UserSubscriptionPayload {
@@ -1449,6 +1456,7 @@ input UserUpdateInput {
   phone: Int
   gender: Gender
   avatar: String
+  confirmation: Boolean
   AppointmentsA: AppointmentAUpdateManyWithoutUserIdInput
   AppointmentsB: AppointmentBUpdateManyWithoutUserIdInput
 }
@@ -1461,6 +1469,7 @@ input UserUpdateManyMutationInput {
   phone: Int
   gender: Gender
   avatar: String
+  confirmation: Boolean
 }
 
 input UserUpdateOneRequiredWithoutAppointmentsAInput {
@@ -1485,6 +1494,7 @@ input UserUpdateWithoutAppointmentsADataInput {
   phone: Int
   gender: Gender
   avatar: String
+  confirmation: Boolean
   AppointmentsB: AppointmentBUpdateManyWithoutUserIdInput
 }
 
@@ -1496,6 +1506,7 @@ input UserUpdateWithoutAppointmentsBDataInput {
   phone: Int
   gender: Gender
   avatar: String
+  confirmation: Boolean
   AppointmentsA: AppointmentAUpdateManyWithoutUserIdInput
 }
 
@@ -1600,6 +1611,8 @@ input UserWhereInput {
   avatar_not_starts_with: String
   avatar_ends_with: String
   avatar_not_ends_with: String
+  confirmation: Boolean
+  confirmation_not: Boolean
   AppointmentsA_every: AppointmentAWhereInput
   AppointmentsA_some: AppointmentAWhereInput
   AppointmentsA_none: AppointmentAWhereInput
