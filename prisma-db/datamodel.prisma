@@ -7,10 +7,11 @@ type User {
   phone: Int
   gender: Gender
   avatar: String # url to an image. might add enum to get small or big.
-  Appointments: [Appointment!]
+  AppointmentsA: [AppointmentA!]
+  AppointmentsB: [AppointmentB!]
 }
 
-type Service {
+type ServiceA {
   #common data fields for each service
   #service type to indicate type of service since prisma doesn't support unions yet.
   id: ID! @unique
@@ -22,18 +23,35 @@ type Service {
   phone: Int
   gender: Gender
   avatar: String
-  Appointments: [Appointment!]
-  type: ServiceType!
+  Appointments: [AppointmentA!]
 }
-
-enum ServiceType {
-  DOCTOR
-  LAWYER
-}
-
-type Appointment {
+type ServiceB {
+  #common data fields for each service
+  #service type to indicate type of service since prisma doesn't support unions yet.
   id: ID! @unique
-  serviceId: Service!
+  fullName: String!
+  Bio: String
+  email: String! @unique
+  password: String!
+  Birthday: String!
+  phone: Int
+  gender: Gender
+  avatar: String
+  Appointments: [AppointmentB!]
+}
+
+type AppointmentA {
+  id: ID! @unique
+  serviceId: ServiceA!
+  userId: User!
+  day: String!
+  startTime: String! @unique
+  endTime: String! @unique
+  type: AppointmentType!
+}
+type AppointmentB {
+  id: ID! @unique
+  serviceId: ServiceB!
   userId: User!
   day: String!
   startTime: String! @unique
