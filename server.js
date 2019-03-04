@@ -1,7 +1,7 @@
 import {} from 'dotenv/config'
 import typeDefs from './typeDefs'
 import resolvers from './resolvers'
-import { ApolloServer, SchemaError } from 'apollo-server-express'
+import { ApolloServer } from 'apollo-server-express'
 import express from 'express'
 import bodyParser from 'body-parser'
 import { prisma } from './prisma-db/generated/prisma-client'
@@ -27,8 +27,7 @@ server.applyMiddleware({ app })
 app.use(bodyParser.json())
 
 const port = 4000
-//sendgrid confirmation:
-
+//seperate route on the server that will render success or failure and a button to go back to the main app (client react app)
 app.get('/email/confirmation/:token', async (req, res) => {
   console.log(process.env.SENDGRID_API_KEY)
   const decoded = jwt.verify(req.params.token, process.env.JWT_EMAIL_SECRET)
@@ -40,10 +39,8 @@ app.get('/email/confirmation/:token', async (req, res) => {
       email: decoded.userEmail
     }
   })
-  if (userFromDb.email) {
-    console.log(userFromDb)
-    return res.json('Email verified you can login now.')
-  } else
+  if (userFromDb.email) return res.json('Email verified you can login now.')
+  else
     return res.json(
       'error something went wrong with your email verification (maybe your email expired)'
     )

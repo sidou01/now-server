@@ -7,14 +7,13 @@ import { AuthenticationError } from 'apollo-server'
 
 const resolvers = {
   Query: {
-    //protected route
     me: (_, __, { user }) => user
   },
   Mutation: {
     register: async (
       _,
       { fullName, email, password, age, phone, avatar, gender },
-      { prisma, transporter }
+      { prisma }
     ) => {
       const isUser = await prisma.user({ email })
       if (isUser) throw new Error('user already exists')

@@ -8,13 +8,10 @@ type User {
   gender: Gender
   avatar: String # url to an image. might add enum to get small or big.
   confirmation: Boolean! @default(value: "false")
-  AppointmentsA: [AppointmentA!]
-  AppointmentsB: [AppointmentB!]
+  Appointments: [Appointment!]
 }
 
-type ServiceA {
-  #common data fields for each service
-  #service type to indicate type of service since prisma doesn't support unions yet.
+type Doctor {
   id: ID! @unique
   fullName: String!
   Bio: String
@@ -24,48 +21,35 @@ type ServiceA {
   phone: Int
   gender: Gender
   avatar: String
-  Appointments: [AppointmentA!]
-}
-type ServiceB {
-  #common data fields for each service
-  #service type to indicate type of service since prisma doesn't support unions yet.
-  id: ID! @unique
-  fullName: String!
-  Bio: String
-  email: String! @unique
-  password: String!
-  Birthday: String!
-  phone: Int
-  gender: Gender
-  avatar: String
-  Appointments: [AppointmentB!]
+  appointments: [Appointment!]
+  specialty: DoctorSpecialty!
 }
 
-type AppointmentA {
+type Appointment {
   id: ID! @unique
-  serviceId: ServiceA!
+  serviceId: Doctor!
   userId: User!
-  day: String!
-  startTime: String! @unique
-  endTime: String! @unique
-  type: AppointmentType!
-}
-type AppointmentB {
-  id: ID! @unique
-  serviceId: ServiceB!
-  userId: User!
-  day: String!
-  startTime: String! @unique
-  endTime: String! @unique
-  type: AppointmentType!
+  title: String!
+  startTime: DateTime! @unique
+  endTime: DateTime! @unique
+  duration: AppointmentDuration!
 }
 
-enum AppointmentType {
+enum AppointmentDuration {
   VERY_SHORT #15m
   SHORT #30m
   LONG #1h
+  VERY_LONG #1h 30m
 }
 enum Gender {
   MALE
   FEMALE
+}
+enum DoctorSpecialty {
+  Generaliste
+  Psychiatre
+  Psychologue
+  Dermatologue
+  Dentiste
+  Gynecologue
 }
