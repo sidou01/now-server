@@ -15,9 +15,8 @@ type Appointment {
   id: ID!
   serviceId: Doctor!
   userId: User!
-  title: String!
-  startTime: DateTime!
-  endTime: DateTime!
+  title: String
+  startTime: String!
   duration: AppointmentDuration!
 }
 
@@ -30,9 +29,8 @@ type AppointmentConnection {
 input AppointmentCreateInput {
   serviceId: DoctorCreateOneWithoutAppointmentsInput!
   userId: UserCreateOneWithoutAppointmentsInput!
-  title: String!
-  startTime: DateTime!
-  endTime: DateTime!
+  title: String
+  startTime: String!
   duration: AppointmentDuration!
 }
 
@@ -48,17 +46,15 @@ input AppointmentCreateManyWithoutUserIdInput {
 
 input AppointmentCreateWithoutServiceIdInput {
   userId: UserCreateOneWithoutAppointmentsInput!
-  title: String!
-  startTime: DateTime!
-  endTime: DateTime!
+  title: String
+  startTime: String!
   duration: AppointmentDuration!
 }
 
 input AppointmentCreateWithoutUserIdInput {
   serviceId: DoctorCreateOneWithoutAppointmentsInput!
-  title: String!
-  startTime: DateTime!
-  endTime: DateTime!
+  title: String
+  startTime: String!
   duration: AppointmentDuration!
 }
 
@@ -81,8 +77,6 @@ enum AppointmentOrderByInput {
   title_DESC
   startTime_ASC
   startTime_DESC
-  endTime_ASC
-  endTime_DESC
   duration_ASC
   duration_DESC
   createdAt_ASC
@@ -93,9 +87,8 @@ enum AppointmentOrderByInput {
 
 type AppointmentPreviousValues {
   id: ID!
-  title: String!
-  startTime: DateTime!
-  endTime: DateTime!
+  title: String
+  startTime: String!
   duration: AppointmentDuration!
 }
 
@@ -128,22 +121,20 @@ input AppointmentScalarWhereInput {
   title_not_starts_with: String
   title_ends_with: String
   title_not_ends_with: String
-  startTime: DateTime
-  startTime_not: DateTime
-  startTime_in: [DateTime!]
-  startTime_not_in: [DateTime!]
-  startTime_lt: DateTime
-  startTime_lte: DateTime
-  startTime_gt: DateTime
-  startTime_gte: DateTime
-  endTime: DateTime
-  endTime_not: DateTime
-  endTime_in: [DateTime!]
-  endTime_not_in: [DateTime!]
-  endTime_lt: DateTime
-  endTime_lte: DateTime
-  endTime_gt: DateTime
-  endTime_gte: DateTime
+  startTime: String
+  startTime_not: String
+  startTime_in: [String!]
+  startTime_not_in: [String!]
+  startTime_lt: String
+  startTime_lte: String
+  startTime_gt: String
+  startTime_gte: String
+  startTime_contains: String
+  startTime_not_contains: String
+  startTime_starts_with: String
+  startTime_not_starts_with: String
+  startTime_ends_with: String
+  startTime_not_ends_with: String
   duration: AppointmentDuration
   duration_not: AppointmentDuration
   duration_in: [AppointmentDuration!]
@@ -175,22 +166,19 @@ input AppointmentUpdateInput {
   serviceId: DoctorUpdateOneRequiredWithoutAppointmentsInput
   userId: UserUpdateOneRequiredWithoutAppointmentsInput
   title: String
-  startTime: DateTime
-  endTime: DateTime
+  startTime: String
   duration: AppointmentDuration
 }
 
 input AppointmentUpdateManyDataInput {
   title: String
-  startTime: DateTime
-  endTime: DateTime
+  startTime: String
   duration: AppointmentDuration
 }
 
 input AppointmentUpdateManyMutationInput {
   title: String
-  startTime: DateTime
-  endTime: DateTime
+  startTime: String
   duration: AppointmentDuration
 }
 
@@ -224,16 +212,14 @@ input AppointmentUpdateManyWithWhereNestedInput {
 input AppointmentUpdateWithoutServiceIdDataInput {
   userId: UserUpdateOneRequiredWithoutAppointmentsInput
   title: String
-  startTime: DateTime
-  endTime: DateTime
+  startTime: String
   duration: AppointmentDuration
 }
 
 input AppointmentUpdateWithoutUserIdDataInput {
   serviceId: DoctorUpdateOneRequiredWithoutAppointmentsInput
   title: String
-  startTime: DateTime
-  endTime: DateTime
+  startTime: String
   duration: AppointmentDuration
 }
 
@@ -290,22 +276,20 @@ input AppointmentWhereInput {
   title_not_starts_with: String
   title_ends_with: String
   title_not_ends_with: String
-  startTime: DateTime
-  startTime_not: DateTime
-  startTime_in: [DateTime!]
-  startTime_not_in: [DateTime!]
-  startTime_lt: DateTime
-  startTime_lte: DateTime
-  startTime_gt: DateTime
-  startTime_gte: DateTime
-  endTime: DateTime
-  endTime_not: DateTime
-  endTime_in: [DateTime!]
-  endTime_not_in: [DateTime!]
-  endTime_lt: DateTime
-  endTime_lte: DateTime
-  endTime_gt: DateTime
-  endTime_gte: DateTime
+  startTime: String
+  startTime_not: String
+  startTime_in: [String!]
+  startTime_not_in: [String!]
+  startTime_lt: String
+  startTime_lte: String
+  startTime_gt: String
+  startTime_gte: String
+  startTime_contains: String
+  startTime_not_contains: String
+  startTime_starts_with: String
+  startTime_not_starts_with: String
+  startTime_ends_with: String
+  startTime_not_ends_with: String
   duration: AppointmentDuration
   duration_not: AppointmentDuration
   duration_in: [AppointmentDuration!]
@@ -317,15 +301,12 @@ input AppointmentWhereInput {
 
 input AppointmentWhereUniqueInput {
   id: ID
-  startTime: DateTime
-  endTime: DateTime
+  startTime: String
 }
 
 type BatchPayload {
   count: Long!
 }
-
-scalar DateTime
 
 type Doctor {
   id: ID!
@@ -333,7 +314,7 @@ type Doctor {
   Bio: String
   email: String!
   password: String!
-  Birthday: String!
+  age: Int
   phone: Int
   gender: Gender
   avatar: String
@@ -352,7 +333,7 @@ input DoctorCreateInput {
   Bio: String
   email: String!
   password: String!
-  Birthday: String!
+  age: Int
   phone: Int
   gender: Gender
   avatar: String
@@ -370,7 +351,7 @@ input DoctorCreateWithoutAppointmentsInput {
   Bio: String
   email: String!
   password: String!
-  Birthday: String!
+  age: Int
   phone: Int
   gender: Gender
   avatar: String
@@ -393,8 +374,8 @@ enum DoctorOrderByInput {
   email_DESC
   password_ASC
   password_DESC
-  Birthday_ASC
-  Birthday_DESC
+  age_ASC
+  age_DESC
   phone_ASC
   phone_DESC
   gender_ASC
@@ -415,7 +396,7 @@ type DoctorPreviousValues {
   Bio: String
   email: String!
   password: String!
-  Birthday: String!
+  age: Int
   phone: Int
   gender: Gender
   avatar: String
@@ -454,7 +435,7 @@ input DoctorUpdateInput {
   Bio: String
   email: String
   password: String
-  Birthday: String
+  age: Int
   phone: Int
   gender: Gender
   avatar: String
@@ -467,7 +448,7 @@ input DoctorUpdateManyMutationInput {
   Bio: String
   email: String
   password: String
-  Birthday: String
+  age: Int
   phone: Int
   gender: Gender
   avatar: String
@@ -486,7 +467,7 @@ input DoctorUpdateWithoutAppointmentsDataInput {
   Bio: String
   email: String
   password: String
-  Birthday: String
+  age: Int
   phone: Int
   gender: Gender
   avatar: String
@@ -569,20 +550,14 @@ input DoctorWhereInput {
   password_not_starts_with: String
   password_ends_with: String
   password_not_ends_with: String
-  Birthday: String
-  Birthday_not: String
-  Birthday_in: [String!]
-  Birthday_not_in: [String!]
-  Birthday_lt: String
-  Birthday_lte: String
-  Birthday_gt: String
-  Birthday_gte: String
-  Birthday_contains: String
-  Birthday_not_contains: String
-  Birthday_starts_with: String
-  Birthday_not_starts_with: String
-  Birthday_ends_with: String
-  Birthday_not_ends_with: String
+  age: Int
+  age_not: Int
+  age_in: [Int!]
+  age_not_in: [Int!]
+  age_lt: Int
+  age_lte: Int
+  age_gt: Int
+  age_gte: Int
   phone: Int
   phone_not: Int
   phone_in: [Int!]

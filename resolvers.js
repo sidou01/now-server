@@ -4,10 +4,39 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import sgMail from '@sendgrid/mail'
 import { AuthenticationError } from 'apollo-server'
+import moment from 'moment'
+import { GraphQLScalarType } from 'graphql'
 
 const resolvers = {
+  Date: new GraphQLScalarType({
+    name: 'Date',
+    description: 'custom scalar type that represents dates',
+    serialize(value) {
+      // Implement your own behavior here by setting the 'result' variable
+      console.log('serialize:', value)
+      return result
+    },
+    parseValue(value) {
+      //2013-02-08 09:30
+      let result
+      // Implement your own behavior here by setting the 'result' variable
+      result = moment('2010-10-20 4:30', 'YYYY-MM-DD HH:mm')
+      console.log('parsed:', result)
+
+      return result
+    },
+    parseLiteral(ast) {
+      switch (
+        ast.kind
+        // Implement your own behavior here by returning what suits your needs
+        // depending on ast.kind
+      ) {
+      }
+    }
+  }),
   Query: {
-    me: (_, __, { user }) => user
+    me: (_, __, { user }) => user,
+    allDoctors: async (_, __, { prisma }) => await prisma.doctors()
   },
   Mutation: {
     register: async (
@@ -73,7 +102,31 @@ const resolvers = {
         jwt_secret
       )
       return token
-    }
+    },
+    addDoctor: async (
+      _,
+      { fullName, Bio, email, password, age, phone, gender, avatar, specialty },
+      { prisma }
+    ) => {
+      const isDoctor = await prisma.doctor({ email })
+      if (isDoctor) throw new Error('Doctor already exists with that email.')
+      return await prisma.createDoctor({
+        fullName,
+        Bio,
+        email,
+        password,
+        age,
+        phone,
+        gender,
+        avatar,
+        specialty
+      })
+    },
+    scheduleAppointment: async (
+      _,
+      { serviceId, userId, title, startTime, duration },
+      { prisma }
+    ) => {}
   }
 }
 

@@ -198,8 +198,6 @@ export type AppointmentOrderByInput =
   | "title_DESC"
   | "startTime_ASC"
   | "startTime_DESC"
-  | "endTime_ASC"
-  | "endTime_DESC"
   | "duration_ASC"
   | "duration_DESC"
   | "createdAt_ASC"
@@ -218,8 +216,8 @@ export type DoctorOrderByInput =
   | "email_DESC"
   | "password_ASC"
   | "password_DESC"
-  | "Birthday_ASC"
-  | "Birthday_DESC"
+  | "age_ASC"
+  | "age_DESC"
   | "phone_ASC"
   | "phone_DESC"
   | "gender_ASC"
@@ -261,8 +259,7 @@ export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
 export type AppointmentWhereUniqueInput = AtLeastOne<{
   id: ID_Input;
-  startTime?: DateTimeInput;
-  endTime?: DateTimeInput;
+  startTime?: String;
 }>;
 
 export interface AppointmentWhereInput {
@@ -296,22 +293,20 @@ export interface AppointmentWhereInput {
   title_not_starts_with?: String;
   title_ends_with?: String;
   title_not_ends_with?: String;
-  startTime?: DateTimeInput;
-  startTime_not?: DateTimeInput;
-  startTime_in?: DateTimeInput[] | DateTimeInput;
-  startTime_not_in?: DateTimeInput[] | DateTimeInput;
-  startTime_lt?: DateTimeInput;
-  startTime_lte?: DateTimeInput;
-  startTime_gt?: DateTimeInput;
-  startTime_gte?: DateTimeInput;
-  endTime?: DateTimeInput;
-  endTime_not?: DateTimeInput;
-  endTime_in?: DateTimeInput[] | DateTimeInput;
-  endTime_not_in?: DateTimeInput[] | DateTimeInput;
-  endTime_lt?: DateTimeInput;
-  endTime_lte?: DateTimeInput;
-  endTime_gt?: DateTimeInput;
-  endTime_gte?: DateTimeInput;
+  startTime?: String;
+  startTime_not?: String;
+  startTime_in?: String[] | String;
+  startTime_not_in?: String[] | String;
+  startTime_lt?: String;
+  startTime_lte?: String;
+  startTime_gt?: String;
+  startTime_gte?: String;
+  startTime_contains?: String;
+  startTime_not_contains?: String;
+  startTime_starts_with?: String;
+  startTime_not_starts_with?: String;
+  startTime_ends_with?: String;
+  startTime_not_ends_with?: String;
   duration?: AppointmentDuration;
   duration_not?: AppointmentDuration;
   duration_in?: AppointmentDuration[] | AppointmentDuration;
@@ -392,20 +387,14 @@ export interface DoctorWhereInput {
   password_not_starts_with?: String;
   password_ends_with?: String;
   password_not_ends_with?: String;
-  Birthday?: String;
-  Birthday_not?: String;
-  Birthday_in?: String[] | String;
-  Birthday_not_in?: String[] | String;
-  Birthday_lt?: String;
-  Birthday_lte?: String;
-  Birthday_gt?: String;
-  Birthday_gte?: String;
-  Birthday_contains?: String;
-  Birthday_not_contains?: String;
-  Birthday_starts_with?: String;
-  Birthday_not_starts_with?: String;
-  Birthday_ends_with?: String;
-  Birthday_not_ends_with?: String;
+  age?: Int;
+  age_not?: Int;
+  age_in?: Int[] | Int;
+  age_not_in?: Int[] | Int;
+  age_lt?: Int;
+  age_lte?: Int;
+  age_gt?: Int;
+  age_gte?: Int;
   phone?: Int;
   phone_not?: Int;
   phone_in?: Int[] | Int;
@@ -558,9 +547,8 @@ export type UserWhereUniqueInput = AtLeastOne<{
 export interface AppointmentCreateInput {
   serviceId: DoctorCreateOneWithoutAppointmentsInput;
   userId: UserCreateOneWithoutAppointmentsInput;
-  title: String;
-  startTime: DateTimeInput;
-  endTime: DateTimeInput;
+  title?: String;
+  startTime: String;
   duration: AppointmentDuration;
 }
 
@@ -574,7 +562,7 @@ export interface DoctorCreateWithoutAppointmentsInput {
   Bio?: String;
   email: String;
   password: String;
-  Birthday: String;
+  age?: Int;
   phone?: Int;
   gender?: Gender;
   avatar?: String;
@@ -601,8 +589,7 @@ export interface AppointmentUpdateInput {
   serviceId?: DoctorUpdateOneRequiredWithoutAppointmentsInput;
   userId?: UserUpdateOneRequiredWithoutAppointmentsInput;
   title?: String;
-  startTime?: DateTimeInput;
-  endTime?: DateTimeInput;
+  startTime?: String;
   duration?: AppointmentDuration;
 }
 
@@ -618,7 +605,7 @@ export interface DoctorUpdateWithoutAppointmentsDataInput {
   Bio?: String;
   email?: String;
   password?: String;
-  Birthday?: String;
+  age?: Int;
   phone?: Int;
   gender?: Gender;
   avatar?: String;
@@ -655,8 +642,7 @@ export interface UserUpsertWithoutAppointmentsInput {
 
 export interface AppointmentUpdateManyMutationInput {
   title?: String;
-  startTime?: DateTimeInput;
-  endTime?: DateTimeInput;
+  startTime?: String;
   duration?: AppointmentDuration;
 }
 
@@ -665,7 +651,7 @@ export interface DoctorCreateInput {
   Bio?: String;
   email: String;
   password: String;
-  Birthday: String;
+  age?: Int;
   phone?: Int;
   gender?: Gender;
   avatar?: String;
@@ -682,9 +668,8 @@ export interface AppointmentCreateManyWithoutServiceIdInput {
 
 export interface AppointmentCreateWithoutServiceIdInput {
   userId: UserCreateOneWithoutAppointmentsInput;
-  title: String;
-  startTime: DateTimeInput;
-  endTime: DateTimeInput;
+  title?: String;
+  startTime: String;
   duration: AppointmentDuration;
 }
 
@@ -693,7 +678,7 @@ export interface DoctorUpdateInput {
   Bio?: String;
   email?: String;
   password?: String;
-  Birthday?: String;
+  age?: Int;
   phone?: Int;
   gender?: Gender;
   avatar?: String;
@@ -728,8 +713,7 @@ export interface AppointmentUpdateWithWhereUniqueWithoutServiceIdInput {
 export interface AppointmentUpdateWithoutServiceIdDataInput {
   userId?: UserUpdateOneRequiredWithoutAppointmentsInput;
   title?: String;
-  startTime?: DateTimeInput;
-  endTime?: DateTimeInput;
+  startTime?: String;
   duration?: AppointmentDuration;
 }
 
@@ -768,22 +752,20 @@ export interface AppointmentScalarWhereInput {
   title_not_starts_with?: String;
   title_ends_with?: String;
   title_not_ends_with?: String;
-  startTime?: DateTimeInput;
-  startTime_not?: DateTimeInput;
-  startTime_in?: DateTimeInput[] | DateTimeInput;
-  startTime_not_in?: DateTimeInput[] | DateTimeInput;
-  startTime_lt?: DateTimeInput;
-  startTime_lte?: DateTimeInput;
-  startTime_gt?: DateTimeInput;
-  startTime_gte?: DateTimeInput;
-  endTime?: DateTimeInput;
-  endTime_not?: DateTimeInput;
-  endTime_in?: DateTimeInput[] | DateTimeInput;
-  endTime_not_in?: DateTimeInput[] | DateTimeInput;
-  endTime_lt?: DateTimeInput;
-  endTime_lte?: DateTimeInput;
-  endTime_gt?: DateTimeInput;
-  endTime_gte?: DateTimeInput;
+  startTime?: String;
+  startTime_not?: String;
+  startTime_in?: String[] | String;
+  startTime_not_in?: String[] | String;
+  startTime_lt?: String;
+  startTime_lte?: String;
+  startTime_gt?: String;
+  startTime_gte?: String;
+  startTime_contains?: String;
+  startTime_not_contains?: String;
+  startTime_starts_with?: String;
+  startTime_not_starts_with?: String;
+  startTime_ends_with?: String;
+  startTime_not_ends_with?: String;
   duration?: AppointmentDuration;
   duration_not?: AppointmentDuration;
   duration_in?: AppointmentDuration[] | AppointmentDuration;
@@ -800,8 +782,7 @@ export interface AppointmentUpdateManyWithWhereNestedInput {
 
 export interface AppointmentUpdateManyDataInput {
   title?: String;
-  startTime?: DateTimeInput;
-  endTime?: DateTimeInput;
+  startTime?: String;
   duration?: AppointmentDuration;
 }
 
@@ -810,7 +791,7 @@ export interface DoctorUpdateManyMutationInput {
   Bio?: String;
   email?: String;
   password?: String;
-  Birthday?: String;
+  age?: Int;
   phone?: Int;
   gender?: Gender;
   avatar?: String;
@@ -838,9 +819,8 @@ export interface AppointmentCreateManyWithoutUserIdInput {
 
 export interface AppointmentCreateWithoutUserIdInput {
   serviceId: DoctorCreateOneWithoutAppointmentsInput;
-  title: String;
-  startTime: DateTimeInput;
-  endTime: DateTimeInput;
+  title?: String;
+  startTime: String;
   duration: AppointmentDuration;
 }
 
@@ -883,8 +863,7 @@ export interface AppointmentUpdateWithWhereUniqueWithoutUserIdInput {
 export interface AppointmentUpdateWithoutUserIdDataInput {
   serviceId?: DoctorUpdateOneRequiredWithoutAppointmentsInput;
   title?: String;
-  startTime?: DateTimeInput;
-  endTime?: DateTimeInput;
+  startTime?: String;
   duration?: AppointmentDuration;
 }
 
@@ -944,9 +923,8 @@ export interface NodeNode {
 
 export interface Appointment {
   id: ID_Output;
-  title: String;
-  startTime: DateTimeOutput;
-  endTime: DateTimeOutput;
+  title?: String;
+  startTime: String;
   duration: AppointmentDuration;
 }
 
@@ -955,8 +933,7 @@ export interface AppointmentPromise extends Promise<Appointment>, Fragmentable {
   serviceId: <T = DoctorPromise>() => T;
   userId: <T = UserPromise>() => T;
   title: () => Promise<String>;
-  startTime: () => Promise<DateTimeOutput>;
-  endTime: () => Promise<DateTimeOutput>;
+  startTime: () => Promise<String>;
   duration: () => Promise<AppointmentDuration>;
 }
 
@@ -967,8 +944,7 @@ export interface AppointmentSubscription
   serviceId: <T = DoctorSubscription>() => T;
   userId: <T = UserSubscription>() => T;
   title: () => Promise<AsyncIterator<String>>;
-  startTime: () => Promise<AsyncIterator<DateTimeOutput>>;
-  endTime: () => Promise<AsyncIterator<DateTimeOutput>>;
+  startTime: () => Promise<AsyncIterator<String>>;
   duration: () => Promise<AsyncIterator<AppointmentDuration>>;
 }
 
@@ -978,7 +954,7 @@ export interface Doctor {
   Bio?: String;
   email: String;
   password: String;
-  Birthday: String;
+  age?: Int;
   phone?: Int;
   gender?: Gender;
   avatar?: String;
@@ -991,7 +967,7 @@ export interface DoctorPromise extends Promise<Doctor>, Fragmentable {
   Bio: () => Promise<String>;
   email: () => Promise<String>;
   password: () => Promise<String>;
-  Birthday: () => Promise<String>;
+  age: () => Promise<Int>;
   phone: () => Promise<Int>;
   gender: () => Promise<Gender>;
   avatar: () => Promise<String>;
@@ -1015,7 +991,7 @@ export interface DoctorSubscription
   Bio: () => Promise<AsyncIterator<String>>;
   email: () => Promise<AsyncIterator<String>>;
   password: () => Promise<AsyncIterator<String>>;
-  Birthday: () => Promise<AsyncIterator<String>>;
+  age: () => Promise<AsyncIterator<Int>>;
   phone: () => Promise<AsyncIterator<Int>>;
   gender: () => Promise<AsyncIterator<Gender>>;
   avatar: () => Promise<AsyncIterator<String>>;
@@ -1317,9 +1293,8 @@ export interface AppointmentSubscriptionPayloadSubscription
 
 export interface AppointmentPreviousValues {
   id: ID_Output;
-  title: String;
-  startTime: DateTimeOutput;
-  endTime: DateTimeOutput;
+  title?: String;
+  startTime: String;
   duration: AppointmentDuration;
 }
 
@@ -1328,8 +1303,7 @@ export interface AppointmentPreviousValuesPromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   title: () => Promise<String>;
-  startTime: () => Promise<DateTimeOutput>;
-  endTime: () => Promise<DateTimeOutput>;
+  startTime: () => Promise<String>;
   duration: () => Promise<AppointmentDuration>;
 }
 
@@ -1338,8 +1312,7 @@ export interface AppointmentPreviousValuesSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   title: () => Promise<AsyncIterator<String>>;
-  startTime: () => Promise<AsyncIterator<DateTimeOutput>>;
-  endTime: () => Promise<AsyncIterator<DateTimeOutput>>;
+  startTime: () => Promise<AsyncIterator<String>>;
   duration: () => Promise<AsyncIterator<AppointmentDuration>>;
 }
 
@@ -1374,7 +1347,7 @@ export interface DoctorPreviousValues {
   Bio?: String;
   email: String;
   password: String;
-  Birthday: String;
+  age?: Int;
   phone?: Int;
   gender?: Gender;
   avatar?: String;
@@ -1389,7 +1362,7 @@ export interface DoctorPreviousValuesPromise
   Bio: () => Promise<String>;
   email: () => Promise<String>;
   password: () => Promise<String>;
-  Birthday: () => Promise<String>;
+  age: () => Promise<Int>;
   phone: () => Promise<Int>;
   gender: () => Promise<Gender>;
   avatar: () => Promise<String>;
@@ -1404,7 +1377,7 @@ export interface DoctorPreviousValuesSubscription
   Bio: () => Promise<AsyncIterator<String>>;
   email: () => Promise<AsyncIterator<String>>;
   password: () => Promise<AsyncIterator<String>>;
-  Birthday: () => Promise<AsyncIterator<String>>;
+  age: () => Promise<AsyncIterator<Int>>;
   phone: () => Promise<AsyncIterator<Int>>;
   gender: () => Promise<AsyncIterator<Gender>>;
   avatar: () => Promise<AsyncIterator<String>>;
@@ -1481,16 +1454,6 @@ The `ID` scalar type represents a unique identifier, often used to refetch an ob
 */
 export type ID_Input = string | number;
 export type ID_Output = string;
-
-/*
-DateTime scalar input type, allowing Date
-*/
-export type DateTimeInput = Date | string;
-
-/*
-DateTime scalar output type, which is always a string
-*/
-export type DateTimeOutput = string;
 
 /*
 The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.

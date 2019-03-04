@@ -17,7 +17,7 @@ type Doctor {
   Bio: String
   email: String! @unique
   password: String!
-  Birthday: String!
+  age: Int
   phone: Int
   gender: Gender
   avatar: String
@@ -29,9 +29,8 @@ type Appointment {
   id: ID! @unique
   serviceId: Doctor!
   userId: User!
-  title: String!
-  startTime: DateTime! @unique
-  endTime: DateTime! @unique
+  title: String
+  startTime: String! @unique
   duration: AppointmentDuration!
 }
 
