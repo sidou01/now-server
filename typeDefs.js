@@ -5,6 +5,7 @@ const typeDefs = gql`
   type Query {
     me: User
     allDoctors: [Doctor!]!
+    userAppointments: [Appointment!]
   }
   type Mutation {
     register(

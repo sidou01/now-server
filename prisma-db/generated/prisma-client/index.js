@@ -5,6 +5,14 @@ var typeDefs = require("./prisma-schema").typeDefs;
 
 var models = [
   {
+    name: "User",
+    embedded: false
+  },
+  {
+    name: "Doctor",
+    embedded: false
+  },
+  {
     name: "Appointment",
     embedded: false
   },
@@ -13,25 +21,17 @@ var models = [
     embedded: false
   },
   {
-    name: "Doctor",
-    embedded: false
-  },
-  {
-    name: "DoctorSpecialty",
-    embedded: false
-  },
-  {
     name: "Gender",
     embedded: false
   },
   {
-    name: "User",
+    name: "DoctorSpecialty",
     embedded: false
   }
 ];
 exports.Prisma = prisma_lib_1.makePrismaClientClass({
   typeDefs,
   models,
-  endpoint: `https://eu1.prisma.sh/sidou-0d214e/prisma-db/dev`
+  endpoint: `http://localhost:4466/prisma-db/dev`
 });
 exports.prisma = new exports.Prisma();

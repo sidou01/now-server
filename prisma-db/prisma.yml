@@ -1,4 +1,4 @@
-endpoint: https://eu1.prisma.sh/sidou-0d214e/prisma-db/dev
+endpoint: http://localhost:4466/prisma-db/dev
 datamodel: datamodel.prisma
 
 generate:
