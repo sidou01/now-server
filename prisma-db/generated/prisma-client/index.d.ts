@@ -198,6 +198,8 @@ export type AppointmentOrderByInput =
   | "title_DESC"
   | "startTime_ASC"
   | "startTime_DESC"
+  | "endTime_ASC"
+  | "endTime_DESC"
   | "duration_ASC"
   | "duration_DESC"
   | "createdAt_ASC"
@@ -260,6 +262,7 @@ export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 export type AppointmentWhereUniqueInput = AtLeastOne<{
   id: ID_Input;
   startTime?: String;
+  endTime?: String;
 }>;
 
 export interface AppointmentWhereInput {
@@ -277,8 +280,8 @@ export interface AppointmentWhereInput {
   id_not_starts_with?: ID_Input;
   id_ends_with?: ID_Input;
   id_not_ends_with?: ID_Input;
-  serviceId?: DoctorWhereInput;
-  userId?: UserWhereInput;
+  service?: DoctorWhereInput;
+  client?: UserWhereInput;
   title?: String;
   title_not?: String;
   title_in?: String[] | String;
@@ -307,6 +310,20 @@ export interface AppointmentWhereInput {
   startTime_not_starts_with?: String;
   startTime_ends_with?: String;
   startTime_not_ends_with?: String;
+  endTime?: String;
+  endTime_not?: String;
+  endTime_in?: String[] | String;
+  endTime_not_in?: String[] | String;
+  endTime_lt?: String;
+  endTime_lte?: String;
+  endTime_gt?: String;
+  endTime_gte?: String;
+  endTime_contains?: String;
+  endTime_not_contains?: String;
+  endTime_starts_with?: String;
+  endTime_not_starts_with?: String;
+  endTime_ends_with?: String;
+  endTime_not_ends_with?: String;
   duration?: AppointmentDuration;
   duration_not?: AppointmentDuration;
   duration_in?: AppointmentDuration[] | AppointmentDuration;
@@ -545,10 +562,11 @@ export type UserWhereUniqueInput = AtLeastOne<{
 }>;
 
 export interface AppointmentCreateInput {
-  serviceId: DoctorCreateOneWithoutAppointmentsInput;
-  userId: UserCreateOneWithoutAppointmentsInput;
+  service: DoctorCreateOneWithoutAppointmentsInput;
+  client: UserCreateOneWithoutAppointmentsInput;
   title?: String;
   startTime: String;
+  endTime: String;
   duration: AppointmentDuration;
 }
 
@@ -586,10 +604,11 @@ export interface UserCreateWithoutAppointmentsInput {
 }
 
 export interface AppointmentUpdateInput {
-  serviceId?: DoctorUpdateOneRequiredWithoutAppointmentsInput;
-  userId?: UserUpdateOneRequiredWithoutAppointmentsInput;
+  service?: DoctorUpdateOneRequiredWithoutAppointmentsInput;
+  client?: UserUpdateOneRequiredWithoutAppointmentsInput;
   title?: String;
   startTime?: String;
+  endTime?: String;
   duration?: AppointmentDuration;
 }
 
@@ -643,6 +662,7 @@ export interface UserUpsertWithoutAppointmentsInput {
 export interface AppointmentUpdateManyMutationInput {
   title?: String;
   startTime?: String;
+  endTime?: String;
   duration?: AppointmentDuration;
 }
 
@@ -655,21 +675,22 @@ export interface DoctorCreateInput {
   phone?: Int;
   gender?: Gender;
   avatar?: String;
-  appointments?: AppointmentCreateManyWithoutServiceIdInput;
+  appointments?: AppointmentCreateManyWithoutServiceInput;
   specialty: DoctorSpecialty;
 }
 
-export interface AppointmentCreateManyWithoutServiceIdInput {
+export interface AppointmentCreateManyWithoutServiceInput {
   create?:
-    | AppointmentCreateWithoutServiceIdInput[]
-    | AppointmentCreateWithoutServiceIdInput;
+    | AppointmentCreateWithoutServiceInput[]
+    | AppointmentCreateWithoutServiceInput;
   connect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
 }
 
-export interface AppointmentCreateWithoutServiceIdInput {
-  userId: UserCreateOneWithoutAppointmentsInput;
+export interface AppointmentCreateWithoutServiceInput {
+  client: UserCreateOneWithoutAppointmentsInput;
   title?: String;
   startTime: String;
+  endTime: String;
   duration: AppointmentDuration;
 }
 
@@ -682,45 +703,46 @@ export interface DoctorUpdateInput {
   phone?: Int;
   gender?: Gender;
   avatar?: String;
-  appointments?: AppointmentUpdateManyWithoutServiceIdInput;
+  appointments?: AppointmentUpdateManyWithoutServiceInput;
   specialty?: DoctorSpecialty;
 }
 
-export interface AppointmentUpdateManyWithoutServiceIdInput {
+export interface AppointmentUpdateManyWithoutServiceInput {
   create?:
-    | AppointmentCreateWithoutServiceIdInput[]
-    | AppointmentCreateWithoutServiceIdInput;
+    | AppointmentCreateWithoutServiceInput[]
+    | AppointmentCreateWithoutServiceInput;
   delete?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
   connect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
   disconnect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
   update?:
-    | AppointmentUpdateWithWhereUniqueWithoutServiceIdInput[]
-    | AppointmentUpdateWithWhereUniqueWithoutServiceIdInput;
+    | AppointmentUpdateWithWhereUniqueWithoutServiceInput[]
+    | AppointmentUpdateWithWhereUniqueWithoutServiceInput;
   upsert?:
-    | AppointmentUpsertWithWhereUniqueWithoutServiceIdInput[]
-    | AppointmentUpsertWithWhereUniqueWithoutServiceIdInput;
+    | AppointmentUpsertWithWhereUniqueWithoutServiceInput[]
+    | AppointmentUpsertWithWhereUniqueWithoutServiceInput;
   deleteMany?: AppointmentScalarWhereInput[] | AppointmentScalarWhereInput;
   updateMany?:
     | AppointmentUpdateManyWithWhereNestedInput[]
     | AppointmentUpdateManyWithWhereNestedInput;
 }
 
-export interface AppointmentUpdateWithWhereUniqueWithoutServiceIdInput {
+export interface AppointmentUpdateWithWhereUniqueWithoutServiceInput {
   where: AppointmentWhereUniqueInput;
-  data: AppointmentUpdateWithoutServiceIdDataInput;
+  data: AppointmentUpdateWithoutServiceDataInput;
 }
 
-export interface AppointmentUpdateWithoutServiceIdDataInput {
-  userId?: UserUpdateOneRequiredWithoutAppointmentsInput;
+export interface AppointmentUpdateWithoutServiceDataInput {
+  client?: UserUpdateOneRequiredWithoutAppointmentsInput;
   title?: String;
   startTime?: String;
+  endTime?: String;
   duration?: AppointmentDuration;
 }
 
-export interface AppointmentUpsertWithWhereUniqueWithoutServiceIdInput {
+export interface AppointmentUpsertWithWhereUniqueWithoutServiceInput {
   where: AppointmentWhereUniqueInput;
-  update: AppointmentUpdateWithoutServiceIdDataInput;
-  create: AppointmentCreateWithoutServiceIdInput;
+  update: AppointmentUpdateWithoutServiceDataInput;
+  create: AppointmentCreateWithoutServiceInput;
 }
 
 export interface AppointmentScalarWhereInput {
@@ -766,6 +788,20 @@ export interface AppointmentScalarWhereInput {
   startTime_not_starts_with?: String;
   startTime_ends_with?: String;
   startTime_not_ends_with?: String;
+  endTime?: String;
+  endTime_not?: String;
+  endTime_in?: String[] | String;
+  endTime_not_in?: String[] | String;
+  endTime_lt?: String;
+  endTime_lte?: String;
+  endTime_gt?: String;
+  endTime_gte?: String;
+  endTime_contains?: String;
+  endTime_not_contains?: String;
+  endTime_starts_with?: String;
+  endTime_not_starts_with?: String;
+  endTime_ends_with?: String;
+  endTime_not_ends_with?: String;
   duration?: AppointmentDuration;
   duration_not?: AppointmentDuration;
   duration_in?: AppointmentDuration[] | AppointmentDuration;
@@ -783,6 +819,7 @@ export interface AppointmentUpdateManyWithWhereNestedInput {
 export interface AppointmentUpdateManyDataInput {
   title?: String;
   startTime?: String;
+  endTime?: String;
   duration?: AppointmentDuration;
 }
 
@@ -807,20 +844,21 @@ export interface UserCreateInput {
   gender?: Gender;
   avatar?: String;
   confirmation?: Boolean;
-  Appointments?: AppointmentCreateManyWithoutUserIdInput;
+  Appointments?: AppointmentCreateManyWithoutClientInput;
 }
 
-export interface AppointmentCreateManyWithoutUserIdInput {
+export interface AppointmentCreateManyWithoutClientInput {
   create?:
-    | AppointmentCreateWithoutUserIdInput[]
-    | AppointmentCreateWithoutUserIdInput;
+    | AppointmentCreateWithoutClientInput[]
+    | AppointmentCreateWithoutClientInput;
   connect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
 }
 
-export interface AppointmentCreateWithoutUserIdInput {
-  serviceId: DoctorCreateOneWithoutAppointmentsInput;
+export interface AppointmentCreateWithoutClientInput {
+  service: DoctorCreateOneWithoutAppointmentsInput;
   title?: String;
   startTime: String;
+  endTime: String;
   duration: AppointmentDuration;
 }
 
@@ -833,44 +871,45 @@ export interface UserUpdateInput {
   gender?: Gender;
   avatar?: String;
   confirmation?: Boolean;
-  Appointments?: AppointmentUpdateManyWithoutUserIdInput;
+  Appointments?: AppointmentUpdateManyWithoutClientInput;
 }
 
-export interface AppointmentUpdateManyWithoutUserIdInput {
+export interface AppointmentUpdateManyWithoutClientInput {
   create?:
-    | AppointmentCreateWithoutUserIdInput[]
-    | AppointmentCreateWithoutUserIdInput;
+    | AppointmentCreateWithoutClientInput[]
+    | AppointmentCreateWithoutClientInput;
   delete?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
   connect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
   disconnect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
   update?:
-    | AppointmentUpdateWithWhereUniqueWithoutUserIdInput[]
-    | AppointmentUpdateWithWhereUniqueWithoutUserIdInput;
+    | AppointmentUpdateWithWhereUniqueWithoutClientInput[]
+    | AppointmentUpdateWithWhereUniqueWithoutClientInput;
   upsert?:
-    | AppointmentUpsertWithWhereUniqueWithoutUserIdInput[]
-    | AppointmentUpsertWithWhereUniqueWithoutUserIdInput;
+    | AppointmentUpsertWithWhereUniqueWithoutClientInput[]
+    | AppointmentUpsertWithWhereUniqueWithoutClientInput;
   deleteMany?: AppointmentScalarWhereInput[] | AppointmentScalarWhereInput;
   updateMany?:
     | AppointmentUpdateManyWithWhereNestedInput[]
     | AppointmentUpdateManyWithWhereNestedInput;
 }
 
-export interface AppointmentUpdateWithWhereUniqueWithoutUserIdInput {
+export interface AppointmentUpdateWithWhereUniqueWithoutClientInput {
   where: AppointmentWhereUniqueInput;
-  data: AppointmentUpdateWithoutUserIdDataInput;
+  data: AppointmentUpdateWithoutClientDataInput;
 }
 
-export interface AppointmentUpdateWithoutUserIdDataInput {
-  serviceId?: DoctorUpdateOneRequiredWithoutAppointmentsInput;
+export interface AppointmentUpdateWithoutClientDataInput {
+  service?: DoctorUpdateOneRequiredWithoutAppointmentsInput;
   title?: String;
   startTime?: String;
+  endTime?: String;
   duration?: AppointmentDuration;
 }
 
-export interface AppointmentUpsertWithWhereUniqueWithoutUserIdInput {
+export interface AppointmentUpsertWithWhereUniqueWithoutClientInput {
   where: AppointmentWhereUniqueInput;
-  update: AppointmentUpdateWithoutUserIdDataInput;
-  create: AppointmentCreateWithoutUserIdInput;
+  update: AppointmentUpdateWithoutClientDataInput;
+  create: AppointmentCreateWithoutClientInput;
 }
 
 export interface UserUpdateManyMutationInput {
@@ -925,15 +964,17 @@ export interface Appointment {
   id: ID_Output;
   title?: String;
   startTime: String;
+  endTime: String;
   duration: AppointmentDuration;
 }
 
 export interface AppointmentPromise extends Promise<Appointment>, Fragmentable {
   id: () => Promise<ID_Output>;
-  serviceId: <T = DoctorPromise>() => T;
-  userId: <T = UserPromise>() => T;
+  service: <T = DoctorPromise>() => T;
+  client: <T = UserPromise>() => T;
   title: () => Promise<String>;
   startTime: () => Promise<String>;
+  endTime: () => Promise<String>;
   duration: () => Promise<AppointmentDuration>;
 }
 
@@ -941,10 +982,11 @@ export interface AppointmentSubscription
   extends Promise<AsyncIterator<Appointment>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  serviceId: <T = DoctorSubscription>() => T;
-  userId: <T = UserSubscription>() => T;
+  service: <T = DoctorSubscription>() => T;
+  client: <T = UserSubscription>() => T;
   title: () => Promise<AsyncIterator<String>>;
   startTime: () => Promise<AsyncIterator<String>>;
+  endTime: () => Promise<AsyncIterator<String>>;
   duration: () => Promise<AsyncIterator<AppointmentDuration>>;
 }
 
@@ -1295,6 +1337,7 @@ export interface AppointmentPreviousValues {
   id: ID_Output;
   title?: String;
   startTime: String;
+  endTime: String;
   duration: AppointmentDuration;
 }
 
@@ -1304,6 +1347,7 @@ export interface AppointmentPreviousValuesPromise
   id: () => Promise<ID_Output>;
   title: () => Promise<String>;
   startTime: () => Promise<String>;
+  endTime: () => Promise<String>;
   duration: () => Promise<AppointmentDuration>;
 }
 
@@ -1313,6 +1357,7 @@ export interface AppointmentPreviousValuesSubscription
   id: () => Promise<AsyncIterator<ID_Output>>;
   title: () => Promise<AsyncIterator<String>>;
   startTime: () => Promise<AsyncIterator<String>>;
+  endTime: () => Promise<AsyncIterator<String>>;
   duration: () => Promise<AsyncIterator<AppointmentDuration>>;
 }
 

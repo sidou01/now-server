@@ -30,7 +30,7 @@ const typeDefs = gql`
     ): Doctor!
     scheduleAppointment(
       serviceId: ID!
-      userId: ID!
+      clientId: ID!
       title: String
       startTime: Date!
       duration: AppointmentDuration!
@@ -64,10 +64,11 @@ const typeDefs = gql`
   }
   type Appointment {
     id: ID!
-    serviceId: Doctor!
-    userId: User!
+    service: Doctor!
+    client: User!
     title: String
     startTime: Date!
+    endTime: Date
     duration: AppointmentDuration!
   }
   enum DoctorSpecialty {
@@ -85,8 +86,8 @@ const typeDefs = gql`
   enum AppointmentDuration {
     VERY_SHORT #15m
     SHORT #30m
-    LONG #1h
-    VERY_LONG #1h 30m
+    LONG #45m
+    VERY_LONG #1h
   }
 `
 export default typeDefs

@@ -27,18 +27,19 @@ type Doctor {
 
 type Appointment {
   id: ID! @unique
-  serviceId: Doctor!
-  userId: User!
+  service: Doctor!
+  client: User!
   title: String
   startTime: String! @unique
+  endTime: String! @unique
   duration: AppointmentDuration!
 }
 
 enum AppointmentDuration {
   VERY_SHORT #15m
   SHORT #30m
-  LONG #1h
-  VERY_LONG #1h 30m
+  LONG #45m
+  VERY_LONG #1h
 }
 enum Gender {
   MALE

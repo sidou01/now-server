@@ -1,37 +1,27 @@
 import {} from 'dotenv/config'
-import {} from 'dotenv/config'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import sgMail from '@sendgrid/mail'
 import { AuthenticationError } from 'apollo-server'
-import moment from 'moment'
 import { GraphQLScalarType } from 'graphql'
+import { Kind } from 'graphql/language'
+import dayjs from 'dayjs'
 
 const resolvers = {
   Date: new GraphQLScalarType({
     name: 'Date',
-    description: 'custom scalar type that represents dates',
-    serialize(value) {
-      // Implement your own behavior here by setting the 'result' variable
-      console.log('serialize:', value)
-      return result
-    },
+    description: 'Custom description for the date scalar',
     parseValue(value) {
-      //2013-02-08 09:30
-      let result
-      // Implement your own behavior here by setting the 'result' variable
-      result = moment('2010-10-20 4:30', 'YYYY-MM-DD HH:mm')
-      console.log('parsed:', result)
-
-      return result
+      return dayjs(value) // value from the client
+    },
+    serialize(value) {
+      return dayjs(value).format('MM-DD-YYYY HH:mm:ss') // value sent to the client
     },
     parseLiteral(ast) {
-      switch (
-        ast.kind
-        // Implement your own behavior here by returning what suits your needs
-        // depending on ast.kind
-      ) {
+      if (ast.kind === Kind.STRING) {
+        return dayjs(ast.value) // ast value is always in string format
       }
+      return null
     }
   }),
   Query: {
@@ -124,9 +114,43 @@ const resolvers = {
     },
     scheduleAppointment: async (
       _,
-      { serviceId, userId, title, startTime, duration },
+      { serviceId, clientId, title, startTime, duration },
       { prisma }
-    ) => {}
+    ) => {
+      let endTime
+      switch (duration) {
+        case 'VERY_SHORT':
+          endTime = startTime.add(15, 'minute')
+          break
+        case 'SHORT':
+          endTime = startTime.add(30, 'minute')
+          break
+        case 'LONG':
+          endTime = startTime.add(45, 'minute')
+          break
+        case 'VERY_LONG':
+          endTime = startTime.add(60, 'minute')
+          break
+      }
+      endTime = endTime.format('YYYY-MM-DD HH:mm:ss')
+      console.log(endTime)
+      return await prisma.createAppointment({
+        service: {
+          connect: {
+            id: serviceId
+          }
+        },
+        client: {
+          connect: {
+            id: clientId
+          }
+        },
+        title,
+        startTime,
+        endTime,
+        duration
+      })
+    }
   }
 }
 
