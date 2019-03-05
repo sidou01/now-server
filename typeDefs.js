@@ -17,6 +17,7 @@ const typeDefs = gql`
       gender: Gender
     ): User!
     login(email: String!, password: String!): String!
+    loginDoctor(email: String!, password: String!): String!
     addDoctor(
       fullName: String!
       Bio: String
