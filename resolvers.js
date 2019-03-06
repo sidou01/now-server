@@ -94,12 +94,12 @@ const resolvers = {
       return token
     },
     loginDoctor: async (_, { email, password }, { prisma, jwt_secret }) => {
-      const doctor = await prisma.doctor({ email });
-      if (!doctor) throw new Error("doctor deosn't exist");
-      const auth = await bcrypt.compare(password, doctor.password);
-      if (!auth) throw new Error("your email or password is wrong");
+      const doctor = await prisma.doctor({ email })
+      if (!doctor) throw new Error("doctor deosn't exist")
+      const auth = await bcrypt.compare(password, doctor.password)
+      if (!auth) throw new Error('your email or password is wrong')
 
-      const { id, fullName, age, phone, avatar } = doctor;
+      const { id, fullName, age, phone, avatar } = doctor
       const token = jwt.sign(
         {
           id,
@@ -110,8 +110,8 @@ const resolvers = {
           phone
         },
         jwt_secret
-      );
-      return token;
+      )
+      return token
     },
     addDoctor: async (
       _,
@@ -120,7 +120,7 @@ const resolvers = {
     ) => {
       const isDoctor = await prisma.doctor({ email })
       if (isDoctor) throw new Error('Doctor already exists with that email.')
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedPassword = await bcrypt.hash(password, 10)
       return await prisma.createDoctor({
         fullName,
         Bio,
@@ -154,7 +154,7 @@ const resolvers = {
           break
       }
       endTime = endTime.format('YYYY-MM-DD HH:mm:ss')
-      console.log(endTime)
+      //can't return client and service data from this resolver
       return await prisma.createAppointment({
         service: {
           connect: {
@@ -171,6 +171,11 @@ const resolvers = {
         endTime,
         duration
       })
+    },
+    userAppointments: (_, { userEmail }, { prisma }) => {
+      return prisma
+        .appointments({ email: userEmail })
+        .$fragment(FETCH_APPOINTMENTS)
     }
   }
 }
