@@ -1,8 +1,3 @@
-
-
-
-##Appointment Graphql Server
-
 ![GitHub Logo](https://www.gqlify.com/docs/assets/architecture/prisma-proxy.png)
 ### Steps to get it started:
 1. install [docker](https://docs.docker.com/install/) and [docker-compose](https://docs.docker.com/compose/install/)
