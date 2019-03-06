@@ -3,7 +3,7 @@
 1. install [docker](https://docs.docker.com/install/) and [docker-compose](https://docs.docker.com/compose/install/)
 2. cd into the now-server folder and install the dependcies.
     ```bash
-        cd now-server yarn install 
+    cd now-server && yarn install 
     ```
 3. start prisma server (server/db)
     ```bash
