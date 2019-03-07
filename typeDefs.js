@@ -5,7 +5,8 @@ const typeDefs = gql`
   type Query {
     me: User
     allDoctors: [Doctor!]!
-    userAppointments: [Appointment!]
+    allUsers: [User!]!
+    userAppointments(userEmail: String!): [Appointment!]
   }
   type Mutation {
     register(
@@ -57,7 +58,7 @@ const typeDefs = gql`
     Bio: String
     email: String!
     password: String!
-    age: Int!
+    age: Int
     phone: Int
     gender: Gender
     avatar: String

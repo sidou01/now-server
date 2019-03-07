@@ -6,6 +6,7 @@ import { AuthenticationError } from 'apollo-server'
 import { GraphQLScalarType } from 'graphql'
 import { Kind } from 'graphql/language'
 import dayjs from 'dayjs'
+import { UserAppointments } from './fragments'
 
 const resolvers = {
   Date: new GraphQLScalarType({
@@ -26,8 +27,16 @@ const resolvers = {
   }),
   Query: {
     me: (_, __, { user }) => user,
-    allDoctors: async (_, __, { prisma }) => await prisma.doctors()
+    allDoctors: async (_, __, { prisma }) => await prisma.doctors(),
+    allUsers: async (_, __, { prisma }) => await prisma.users(),
+    userAppointments: async (_, { userEmail }, { prisma }) => {
+      const output = await prisma
+        .user({ email: userEmail })
+        .$fragment(UserAppointments)
+      return output.Appointments
+    }
   },
+
   Mutation: {
     register: async (
       _,
@@ -171,11 +180,6 @@ const resolvers = {
         endTime,
         duration
       })
-    },
-    userAppointments: (_, { userEmail }, { prisma }) => {
-      return prisma
-        .appointments({ email: userEmail })
-        .$fragment(FETCH_APPOINTMENTS)
     }
   }
 }
