@@ -26,6 +26,7 @@ const resolvers = {
     }
   }),
   Query: {
+    whatIsThis: () => 'GraphQL Server',
     me: async (_, __, { user: { id }, prisma }) =>
       await prisma.user({ id }).$fragment(AuthenticatedUserInfo),
     allUsers: async (_, __, { prisma }) => {
@@ -56,9 +57,10 @@ const resolvers = {
   },
 
   Mutation: {
+    sayMyName: (_, { name }) => name,
     register: async (
       _,
-      { fullName, email, password, age, phone, avatar, gender },
+      { input: { fullName, email, password, age, phone, avatar, gender } },
       { prisma }
     ) => {
       const isUser = await prisma.user({ email })
@@ -92,13 +94,16 @@ const resolvers = {
           }
 
           sgMail.send(msg)
-          console.log('email sent i guess?')
         }
       )
 
       return createdUser
     },
-    login: async (_, { email, password }, { prisma, jwt_secret }) => {
+    login: async (
+      _,
+      { input: { email, password } },
+      { prisma, jwt_secret }
+    ) => {
       const user = await prisma.user({ email })
       if (!user) throw new Error("User deosn't exist")
       const auth = await bcrypt.compare(password, user.password)
@@ -120,7 +125,11 @@ const resolvers = {
       )
       return token
     },
-    loginDoctor: async (_, { email, password }, { prisma, jwt_secret }) => {
+    loginDoctor: async (
+      _,
+      { input: { email, password } },
+      { prisma, jwt_secret }
+    ) => {
       const doctor = await prisma.doctor({ email })
       if (!doctor) throw new Error("doctor deosn't exist")
       const auth = await bcrypt.compare(password, doctor.password)
@@ -142,7 +151,19 @@ const resolvers = {
     },
     addDoctor: async (
       _,
-      { fullName, Bio, email, password, age, phone, gender, avatar, specialty },
+      {
+        input: {
+          fullName,
+          Bio,
+          email,
+          password,
+          age,
+          phone,
+          gender,
+          avatar,
+          specialty
+        }
+      },
       { prisma }
     ) => {
       const isDoctor = await prisma.doctor({ email })
@@ -162,7 +183,7 @@ const resolvers = {
     },
     scheduleAppointment: async (
       _,
-      { serviceId, clientId, title, startTime, duration },
+      { input: { serviceId, clientId, title, startTime, duration } },
       { prisma }
     ) => {
       let endTime

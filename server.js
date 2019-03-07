@@ -1,7 +1,6 @@
 import {} from 'dotenv/config'
-import typeDefs from './typeDefs'
-import resolvers from './resolvers'
 import { ApolloServer } from 'apollo-server-express'
+import schema from './schema'
 import express from 'express'
 import bodyParser from 'body-parser'
 import { prisma } from './prisma-db/generated/prisma-client'
@@ -13,8 +12,7 @@ const getUser = (token, secret) => {
   return decoded
 }
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+  schema,
   context: ({ req }) => ({
     prisma,
     jwt_secret: process.env.JWT_SECRET,
