@@ -4,6 +4,13 @@ export const UserAppointments = `fragment UserAppointments on User {
             title
             startTime
             endTime
+            client {
+                fullName
+                email
+                age
+                phone
+                gender
+            }
             service {
               fullName
               phone
@@ -12,3 +19,26 @@ export const UserAppointments = `fragment UserAppointments on User {
             }
           }
         }`
+
+export const AuthenticatedUserInfo = `
+    fragment AuthenticatedUserInfo on User {
+        id
+        fullName
+        gender
+        age
+        Appointments {
+            id
+            title
+            startTime
+            endTime
+            service {
+                id
+                fullName
+                email
+                specialty
+                Bio
+            }
+        }
+
+    } 
+`

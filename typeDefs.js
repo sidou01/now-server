@@ -7,6 +7,11 @@ const typeDefs = gql`
     allDoctors: [Doctor!]!
     allUsers: [User!]!
     userAppointments(userEmail: String!): [Appointment!]
+    #cancelAppointment ?
+    #change the time.
+    #modify user data like phone number fullName etc....
+
+    #messages ?
   }
   type Mutation {
     register(
