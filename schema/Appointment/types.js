@@ -1,4 +1,5 @@
-export const typeDef = `
+export default `
+  scalar Date
   type Appointment {
     id: ID!
     service: Doctor!
@@ -16,10 +17,18 @@ export const typeDef = `
     VERY_LONG #1h
   }
 
-  extend type Query {
+  type Query {
     userAppointments(userEmail: String!): [Appointment!]
   }
-  extend type Mutation {
+  type Mutation {
     scheduleAppointment(input: scheduleAppointmentInput): Appointment!
+  }
+
+  input scheduleAppointmentInput {
+    serviceId: ID!
+    clientId: ID!
+    title: String
+    startTime: Date!
+    duration: AppointmentDuration!
   }
 `

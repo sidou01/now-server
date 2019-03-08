@@ -1,4 +1,5 @@
-export const typeDef = `
+export default `
+
   type Doctor {
     id: ID!
     fullName: String!
@@ -21,12 +22,25 @@ export const typeDef = `
     Gynecologue
   }
 
-  extend type Query {
+  type Query {
     allDoctors: [Doctor!]!
   }
 
-  extend type Mutation {
+  type Mutation {
     loginDoctor(input: loginInput): String!
     addDoctor(input: addDoctorInput): Doctor!
+  }
+
+
+  input addDoctorInput {
+    fullName: String!
+    Bio: String
+    email: String!
+    password: String!
+    age: Int
+    phone: Int
+    gender: Gender
+    avatar: String
+    specialty: DoctorSpecialty!
   }
 `

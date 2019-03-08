@@ -1,6 +1,6 @@
-import {} from 'dotenv/config'
+import { } from 'dotenv/config'
 import { ApolloServer } from 'apollo-server-express'
-import schema from './schema'
+import schema from './schema/index'
 import express from 'express'
 import bodyParser from 'body-parser'
 import { prisma } from './prisma-db/generated/prisma-client'
