@@ -53,3 +53,17 @@ enum DoctorSpecialty {
   Dentiste
   Gynecologue
 }
+
+type ClientMessage {
+    sentFrom: User!
+    reciever: Doctor!
+    subject: String!
+    body: String!
+}
+
+type ServiceMessage {
+    sender: Doctor!
+    reciever: User!
+    subject: String!
+    body: String!
+}

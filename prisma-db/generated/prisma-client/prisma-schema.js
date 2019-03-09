@@ -7,7 +7,15 @@ module.exports = {
   count: Int!
 }
 
+type AggregateClientMessage {
+  count: Int!
+}
+
 type AggregateDoctor {
+  count: Int!
+}
+
+type AggregateServiceMessage {
   count: Int!
 }
 
@@ -355,6 +363,108 @@ type BatchPayload {
   count: Long!
 }
 
+type ClientMessage {
+  sentFrom: User!
+  reciever: Doctor!
+  subject: String!
+  body: String!
+}
+
+type ClientMessageConnection {
+  pageInfo: PageInfo!
+  edges: [ClientMessageEdge]!
+  aggregate: AggregateClientMessage!
+}
+
+input ClientMessageCreateInput {
+  sentFrom: UserCreateOneInput!
+  reciever: DoctorCreateOneInput!
+  subject: String!
+  body: String!
+}
+
+type ClientMessageEdge {
+  node: ClientMessage!
+  cursor: String!
+}
+
+enum ClientMessageOrderByInput {
+  subject_ASC
+  subject_DESC
+  body_ASC
+  body_DESC
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type ClientMessagePreviousValues {
+  subject: String!
+  body: String!
+}
+
+type ClientMessageSubscriptionPayload {
+  mutation: MutationType!
+  node: ClientMessage
+  updatedFields: [String!]
+  previousValues: ClientMessagePreviousValues
+}
+
+input ClientMessageSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: ClientMessageWhereInput
+  AND: [ClientMessageSubscriptionWhereInput!]
+  OR: [ClientMessageSubscriptionWhereInput!]
+  NOT: [ClientMessageSubscriptionWhereInput!]
+}
+
+input ClientMessageUpdateManyMutationInput {
+  subject: String
+  body: String
+}
+
+input ClientMessageWhereInput {
+  sentFrom: UserWhereInput
+  reciever: DoctorWhereInput
+  subject: String
+  subject_not: String
+  subject_in: [String!]
+  subject_not_in: [String!]
+  subject_lt: String
+  subject_lte: String
+  subject_gt: String
+  subject_gte: String
+  subject_contains: String
+  subject_not_contains: String
+  subject_starts_with: String
+  subject_not_starts_with: String
+  subject_ends_with: String
+  subject_not_ends_with: String
+  body: String
+  body_not: String
+  body_in: [String!]
+  body_not_in: [String!]
+  body_lt: String
+  body_lte: String
+  body_gt: String
+  body_gte: String
+  body_contains: String
+  body_not_contains: String
+  body_starts_with: String
+  body_not_starts_with: String
+  body_ends_with: String
+  body_not_ends_with: String
+  AND: [ClientMessageWhereInput!]
+  OR: [ClientMessageWhereInput!]
+  NOT: [ClientMessageWhereInput!]
+}
+
 type Doctor {
   id: ID!
   fullName: String!
@@ -386,6 +496,11 @@ input DoctorCreateInput {
   avatar: String
   appointments: AppointmentCreateManyWithoutServiceInput
   specialty: DoctorSpecialty!
+}
+
+input DoctorCreateOneInput {
+  create: DoctorCreateInput
+  connect: DoctorWhereUniqueInput
 }
 
 input DoctorCreateOneWithoutAppointmentsInput {
@@ -662,12 +777,18 @@ type Mutation {
   upsertAppointment(where: AppointmentWhereUniqueInput!, create: AppointmentCreateInput!, update: AppointmentUpdateInput!): Appointment!
   deleteAppointment(where: AppointmentWhereUniqueInput!): Appointment
   deleteManyAppointments(where: AppointmentWhereInput): BatchPayload!
+  createClientMessage(data: ClientMessageCreateInput!): ClientMessage!
+  updateManyClientMessages(data: ClientMessageUpdateManyMutationInput!, where: ClientMessageWhereInput): BatchPayload!
+  deleteManyClientMessages(where: ClientMessageWhereInput): BatchPayload!
   createDoctor(data: DoctorCreateInput!): Doctor!
   updateDoctor(data: DoctorUpdateInput!, where: DoctorWhereUniqueInput!): Doctor
   updateManyDoctors(data: DoctorUpdateManyMutationInput!, where: DoctorWhereInput): BatchPayload!
   upsertDoctor(where: DoctorWhereUniqueInput!, create: DoctorCreateInput!, update: DoctorUpdateInput!): Doctor!
   deleteDoctor(where: DoctorWhereUniqueInput!): Doctor
   deleteManyDoctors(where: DoctorWhereInput): BatchPayload!
+  createServiceMessage(data: ServiceMessageCreateInput!): ServiceMessage!
+  updateManyServiceMessages(data: ServiceMessageUpdateManyMutationInput!, where: ServiceMessageWhereInput): BatchPayload!
+  deleteManyServiceMessages(where: ServiceMessageWhereInput): BatchPayload!
   createUser(data: UserCreateInput!): User!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
@@ -697,18 +818,126 @@ type Query {
   appointment(where: AppointmentWhereUniqueInput!): Appointment
   appointments(where: AppointmentWhereInput, orderBy: AppointmentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Appointment]!
   appointmentsConnection(where: AppointmentWhereInput, orderBy: AppointmentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): AppointmentConnection!
+  clientMessages(where: ClientMessageWhereInput, orderBy: ClientMessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ClientMessage]!
+  clientMessagesConnection(where: ClientMessageWhereInput, orderBy: ClientMessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ClientMessageConnection!
   doctor(where: DoctorWhereUniqueInput!): Doctor
   doctors(where: DoctorWhereInput, orderBy: DoctorOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Doctor]!
   doctorsConnection(where: DoctorWhereInput, orderBy: DoctorOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): DoctorConnection!
+  serviceMessages(where: ServiceMessageWhereInput, orderBy: ServiceMessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ServiceMessage]!
+  serviceMessagesConnection(where: ServiceMessageWhereInput, orderBy: ServiceMessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ServiceMessageConnection!
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   node(id: ID!): Node
 }
 
+type ServiceMessage {
+  sender: Doctor!
+  reciever: User!
+  subject: String!
+  body: String!
+}
+
+type ServiceMessageConnection {
+  pageInfo: PageInfo!
+  edges: [ServiceMessageEdge]!
+  aggregate: AggregateServiceMessage!
+}
+
+input ServiceMessageCreateInput {
+  sender: DoctorCreateOneInput!
+  reciever: UserCreateOneInput!
+  subject: String!
+  body: String!
+}
+
+type ServiceMessageEdge {
+  node: ServiceMessage!
+  cursor: String!
+}
+
+enum ServiceMessageOrderByInput {
+  subject_ASC
+  subject_DESC
+  body_ASC
+  body_DESC
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type ServiceMessagePreviousValues {
+  subject: String!
+  body: String!
+}
+
+type ServiceMessageSubscriptionPayload {
+  mutation: MutationType!
+  node: ServiceMessage
+  updatedFields: [String!]
+  previousValues: ServiceMessagePreviousValues
+}
+
+input ServiceMessageSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: ServiceMessageWhereInput
+  AND: [ServiceMessageSubscriptionWhereInput!]
+  OR: [ServiceMessageSubscriptionWhereInput!]
+  NOT: [ServiceMessageSubscriptionWhereInput!]
+}
+
+input ServiceMessageUpdateManyMutationInput {
+  subject: String
+  body: String
+}
+
+input ServiceMessageWhereInput {
+  sender: DoctorWhereInput
+  reciever: UserWhereInput
+  subject: String
+  subject_not: String
+  subject_in: [String!]
+  subject_not_in: [String!]
+  subject_lt: String
+  subject_lte: String
+  subject_gt: String
+  subject_gte: String
+  subject_contains: String
+  subject_not_contains: String
+  subject_starts_with: String
+  subject_not_starts_with: String
+  subject_ends_with: String
+  subject_not_ends_with: String
+  body: String
+  body_not: String
+  body_in: [String!]
+  body_not_in: [String!]
+  body_lt: String
+  body_lte: String
+  body_gt: String
+  body_gte: String
+  body_contains: String
+  body_not_contains: String
+  body_starts_with: String
+  body_not_starts_with: String
+  body_ends_with: String
+  body_not_ends_with: String
+  AND: [ServiceMessageWhereInput!]
+  OR: [ServiceMessageWhereInput!]
+  NOT: [ServiceMessageWhereInput!]
+}
+
 type Subscription {
   appointment(where: AppointmentSubscriptionWhereInput): AppointmentSubscriptionPayload
+  clientMessage(where: ClientMessageSubscriptionWhereInput): ClientMessageSubscriptionPayload
   doctor(where: DoctorSubscriptionWhereInput): DoctorSubscriptionPayload
+  serviceMessage(where: ServiceMessageSubscriptionWhereInput): ServiceMessageSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
 
@@ -741,6 +970,11 @@ input UserCreateInput {
   avatar: String
   confirmation: Boolean
   Appointments: AppointmentCreateManyWithoutClientInput
+}
+
+input UserCreateOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
 }
 
 input UserCreateOneWithoutAppointmentsInput {

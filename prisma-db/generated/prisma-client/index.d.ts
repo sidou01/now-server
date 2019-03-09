@@ -15,7 +15,9 @@ export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
 
 export interface Exists {
   appointment: (where?: AppointmentWhereInput) => Promise<boolean>;
+  clientMessage: (where?: ClientMessageWhereInput) => Promise<boolean>;
   doctor: (where?: DoctorWhereInput) => Promise<boolean>;
+  serviceMessage: (where?: ServiceMessageWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
 }
 
@@ -61,6 +63,28 @@ export interface Prisma {
       last?: Int;
     }
   ) => AppointmentConnectionPromise;
+  clientMessages: (
+    args?: {
+      where?: ClientMessageWhereInput;
+      orderBy?: ClientMessageOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => FragmentableArray<ClientMessage>;
+  clientMessagesConnection: (
+    args?: {
+      where?: ClientMessageWhereInput;
+      orderBy?: ClientMessageOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => ClientMessageConnectionPromise;
   doctor: (where: DoctorWhereUniqueInput) => DoctorPromise;
   doctors: (
     args?: {
@@ -84,6 +108,28 @@ export interface Prisma {
       last?: Int;
     }
   ) => DoctorConnectionPromise;
+  serviceMessages: (
+    args?: {
+      where?: ServiceMessageWhereInput;
+      orderBy?: ServiceMessageOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => FragmentableArray<ServiceMessage>;
+  serviceMessagesConnection: (
+    args?: {
+      where?: ServiceMessageWhereInput;
+      orderBy?: ServiceMessageOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => ServiceMessageConnectionPromise;
   user: (where: UserWhereUniqueInput) => UserPromise;
   users: (
     args?: {
@@ -134,6 +180,16 @@ export interface Prisma {
   deleteManyAppointments: (
     where?: AppointmentWhereInput
   ) => BatchPayloadPromise;
+  createClientMessage: (data: ClientMessageCreateInput) => ClientMessagePromise;
+  updateManyClientMessages: (
+    args: {
+      data: ClientMessageUpdateManyMutationInput;
+      where?: ClientMessageWhereInput;
+    }
+  ) => BatchPayloadPromise;
+  deleteManyClientMessages: (
+    where?: ClientMessageWhereInput
+  ) => BatchPayloadPromise;
   createDoctor: (data: DoctorCreateInput) => DoctorPromise;
   updateDoctor: (
     args: { data: DoctorUpdateInput; where: DoctorWhereUniqueInput }
@@ -150,6 +206,18 @@ export interface Prisma {
   ) => DoctorPromise;
   deleteDoctor: (where: DoctorWhereUniqueInput) => DoctorPromise;
   deleteManyDoctors: (where?: DoctorWhereInput) => BatchPayloadPromise;
+  createServiceMessage: (
+    data: ServiceMessageCreateInput
+  ) => ServiceMessagePromise;
+  updateManyServiceMessages: (
+    args: {
+      data: ServiceMessageUpdateManyMutationInput;
+      where?: ServiceMessageWhereInput;
+    }
+  ) => BatchPayloadPromise;
+  deleteManyServiceMessages: (
+    where?: ServiceMessageWhereInput
+  ) => BatchPayloadPromise;
   createUser: (data: UserCreateInput) => UserPromise;
   updateUser: (
     args: { data: UserUpdateInput; where: UserWhereUniqueInput }
@@ -178,9 +246,15 @@ export interface Subscription {
   appointment: (
     where?: AppointmentSubscriptionWhereInput
   ) => AppointmentSubscriptionPayloadSubscription;
+  clientMessage: (
+    where?: ClientMessageSubscriptionWhereInput
+  ) => ClientMessageSubscriptionPayloadSubscription;
   doctor: (
     where?: DoctorSubscriptionWhereInput
   ) => DoctorSubscriptionPayloadSubscription;
+  serviceMessage: (
+    where?: ServiceMessageSubscriptionWhereInput
+  ) => ServiceMessageSubscriptionPayloadSubscription;
   user: (
     where?: UserSubscriptionWhereInput
   ) => UserSubscriptionPayloadSubscription;
@@ -222,6 +296,18 @@ export type AppointmentOrderByInput =
   | "updatedAt_ASC"
   | "updatedAt_DESC";
 
+export type ClientMessageOrderByInput =
+  | "subject_ASC"
+  | "subject_DESC"
+  | "body_ASC"
+  | "body_DESC"
+  | "id_ASC"
+  | "id_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC";
+
 export type DoctorOrderByInput =
   | "id_ASC"
   | "id_DESC"
@@ -243,6 +329,18 @@ export type DoctorOrderByInput =
   | "avatar_DESC"
   | "specialty_ASC"
   | "specialty_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC";
+
+export type ServiceMessageOrderByInput =
+  | "subject_ASC"
+  | "subject_DESC"
+  | "body_ASC"
+  | "body_DESC"
+  | "id_ASC"
+  | "id_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -566,10 +664,82 @@ export interface UserWhereInput {
   NOT?: UserWhereInput[] | UserWhereInput;
 }
 
+export interface ClientMessageWhereInput {
+  sentFrom?: UserWhereInput;
+  reciever?: DoctorWhereInput;
+  subject?: String;
+  subject_not?: String;
+  subject_in?: String[] | String;
+  subject_not_in?: String[] | String;
+  subject_lt?: String;
+  subject_lte?: String;
+  subject_gt?: String;
+  subject_gte?: String;
+  subject_contains?: String;
+  subject_not_contains?: String;
+  subject_starts_with?: String;
+  subject_not_starts_with?: String;
+  subject_ends_with?: String;
+  subject_not_ends_with?: String;
+  body?: String;
+  body_not?: String;
+  body_in?: String[] | String;
+  body_not_in?: String[] | String;
+  body_lt?: String;
+  body_lte?: String;
+  body_gt?: String;
+  body_gte?: String;
+  body_contains?: String;
+  body_not_contains?: String;
+  body_starts_with?: String;
+  body_not_starts_with?: String;
+  body_ends_with?: String;
+  body_not_ends_with?: String;
+  AND?: ClientMessageWhereInput[] | ClientMessageWhereInput;
+  OR?: ClientMessageWhereInput[] | ClientMessageWhereInput;
+  NOT?: ClientMessageWhereInput[] | ClientMessageWhereInput;
+}
+
 export type DoctorWhereUniqueInput = AtLeastOne<{
   id: ID_Input;
   email?: String;
 }>;
+
+export interface ServiceMessageWhereInput {
+  sender?: DoctorWhereInput;
+  reciever?: UserWhereInput;
+  subject?: String;
+  subject_not?: String;
+  subject_in?: String[] | String;
+  subject_not_in?: String[] | String;
+  subject_lt?: String;
+  subject_lte?: String;
+  subject_gt?: String;
+  subject_gte?: String;
+  subject_contains?: String;
+  subject_not_contains?: String;
+  subject_starts_with?: String;
+  subject_not_starts_with?: String;
+  subject_ends_with?: String;
+  subject_not_ends_with?: String;
+  body?: String;
+  body_not?: String;
+  body_in?: String[] | String;
+  body_not_in?: String[] | String;
+  body_lt?: String;
+  body_lte?: String;
+  body_gt?: String;
+  body_gte?: String;
+  body_contains?: String;
+  body_not_contains?: String;
+  body_starts_with?: String;
+  body_not_starts_with?: String;
+  body_ends_with?: String;
+  body_not_ends_with?: String;
+  AND?: ServiceMessageWhereInput[] | ServiceMessageWhereInput;
+  OR?: ServiceMessageWhereInput[] | ServiceMessageWhereInput;
+  NOT?: ServiceMessageWhereInput[] | ServiceMessageWhereInput;
+}
 
 export type UserWhereUniqueInput = AtLeastOne<{
   id: ID_Input;
@@ -681,6 +851,50 @@ export interface AppointmentUpdateManyMutationInput {
   duration?: AppointmentDuration;
 }
 
+export interface ClientMessageCreateInput {
+  sentFrom: UserCreateOneInput;
+  reciever: DoctorCreateOneInput;
+  subject: String;
+  body: String;
+}
+
+export interface UserCreateOneInput {
+  create?: UserCreateInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserCreateInput {
+  fullName: String;
+  email: String;
+  password: String;
+  age: Int;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  confirmation?: Boolean;
+  Appointments?: AppointmentCreateManyWithoutClientInput;
+}
+
+export interface AppointmentCreateManyWithoutClientInput {
+  create?:
+    | AppointmentCreateWithoutClientInput[]
+    | AppointmentCreateWithoutClientInput;
+  connect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
+}
+
+export interface AppointmentCreateWithoutClientInput {
+  service: DoctorCreateOneWithoutAppointmentsInput;
+  title?: String;
+  startTime: String;
+  endTime: String;
+  duration: AppointmentDuration;
+}
+
+export interface DoctorCreateOneInput {
+  create?: DoctorCreateInput;
+  connect?: DoctorWhereUniqueInput;
+}
+
 export interface DoctorCreateInput {
   fullName: String;
   Bio?: String;
@@ -707,6 +921,11 @@ export interface AppointmentCreateWithoutServiceInput {
   startTime: String;
   endTime: String;
   duration: AppointmentDuration;
+}
+
+export interface ClientMessageUpdateManyMutationInput {
+  subject?: String;
+  body?: String;
 }
 
 export interface DoctorUpdateInput {
@@ -851,31 +1070,16 @@ export interface DoctorUpdateManyMutationInput {
   specialty?: DoctorSpecialty;
 }
 
-export interface UserCreateInput {
-  fullName: String;
-  email: String;
-  password: String;
-  age: Int;
-  phone?: Int;
-  gender?: Gender;
-  avatar?: String;
-  confirmation?: Boolean;
-  Appointments?: AppointmentCreateManyWithoutClientInput;
+export interface ServiceMessageCreateInput {
+  sender: DoctorCreateOneInput;
+  reciever: UserCreateOneInput;
+  subject: String;
+  body: String;
 }
 
-export interface AppointmentCreateManyWithoutClientInput {
-  create?:
-    | AppointmentCreateWithoutClientInput[]
-    | AppointmentCreateWithoutClientInput;
-  connect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
-}
-
-export interface AppointmentCreateWithoutClientInput {
-  service: DoctorCreateOneWithoutAppointmentsInput;
-  title?: String;
-  startTime: String;
-  endTime: String;
-  duration: AppointmentDuration;
+export interface ServiceMessageUpdateManyMutationInput {
+  subject?: String;
+  body?: String;
 }
 
 export interface UserUpdateInput {
@@ -951,6 +1155,23 @@ export interface AppointmentSubscriptionWhereInput {
   NOT?: AppointmentSubscriptionWhereInput[] | AppointmentSubscriptionWhereInput;
 }
 
+export interface ClientMessageSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: ClientMessageWhereInput;
+  AND?:
+    | ClientMessageSubscriptionWhereInput[]
+    | ClientMessageSubscriptionWhereInput;
+  OR?:
+    | ClientMessageSubscriptionWhereInput[]
+    | ClientMessageSubscriptionWhereInput;
+  NOT?:
+    | ClientMessageSubscriptionWhereInput[]
+    | ClientMessageSubscriptionWhereInput;
+}
+
 export interface DoctorSubscriptionWhereInput {
   mutation_in?: MutationType[] | MutationType;
   updatedFields_contains?: String;
@@ -960,6 +1181,23 @@ export interface DoctorSubscriptionWhereInput {
   AND?: DoctorSubscriptionWhereInput[] | DoctorSubscriptionWhereInput;
   OR?: DoctorSubscriptionWhereInput[] | DoctorSubscriptionWhereInput;
   NOT?: DoctorSubscriptionWhereInput[] | DoctorSubscriptionWhereInput;
+}
+
+export interface ServiceMessageSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: ServiceMessageWhereInput;
+  AND?:
+    | ServiceMessageSubscriptionWhereInput[]
+    | ServiceMessageSubscriptionWhereInput;
+  OR?:
+    | ServiceMessageSubscriptionWhereInput[]
+    | ServiceMessageSubscriptionWhereInput;
+  NOT?:
+    | ServiceMessageSubscriptionWhereInput[]
+    | ServiceMessageSubscriptionWhereInput;
 }
 
 export interface UserSubscriptionWhereInput {
@@ -1209,6 +1447,85 @@ export interface AggregateAppointmentSubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
+export interface ClientMessage {
+  subject: String;
+  body: String;
+}
+
+export interface ClientMessagePromise
+  extends Promise<ClientMessage>,
+    Fragmentable {
+  sentFrom: <T = UserPromise>() => T;
+  reciever: <T = DoctorPromise>() => T;
+  subject: () => Promise<String>;
+  body: () => Promise<String>;
+}
+
+export interface ClientMessageSubscription
+  extends Promise<AsyncIterator<ClientMessage>>,
+    Fragmentable {
+  sentFrom: <T = UserSubscription>() => T;
+  reciever: <T = DoctorSubscription>() => T;
+  subject: () => Promise<AsyncIterator<String>>;
+  body: () => Promise<AsyncIterator<String>>;
+}
+
+export interface ClientMessageConnection {
+  pageInfo: PageInfo;
+  edges: ClientMessageEdge[];
+}
+
+export interface ClientMessageConnectionPromise
+  extends Promise<ClientMessageConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<ClientMessageEdge>>() => T;
+  aggregate: <T = AggregateClientMessagePromise>() => T;
+}
+
+export interface ClientMessageConnectionSubscription
+  extends Promise<AsyncIterator<ClientMessageConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<ClientMessageEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateClientMessageSubscription>() => T;
+}
+
+export interface ClientMessageEdge {
+  node: ClientMessage;
+  cursor: String;
+}
+
+export interface ClientMessageEdgePromise
+  extends Promise<ClientMessageEdge>,
+    Fragmentable {
+  node: <T = ClientMessagePromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface ClientMessageEdgeSubscription
+  extends Promise<AsyncIterator<ClientMessageEdge>>,
+    Fragmentable {
+  node: <T = ClientMessageSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateClientMessage {
+  count: Int;
+}
+
+export interface AggregateClientMessagePromise
+  extends Promise<AggregateClientMessage>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateClientMessageSubscription
+  extends Promise<AsyncIterator<AggregateClientMessage>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
 export interface DoctorConnection {
   pageInfo: PageInfo;
   edges: DoctorEdge[];
@@ -1259,6 +1576,85 @@ export interface AggregateDoctorPromise
 
 export interface AggregateDoctorSubscription
   extends Promise<AsyncIterator<AggregateDoctor>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface ServiceMessage {
+  subject: String;
+  body: String;
+}
+
+export interface ServiceMessagePromise
+  extends Promise<ServiceMessage>,
+    Fragmentable {
+  sender: <T = DoctorPromise>() => T;
+  reciever: <T = UserPromise>() => T;
+  subject: () => Promise<String>;
+  body: () => Promise<String>;
+}
+
+export interface ServiceMessageSubscription
+  extends Promise<AsyncIterator<ServiceMessage>>,
+    Fragmentable {
+  sender: <T = DoctorSubscription>() => T;
+  reciever: <T = UserSubscription>() => T;
+  subject: () => Promise<AsyncIterator<String>>;
+  body: () => Promise<AsyncIterator<String>>;
+}
+
+export interface ServiceMessageConnection {
+  pageInfo: PageInfo;
+  edges: ServiceMessageEdge[];
+}
+
+export interface ServiceMessageConnectionPromise
+  extends Promise<ServiceMessageConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<ServiceMessageEdge>>() => T;
+  aggregate: <T = AggregateServiceMessagePromise>() => T;
+}
+
+export interface ServiceMessageConnectionSubscription
+  extends Promise<AsyncIterator<ServiceMessageConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<ServiceMessageEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateServiceMessageSubscription>() => T;
+}
+
+export interface ServiceMessageEdge {
+  node: ServiceMessage;
+  cursor: String;
+}
+
+export interface ServiceMessageEdgePromise
+  extends Promise<ServiceMessageEdge>,
+    Fragmentable {
+  node: <T = ServiceMessagePromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface ServiceMessageEdgeSubscription
+  extends Promise<AsyncIterator<ServiceMessageEdge>>,
+    Fragmentable {
+  node: <T = ServiceMessageSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateServiceMessage {
+  count: Int;
+}
+
+export interface AggregateServiceMessagePromise
+  extends Promise<AggregateServiceMessage>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateServiceMessageSubscription
+  extends Promise<AsyncIterator<AggregateServiceMessage>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
 }
@@ -1386,6 +1782,50 @@ export interface AppointmentPreviousValuesSubscription
   duration: () => Promise<AsyncIterator<AppointmentDuration>>;
 }
 
+export interface ClientMessageSubscriptionPayload {
+  mutation: MutationType;
+  node: ClientMessage;
+  updatedFields: String[];
+  previousValues: ClientMessagePreviousValues;
+}
+
+export interface ClientMessageSubscriptionPayloadPromise
+  extends Promise<ClientMessageSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = ClientMessagePromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = ClientMessagePreviousValuesPromise>() => T;
+}
+
+export interface ClientMessageSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<ClientMessageSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = ClientMessageSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = ClientMessagePreviousValuesSubscription>() => T;
+}
+
+export interface ClientMessagePreviousValues {
+  subject: String;
+  body: String;
+}
+
+export interface ClientMessagePreviousValuesPromise
+  extends Promise<ClientMessagePreviousValues>,
+    Fragmentable {
+  subject: () => Promise<String>;
+  body: () => Promise<String>;
+}
+
+export interface ClientMessagePreviousValuesSubscription
+  extends Promise<AsyncIterator<ClientMessagePreviousValues>>,
+    Fragmentable {
+  subject: () => Promise<AsyncIterator<String>>;
+  body: () => Promise<AsyncIterator<String>>;
+}
+
 export interface DoctorSubscriptionPayload {
   mutation: MutationType;
   node: Doctor;
@@ -1452,6 +1892,50 @@ export interface DoctorPreviousValuesSubscription
   gender: () => Promise<AsyncIterator<Gender>>;
   avatar: () => Promise<AsyncIterator<String>>;
   specialty: () => Promise<AsyncIterator<DoctorSpecialty>>;
+}
+
+export interface ServiceMessageSubscriptionPayload {
+  mutation: MutationType;
+  node: ServiceMessage;
+  updatedFields: String[];
+  previousValues: ServiceMessagePreviousValues;
+}
+
+export interface ServiceMessageSubscriptionPayloadPromise
+  extends Promise<ServiceMessageSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = ServiceMessagePromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = ServiceMessagePreviousValuesPromise>() => T;
+}
+
+export interface ServiceMessageSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<ServiceMessageSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = ServiceMessageSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = ServiceMessagePreviousValuesSubscription>() => T;
+}
+
+export interface ServiceMessagePreviousValues {
+  subject: String;
+  body: String;
+}
+
+export interface ServiceMessagePreviousValuesPromise
+  extends Promise<ServiceMessagePreviousValues>,
+    Fragmentable {
+  subject: () => Promise<String>;
+  body: () => Promise<String>;
+}
+
+export interface ServiceMessagePreviousValuesSubscription
+  extends Promise<AsyncIterator<ServiceMessagePreviousValues>>,
+    Fragmentable {
+  subject: () => Promise<AsyncIterator<String>>;
+  body: () => Promise<AsyncIterator<String>>;
 }
 
 export interface UserSubscriptionPayload {
@@ -1557,6 +2041,14 @@ export const models: Model[] = [
   },
   {
     name: "Appointment",
+    embedded: false
+  },
+  {
+    name: "ClientMessage",
+    embedded: false
+  },
+  {
+    name: "ServiceMessage",
     embedded: false
   },
   {
