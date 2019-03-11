@@ -24,6 +24,19 @@ export default {
             startTime
             endTime
           }
+          recievedMessages {
+            id
+            sender{
+              id
+              fullName
+            }
+            reciever {
+              id
+              fullName
+            }
+            subject
+            body
+          }
         }
       }
     `)
@@ -107,7 +120,14 @@ export default {
   },
   Subscription: {
     messageToClientAdded: {
-      subscribe: () => pubsub.asyncIterator(MESSAGE_TO_CLIENT)
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(MESSAGE_TO_CLIENT),
+        (payload, args) => {
+          console.log(payload.messageToClientAdded)
+          console.log('args', args)
+          return payload.messageToClientAdded.reciever.id === args.clientId
+        }
+      )
     }
   }
 }

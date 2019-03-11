@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { MESSAGE_TO_CLIENT } from '../topics'
+import { prisma } from '../../prisma-db/generated/prisma-client'
+import { messageFromService } from '../../fragments'
 
 export default {
   Query: {
@@ -22,7 +24,12 @@ export default {
         subject: args.subject,
         body: args.body
       })
-      pubsub.publish(MESSAGE_TO_CLIENT, { messageToClientAdded: message })
+      const messageToPublish = await prisma
+        .serviceMessage({ id: message.id })
+        .$fragment(messageFromService)
+      pubsub.publish(MESSAGE_TO_CLIENT, {
+        messageToClientAdded: messageToPublish
+      })
       return message
     },
     loginDoctor: async (
