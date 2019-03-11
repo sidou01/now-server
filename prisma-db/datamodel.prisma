@@ -9,6 +9,8 @@ type User {
   avatar: String # url to an image. might add enum to get small or big.
   confirmation: Boolean! @default(value: "false")
   Appointments: [Appointment!]
+  sentMessages: [ClientMessage!]
+  recievedMessages: [ServiceMessage!]
 }
 
 type Doctor {
@@ -23,6 +25,8 @@ type Doctor {
   avatar: String
   appointments: [Appointment!]
   specialty: DoctorSpecialty!
+  sentMessages: [ServiceMessage!]
+  recievedMessages: [ClientMessage!]
 }
 
 type Appointment {
@@ -55,15 +59,17 @@ enum DoctorSpecialty {
 }
 
 type ClientMessage {
-    sentFrom: User!
-    reciever: Doctor!
-    subject: String!
-    body: String!
+  id: ID! @unique
+  sentFrom: User!
+  reciever: Doctor!
+  subject: String!
+  body: String!
 }
 
 type ServiceMessage {
-    sender: Doctor!
-    reciever: User!
-    subject: String!
-    body: String!
+  id: ID! @unique
+  sender: Doctor!
+  reciever: User!
+  subject: String!
+  body: String!
 }

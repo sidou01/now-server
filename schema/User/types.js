@@ -10,15 +10,21 @@ export default `
     avatar: String
     confirmation: Boolean!
     Appointments: [Appointment!]
+    sentMessages: [ClientMessage!]
+    recievedMessages: [ServiceMessage!]
   }
 
-  extend type Query {
+  type Query {
       me: User!
       allUsers: [User!]!
   }
-  extend type Mutation {
+  type Mutation {
     register(input: registerInput): User!
     login(input: loginInput): String!
+  }
+
+  type Subscription {
+    messageToClientAdded(clientId: ID!): ServiceMessage!
   }
 
   input registerInput {

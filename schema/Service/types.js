@@ -12,7 +12,11 @@ export default `
     avatar: String
     appointments: [Appointment!]
     specialty: DoctorSpecialty!
+    sentMessages: [ServiceMessage!]
+    recievedMessages: [ClientMessage!]
   }
+
+
   enum DoctorSpecialty {
     Generaliste
     Psychiatre
@@ -29,8 +33,13 @@ export default `
   type Mutation {
     loginDoctor(input: loginInput): String!
     addDoctor(input: addDoctorInput): Doctor!
+
+    sendMessageToClient(clientId: ID!, serviceId: ID!, subject: String, body: String!): ServiceMessage!
   }
 
+  type Subscription {
+    messageToService(clientEmail: String!): ClientMessage!
+  }
 
   input addDoctorInput {
     fullName: String!

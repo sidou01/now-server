@@ -63,6 +63,7 @@ export interface Prisma {
       last?: Int;
     }
   ) => AppointmentConnectionPromise;
+  clientMessage: (where: ClientMessageWhereUniqueInput) => ClientMessagePromise;
   clientMessages: (
     args?: {
       where?: ClientMessageWhereInput;
@@ -108,6 +109,9 @@ export interface Prisma {
       last?: Int;
     }
   ) => DoctorConnectionPromise;
+  serviceMessage: (
+    where: ServiceMessageWhereUniqueInput
+  ) => ServiceMessagePromise;
   serviceMessages: (
     args?: {
       where?: ServiceMessageWhereInput;
@@ -181,12 +185,28 @@ export interface Prisma {
     where?: AppointmentWhereInput
   ) => BatchPayloadPromise;
   createClientMessage: (data: ClientMessageCreateInput) => ClientMessagePromise;
+  updateClientMessage: (
+    args: {
+      data: ClientMessageUpdateInput;
+      where: ClientMessageWhereUniqueInput;
+    }
+  ) => ClientMessagePromise;
   updateManyClientMessages: (
     args: {
       data: ClientMessageUpdateManyMutationInput;
       where?: ClientMessageWhereInput;
     }
   ) => BatchPayloadPromise;
+  upsertClientMessage: (
+    args: {
+      where: ClientMessageWhereUniqueInput;
+      create: ClientMessageCreateInput;
+      update: ClientMessageUpdateInput;
+    }
+  ) => ClientMessagePromise;
+  deleteClientMessage: (
+    where: ClientMessageWhereUniqueInput
+  ) => ClientMessagePromise;
   deleteManyClientMessages: (
     where?: ClientMessageWhereInput
   ) => BatchPayloadPromise;
@@ -209,12 +229,28 @@ export interface Prisma {
   createServiceMessage: (
     data: ServiceMessageCreateInput
   ) => ServiceMessagePromise;
+  updateServiceMessage: (
+    args: {
+      data: ServiceMessageUpdateInput;
+      where: ServiceMessageWhereUniqueInput;
+    }
+  ) => ServiceMessagePromise;
   updateManyServiceMessages: (
     args: {
       data: ServiceMessageUpdateManyMutationInput;
       where?: ServiceMessageWhereInput;
     }
   ) => BatchPayloadPromise;
+  upsertServiceMessage: (
+    args: {
+      where: ServiceMessageWhereUniqueInput;
+      create: ServiceMessageCreateInput;
+      update: ServiceMessageUpdateInput;
+    }
+  ) => ServiceMessagePromise;
+  deleteServiceMessage: (
+    where: ServiceMessageWhereUniqueInput
+  ) => ServiceMessagePromise;
   deleteManyServiceMessages: (
     where?: ServiceMessageWhereInput
   ) => BatchPayloadPromise;
@@ -296,13 +332,25 @@ export type AppointmentOrderByInput =
   | "updatedAt_ASC"
   | "updatedAt_DESC";
 
-export type ClientMessageOrderByInput =
+export type ServiceMessageOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
   | "subject_ASC"
   | "subject_DESC"
   | "body_ASC"
   | "body_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC";
+
+export type ClientMessageOrderByInput =
   | "id_ASC"
   | "id_DESC"
+  | "subject_ASC"
+  | "subject_DESC"
+  | "body_ASC"
+  | "body_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -329,18 +377,6 @@ export type DoctorOrderByInput =
   | "avatar_DESC"
   | "specialty_ASC"
   | "specialty_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC"
-  | "updatedAt_ASC"
-  | "updatedAt_DESC";
-
-export type ServiceMessageOrderByInput =
-  | "subject_ASC"
-  | "subject_DESC"
-  | "body_ASC"
-  | "body_DESC"
-  | "id_ASC"
-  | "id_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -558,9 +594,65 @@ export interface DoctorWhereInput {
   specialty_not?: DoctorSpecialty;
   specialty_in?: DoctorSpecialty[] | DoctorSpecialty;
   specialty_not_in?: DoctorSpecialty[] | DoctorSpecialty;
+  sentMessages_every?: ServiceMessageWhereInput;
+  sentMessages_some?: ServiceMessageWhereInput;
+  sentMessages_none?: ServiceMessageWhereInput;
+  recievedMessages_every?: ClientMessageWhereInput;
+  recievedMessages_some?: ClientMessageWhereInput;
+  recievedMessages_none?: ClientMessageWhereInput;
   AND?: DoctorWhereInput[] | DoctorWhereInput;
   OR?: DoctorWhereInput[] | DoctorWhereInput;
   NOT?: DoctorWhereInput[] | DoctorWhereInput;
+}
+
+export interface ServiceMessageWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  sender?: DoctorWhereInput;
+  reciever?: UserWhereInput;
+  subject?: String;
+  subject_not?: String;
+  subject_in?: String[] | String;
+  subject_not_in?: String[] | String;
+  subject_lt?: String;
+  subject_lte?: String;
+  subject_gt?: String;
+  subject_gte?: String;
+  subject_contains?: String;
+  subject_not_contains?: String;
+  subject_starts_with?: String;
+  subject_not_starts_with?: String;
+  subject_ends_with?: String;
+  subject_not_ends_with?: String;
+  body?: String;
+  body_not?: String;
+  body_in?: String[] | String;
+  body_not_in?: String[] | String;
+  body_lt?: String;
+  body_lte?: String;
+  body_gt?: String;
+  body_gte?: String;
+  body_contains?: String;
+  body_not_contains?: String;
+  body_starts_with?: String;
+  body_not_starts_with?: String;
+  body_ends_with?: String;
+  body_not_ends_with?: String;
+  AND?: ServiceMessageWhereInput[] | ServiceMessageWhereInput;
+  OR?: ServiceMessageWhereInput[] | ServiceMessageWhereInput;
+  NOT?: ServiceMessageWhereInput[] | ServiceMessageWhereInput;
 }
 
 export interface UserWhereInput {
@@ -659,12 +751,32 @@ export interface UserWhereInput {
   Appointments_every?: AppointmentWhereInput;
   Appointments_some?: AppointmentWhereInput;
   Appointments_none?: AppointmentWhereInput;
+  sentMessages_every?: ClientMessageWhereInput;
+  sentMessages_some?: ClientMessageWhereInput;
+  sentMessages_none?: ClientMessageWhereInput;
+  recievedMessages_every?: ServiceMessageWhereInput;
+  recievedMessages_some?: ServiceMessageWhereInput;
+  recievedMessages_none?: ServiceMessageWhereInput;
   AND?: UserWhereInput[] | UserWhereInput;
   OR?: UserWhereInput[] | UserWhereInput;
   NOT?: UserWhereInput[] | UserWhereInput;
 }
 
 export interface ClientMessageWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
   sentFrom?: UserWhereInput;
   reciever?: DoctorWhereInput;
   subject?: String;
@@ -700,46 +812,18 @@ export interface ClientMessageWhereInput {
   NOT?: ClientMessageWhereInput[] | ClientMessageWhereInput;
 }
 
+export type ClientMessageWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+}>;
+
 export type DoctorWhereUniqueInput = AtLeastOne<{
   id: ID_Input;
   email?: String;
 }>;
 
-export interface ServiceMessageWhereInput {
-  sender?: DoctorWhereInput;
-  reciever?: UserWhereInput;
-  subject?: String;
-  subject_not?: String;
-  subject_in?: String[] | String;
-  subject_not_in?: String[] | String;
-  subject_lt?: String;
-  subject_lte?: String;
-  subject_gt?: String;
-  subject_gte?: String;
-  subject_contains?: String;
-  subject_not_contains?: String;
-  subject_starts_with?: String;
-  subject_not_starts_with?: String;
-  subject_ends_with?: String;
-  subject_not_ends_with?: String;
-  body?: String;
-  body_not?: String;
-  body_in?: String[] | String;
-  body_not_in?: String[] | String;
-  body_lt?: String;
-  body_lte?: String;
-  body_gt?: String;
-  body_gte?: String;
-  body_contains?: String;
-  body_not_contains?: String;
-  body_starts_with?: String;
-  body_not_starts_with?: String;
-  body_ends_with?: String;
-  body_not_ends_with?: String;
-  AND?: ServiceMessageWhereInput[] | ServiceMessageWhereInput;
-  OR?: ServiceMessageWhereInput[] | ServiceMessageWhereInput;
-  NOT?: ServiceMessageWhereInput[] | ServiceMessageWhereInput;
-}
+export type ServiceMessageWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+}>;
 
 export type UserWhereUniqueInput = AtLeastOne<{
   id: ID_Input;
@@ -770,6 +854,101 @@ export interface DoctorCreateWithoutAppointmentsInput {
   gender?: Gender;
   avatar?: String;
   specialty: DoctorSpecialty;
+  sentMessages?: ServiceMessageCreateManyWithoutSenderInput;
+  recievedMessages?: ClientMessageCreateManyWithoutRecieverInput;
+}
+
+export interface ServiceMessageCreateManyWithoutSenderInput {
+  create?:
+    | ServiceMessageCreateWithoutSenderInput[]
+    | ServiceMessageCreateWithoutSenderInput;
+  connect?: ServiceMessageWhereUniqueInput[] | ServiceMessageWhereUniqueInput;
+}
+
+export interface ServiceMessageCreateWithoutSenderInput {
+  reciever: UserCreateOneWithoutRecievedMessagesInput;
+  subject: String;
+  body: String;
+}
+
+export interface UserCreateOneWithoutRecievedMessagesInput {
+  create?: UserCreateWithoutRecievedMessagesInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserCreateWithoutRecievedMessagesInput {
+  fullName: String;
+  email: String;
+  password: String;
+  age: Int;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  confirmation?: Boolean;
+  Appointments?: AppointmentCreateManyWithoutClientInput;
+  sentMessages?: ClientMessageCreateManyWithoutSentFromInput;
+}
+
+export interface AppointmentCreateManyWithoutClientInput {
+  create?:
+    | AppointmentCreateWithoutClientInput[]
+    | AppointmentCreateWithoutClientInput;
+  connect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
+}
+
+export interface AppointmentCreateWithoutClientInput {
+  service: DoctorCreateOneWithoutAppointmentsInput;
+  title?: String;
+  startTime: String;
+  endTime: String;
+  duration: AppointmentDuration;
+}
+
+export interface ClientMessageCreateManyWithoutSentFromInput {
+  create?:
+    | ClientMessageCreateWithoutSentFromInput[]
+    | ClientMessageCreateWithoutSentFromInput;
+  connect?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
+}
+
+export interface ClientMessageCreateWithoutSentFromInput {
+  reciever: DoctorCreateOneWithoutRecievedMessagesInput;
+  subject: String;
+  body: String;
+}
+
+export interface DoctorCreateOneWithoutRecievedMessagesInput {
+  create?: DoctorCreateWithoutRecievedMessagesInput;
+  connect?: DoctorWhereUniqueInput;
+}
+
+export interface DoctorCreateWithoutRecievedMessagesInput {
+  fullName: String;
+  Bio?: String;
+  email: String;
+  password: String;
+  age?: Int;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  appointments?: AppointmentCreateManyWithoutServiceInput;
+  specialty: DoctorSpecialty;
+  sentMessages?: ServiceMessageCreateManyWithoutSenderInput;
+}
+
+export interface AppointmentCreateManyWithoutServiceInput {
+  create?:
+    | AppointmentCreateWithoutServiceInput[]
+    | AppointmentCreateWithoutServiceInput;
+  connect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
+}
+
+export interface AppointmentCreateWithoutServiceInput {
+  client: UserCreateOneWithoutAppointmentsInput;
+  title?: String;
+  startTime: String;
+  endTime: String;
+  duration: AppointmentDuration;
 }
 
 export interface UserCreateOneWithoutAppointmentsInput {
@@ -786,6 +965,71 @@ export interface UserCreateWithoutAppointmentsInput {
   gender?: Gender;
   avatar?: String;
   confirmation?: Boolean;
+  sentMessages?: ClientMessageCreateManyWithoutSentFromInput;
+  recievedMessages?: ServiceMessageCreateManyWithoutRecieverInput;
+}
+
+export interface ServiceMessageCreateManyWithoutRecieverInput {
+  create?:
+    | ServiceMessageCreateWithoutRecieverInput[]
+    | ServiceMessageCreateWithoutRecieverInput;
+  connect?: ServiceMessageWhereUniqueInput[] | ServiceMessageWhereUniqueInput;
+}
+
+export interface ServiceMessageCreateWithoutRecieverInput {
+  sender: DoctorCreateOneWithoutSentMessagesInput;
+  subject: String;
+  body: String;
+}
+
+export interface DoctorCreateOneWithoutSentMessagesInput {
+  create?: DoctorCreateWithoutSentMessagesInput;
+  connect?: DoctorWhereUniqueInput;
+}
+
+export interface DoctorCreateWithoutSentMessagesInput {
+  fullName: String;
+  Bio?: String;
+  email: String;
+  password: String;
+  age?: Int;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  appointments?: AppointmentCreateManyWithoutServiceInput;
+  specialty: DoctorSpecialty;
+  recievedMessages?: ClientMessageCreateManyWithoutRecieverInput;
+}
+
+export interface ClientMessageCreateManyWithoutRecieverInput {
+  create?:
+    | ClientMessageCreateWithoutRecieverInput[]
+    | ClientMessageCreateWithoutRecieverInput;
+  connect?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
+}
+
+export interface ClientMessageCreateWithoutRecieverInput {
+  sentFrom: UserCreateOneWithoutSentMessagesInput;
+  subject: String;
+  body: String;
+}
+
+export interface UserCreateOneWithoutSentMessagesInput {
+  create?: UserCreateWithoutSentMessagesInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserCreateWithoutSentMessagesInput {
+  fullName: String;
+  email: String;
+  password: String;
+  age: Int;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  confirmation?: Boolean;
+  Appointments?: AppointmentCreateManyWithoutClientInput;
+  recievedMessages?: ServiceMessageCreateManyWithoutRecieverInput;
 }
 
 export interface AppointmentUpdateInput {
@@ -814,170 +1058,102 @@ export interface DoctorUpdateWithoutAppointmentsDataInput {
   gender?: Gender;
   avatar?: String;
   specialty?: DoctorSpecialty;
+  sentMessages?: ServiceMessageUpdateManyWithoutSenderInput;
+  recievedMessages?: ClientMessageUpdateManyWithoutRecieverInput;
 }
 
-export interface DoctorUpsertWithoutAppointmentsInput {
-  update: DoctorUpdateWithoutAppointmentsDataInput;
-  create: DoctorCreateWithoutAppointmentsInput;
-}
-
-export interface UserUpdateOneRequiredWithoutAppointmentsInput {
-  create?: UserCreateWithoutAppointmentsInput;
-  update?: UserUpdateWithoutAppointmentsDataInput;
-  upsert?: UserUpsertWithoutAppointmentsInput;
-  connect?: UserWhereUniqueInput;
-}
-
-export interface UserUpdateWithoutAppointmentsDataInput {
-  fullName?: String;
-  email?: String;
-  password?: String;
-  age?: Int;
-  phone?: Int;
-  gender?: Gender;
-  avatar?: String;
-  confirmation?: Boolean;
-}
-
-export interface UserUpsertWithoutAppointmentsInput {
-  update: UserUpdateWithoutAppointmentsDataInput;
-  create: UserCreateWithoutAppointmentsInput;
-}
-
-export interface AppointmentUpdateManyMutationInput {
-  title?: String;
-  startTime?: String;
-  endTime?: String;
-  duration?: AppointmentDuration;
-}
-
-export interface ClientMessageCreateInput {
-  sentFrom: UserCreateOneInput;
-  reciever: DoctorCreateOneInput;
-  subject: String;
-  body: String;
-}
-
-export interface UserCreateOneInput {
-  create?: UserCreateInput;
-  connect?: UserWhereUniqueInput;
-}
-
-export interface UserCreateInput {
-  fullName: String;
-  email: String;
-  password: String;
-  age: Int;
-  phone?: Int;
-  gender?: Gender;
-  avatar?: String;
-  confirmation?: Boolean;
-  Appointments?: AppointmentCreateManyWithoutClientInput;
-}
-
-export interface AppointmentCreateManyWithoutClientInput {
+export interface ServiceMessageUpdateManyWithoutSenderInput {
   create?:
-    | AppointmentCreateWithoutClientInput[]
-    | AppointmentCreateWithoutClientInput;
-  connect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
+    | ServiceMessageCreateWithoutSenderInput[]
+    | ServiceMessageCreateWithoutSenderInput;
+  delete?: ServiceMessageWhereUniqueInput[] | ServiceMessageWhereUniqueInput;
+  connect?: ServiceMessageWhereUniqueInput[] | ServiceMessageWhereUniqueInput;
+  set?: ServiceMessageWhereUniqueInput[] | ServiceMessageWhereUniqueInput;
+  disconnect?:
+    | ServiceMessageWhereUniqueInput[]
+    | ServiceMessageWhereUniqueInput;
+  update?:
+    | ServiceMessageUpdateWithWhereUniqueWithoutSenderInput[]
+    | ServiceMessageUpdateWithWhereUniqueWithoutSenderInput;
+  upsert?:
+    | ServiceMessageUpsertWithWhereUniqueWithoutSenderInput[]
+    | ServiceMessageUpsertWithWhereUniqueWithoutSenderInput;
+  deleteMany?:
+    | ServiceMessageScalarWhereInput[]
+    | ServiceMessageScalarWhereInput;
+  updateMany?:
+    | ServiceMessageUpdateManyWithWhereNestedInput[]
+    | ServiceMessageUpdateManyWithWhereNestedInput;
 }
 
-export interface AppointmentCreateWithoutClientInput {
-  service: DoctorCreateOneWithoutAppointmentsInput;
-  title?: String;
-  startTime: String;
-  endTime: String;
-  duration: AppointmentDuration;
+export interface ServiceMessageUpdateWithWhereUniqueWithoutSenderInput {
+  where: ServiceMessageWhereUniqueInput;
+  data: ServiceMessageUpdateWithoutSenderDataInput;
 }
 
-export interface DoctorCreateOneInput {
-  create?: DoctorCreateInput;
-  connect?: DoctorWhereUniqueInput;
-}
-
-export interface DoctorCreateInput {
-  fullName: String;
-  Bio?: String;
-  email: String;
-  password: String;
-  age?: Int;
-  phone?: Int;
-  gender?: Gender;
-  avatar?: String;
-  appointments?: AppointmentCreateManyWithoutServiceInput;
-  specialty: DoctorSpecialty;
-}
-
-export interface AppointmentCreateManyWithoutServiceInput {
-  create?:
-    | AppointmentCreateWithoutServiceInput[]
-    | AppointmentCreateWithoutServiceInput;
-  connect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
-}
-
-export interface AppointmentCreateWithoutServiceInput {
-  client: UserCreateOneWithoutAppointmentsInput;
-  title?: String;
-  startTime: String;
-  endTime: String;
-  duration: AppointmentDuration;
-}
-
-export interface ClientMessageUpdateManyMutationInput {
+export interface ServiceMessageUpdateWithoutSenderDataInput {
+  reciever?: UserUpdateOneRequiredWithoutRecievedMessagesInput;
   subject?: String;
   body?: String;
 }
 
-export interface DoctorUpdateInput {
+export interface UserUpdateOneRequiredWithoutRecievedMessagesInput {
+  create?: UserCreateWithoutRecievedMessagesInput;
+  update?: UserUpdateWithoutRecievedMessagesDataInput;
+  upsert?: UserUpsertWithoutRecievedMessagesInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserUpdateWithoutRecievedMessagesDataInput {
   fullName?: String;
-  Bio?: String;
   email?: String;
   password?: String;
   age?: Int;
   phone?: Int;
   gender?: Gender;
   avatar?: String;
-  appointments?: AppointmentUpdateManyWithoutServiceInput;
-  specialty?: DoctorSpecialty;
+  confirmation?: Boolean;
+  Appointments?: AppointmentUpdateManyWithoutClientInput;
+  sentMessages?: ClientMessageUpdateManyWithoutSentFromInput;
 }
 
-export interface AppointmentUpdateManyWithoutServiceInput {
+export interface AppointmentUpdateManyWithoutClientInput {
   create?:
-    | AppointmentCreateWithoutServiceInput[]
-    | AppointmentCreateWithoutServiceInput;
+    | AppointmentCreateWithoutClientInput[]
+    | AppointmentCreateWithoutClientInput;
   delete?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
   connect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
   set?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
   disconnect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
   update?:
-    | AppointmentUpdateWithWhereUniqueWithoutServiceInput[]
-    | AppointmentUpdateWithWhereUniqueWithoutServiceInput;
+    | AppointmentUpdateWithWhereUniqueWithoutClientInput[]
+    | AppointmentUpdateWithWhereUniqueWithoutClientInput;
   upsert?:
-    | AppointmentUpsertWithWhereUniqueWithoutServiceInput[]
-    | AppointmentUpsertWithWhereUniqueWithoutServiceInput;
+    | AppointmentUpsertWithWhereUniqueWithoutClientInput[]
+    | AppointmentUpsertWithWhereUniqueWithoutClientInput;
   deleteMany?: AppointmentScalarWhereInput[] | AppointmentScalarWhereInput;
   updateMany?:
     | AppointmentUpdateManyWithWhereNestedInput[]
     | AppointmentUpdateManyWithWhereNestedInput;
 }
 
-export interface AppointmentUpdateWithWhereUniqueWithoutServiceInput {
+export interface AppointmentUpdateWithWhereUniqueWithoutClientInput {
   where: AppointmentWhereUniqueInput;
-  data: AppointmentUpdateWithoutServiceDataInput;
+  data: AppointmentUpdateWithoutClientDataInput;
 }
 
-export interface AppointmentUpdateWithoutServiceDataInput {
-  client?: UserUpdateOneRequiredWithoutAppointmentsInput;
+export interface AppointmentUpdateWithoutClientDataInput {
+  service?: DoctorUpdateOneRequiredWithoutAppointmentsInput;
   title?: String;
   startTime?: String;
   endTime?: String;
   duration?: AppointmentDuration;
 }
 
-export interface AppointmentUpsertWithWhereUniqueWithoutServiceInput {
+export interface AppointmentUpsertWithWhereUniqueWithoutClientInput {
   where: AppointmentWhereUniqueInput;
-  update: AppointmentUpdateWithoutServiceDataInput;
-  create: AppointmentCreateWithoutServiceInput;
+  update: AppointmentUpdateWithoutClientDataInput;
+  create: AppointmentCreateWithoutClientInput;
 }
 
 export interface AppointmentScalarWhereInput {
@@ -1058,6 +1234,450 @@ export interface AppointmentUpdateManyDataInput {
   duration?: AppointmentDuration;
 }
 
+export interface ClientMessageUpdateManyWithoutSentFromInput {
+  create?:
+    | ClientMessageCreateWithoutSentFromInput[]
+    | ClientMessageCreateWithoutSentFromInput;
+  delete?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
+  connect?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
+  set?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
+  disconnect?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
+  update?:
+    | ClientMessageUpdateWithWhereUniqueWithoutSentFromInput[]
+    | ClientMessageUpdateWithWhereUniqueWithoutSentFromInput;
+  upsert?:
+    | ClientMessageUpsertWithWhereUniqueWithoutSentFromInput[]
+    | ClientMessageUpsertWithWhereUniqueWithoutSentFromInput;
+  deleteMany?: ClientMessageScalarWhereInput[] | ClientMessageScalarWhereInput;
+  updateMany?:
+    | ClientMessageUpdateManyWithWhereNestedInput[]
+    | ClientMessageUpdateManyWithWhereNestedInput;
+}
+
+export interface ClientMessageUpdateWithWhereUniqueWithoutSentFromInput {
+  where: ClientMessageWhereUniqueInput;
+  data: ClientMessageUpdateWithoutSentFromDataInput;
+}
+
+export interface ClientMessageUpdateWithoutSentFromDataInput {
+  reciever?: DoctorUpdateOneRequiredWithoutRecievedMessagesInput;
+  subject?: String;
+  body?: String;
+}
+
+export interface DoctorUpdateOneRequiredWithoutRecievedMessagesInput {
+  create?: DoctorCreateWithoutRecievedMessagesInput;
+  update?: DoctorUpdateWithoutRecievedMessagesDataInput;
+  upsert?: DoctorUpsertWithoutRecievedMessagesInput;
+  connect?: DoctorWhereUniqueInput;
+}
+
+export interface DoctorUpdateWithoutRecievedMessagesDataInput {
+  fullName?: String;
+  Bio?: String;
+  email?: String;
+  password?: String;
+  age?: Int;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  appointments?: AppointmentUpdateManyWithoutServiceInput;
+  specialty?: DoctorSpecialty;
+  sentMessages?: ServiceMessageUpdateManyWithoutSenderInput;
+}
+
+export interface AppointmentUpdateManyWithoutServiceInput {
+  create?:
+    | AppointmentCreateWithoutServiceInput[]
+    | AppointmentCreateWithoutServiceInput;
+  delete?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
+  connect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
+  set?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
+  disconnect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
+  update?:
+    | AppointmentUpdateWithWhereUniqueWithoutServiceInput[]
+    | AppointmentUpdateWithWhereUniqueWithoutServiceInput;
+  upsert?:
+    | AppointmentUpsertWithWhereUniqueWithoutServiceInput[]
+    | AppointmentUpsertWithWhereUniqueWithoutServiceInput;
+  deleteMany?: AppointmentScalarWhereInput[] | AppointmentScalarWhereInput;
+  updateMany?:
+    | AppointmentUpdateManyWithWhereNestedInput[]
+    | AppointmentUpdateManyWithWhereNestedInput;
+}
+
+export interface AppointmentUpdateWithWhereUniqueWithoutServiceInput {
+  where: AppointmentWhereUniqueInput;
+  data: AppointmentUpdateWithoutServiceDataInput;
+}
+
+export interface AppointmentUpdateWithoutServiceDataInput {
+  client?: UserUpdateOneRequiredWithoutAppointmentsInput;
+  title?: String;
+  startTime?: String;
+  endTime?: String;
+  duration?: AppointmentDuration;
+}
+
+export interface UserUpdateOneRequiredWithoutAppointmentsInput {
+  create?: UserCreateWithoutAppointmentsInput;
+  update?: UserUpdateWithoutAppointmentsDataInput;
+  upsert?: UserUpsertWithoutAppointmentsInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserUpdateWithoutAppointmentsDataInput {
+  fullName?: String;
+  email?: String;
+  password?: String;
+  age?: Int;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  confirmation?: Boolean;
+  sentMessages?: ClientMessageUpdateManyWithoutSentFromInput;
+  recievedMessages?: ServiceMessageUpdateManyWithoutRecieverInput;
+}
+
+export interface ServiceMessageUpdateManyWithoutRecieverInput {
+  create?:
+    | ServiceMessageCreateWithoutRecieverInput[]
+    | ServiceMessageCreateWithoutRecieverInput;
+  delete?: ServiceMessageWhereUniqueInput[] | ServiceMessageWhereUniqueInput;
+  connect?: ServiceMessageWhereUniqueInput[] | ServiceMessageWhereUniqueInput;
+  set?: ServiceMessageWhereUniqueInput[] | ServiceMessageWhereUniqueInput;
+  disconnect?:
+    | ServiceMessageWhereUniqueInput[]
+    | ServiceMessageWhereUniqueInput;
+  update?:
+    | ServiceMessageUpdateWithWhereUniqueWithoutRecieverInput[]
+    | ServiceMessageUpdateWithWhereUniqueWithoutRecieverInput;
+  upsert?:
+    | ServiceMessageUpsertWithWhereUniqueWithoutRecieverInput[]
+    | ServiceMessageUpsertWithWhereUniqueWithoutRecieverInput;
+  deleteMany?:
+    | ServiceMessageScalarWhereInput[]
+    | ServiceMessageScalarWhereInput;
+  updateMany?:
+    | ServiceMessageUpdateManyWithWhereNestedInput[]
+    | ServiceMessageUpdateManyWithWhereNestedInput;
+}
+
+export interface ServiceMessageUpdateWithWhereUniqueWithoutRecieverInput {
+  where: ServiceMessageWhereUniqueInput;
+  data: ServiceMessageUpdateWithoutRecieverDataInput;
+}
+
+export interface ServiceMessageUpdateWithoutRecieverDataInput {
+  sender?: DoctorUpdateOneRequiredWithoutSentMessagesInput;
+  subject?: String;
+  body?: String;
+}
+
+export interface DoctorUpdateOneRequiredWithoutSentMessagesInput {
+  create?: DoctorCreateWithoutSentMessagesInput;
+  update?: DoctorUpdateWithoutSentMessagesDataInput;
+  upsert?: DoctorUpsertWithoutSentMessagesInput;
+  connect?: DoctorWhereUniqueInput;
+}
+
+export interface DoctorUpdateWithoutSentMessagesDataInput {
+  fullName?: String;
+  Bio?: String;
+  email?: String;
+  password?: String;
+  age?: Int;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  appointments?: AppointmentUpdateManyWithoutServiceInput;
+  specialty?: DoctorSpecialty;
+  recievedMessages?: ClientMessageUpdateManyWithoutRecieverInput;
+}
+
+export interface ClientMessageUpdateManyWithoutRecieverInput {
+  create?:
+    | ClientMessageCreateWithoutRecieverInput[]
+    | ClientMessageCreateWithoutRecieverInput;
+  delete?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
+  connect?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
+  set?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
+  disconnect?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
+  update?:
+    | ClientMessageUpdateWithWhereUniqueWithoutRecieverInput[]
+    | ClientMessageUpdateWithWhereUniqueWithoutRecieverInput;
+  upsert?:
+    | ClientMessageUpsertWithWhereUniqueWithoutRecieverInput[]
+    | ClientMessageUpsertWithWhereUniqueWithoutRecieverInput;
+  deleteMany?: ClientMessageScalarWhereInput[] | ClientMessageScalarWhereInput;
+  updateMany?:
+    | ClientMessageUpdateManyWithWhereNestedInput[]
+    | ClientMessageUpdateManyWithWhereNestedInput;
+}
+
+export interface ClientMessageUpdateWithWhereUniqueWithoutRecieverInput {
+  where: ClientMessageWhereUniqueInput;
+  data: ClientMessageUpdateWithoutRecieverDataInput;
+}
+
+export interface ClientMessageUpdateWithoutRecieverDataInput {
+  sentFrom?: UserUpdateOneRequiredWithoutSentMessagesInput;
+  subject?: String;
+  body?: String;
+}
+
+export interface UserUpdateOneRequiredWithoutSentMessagesInput {
+  create?: UserCreateWithoutSentMessagesInput;
+  update?: UserUpdateWithoutSentMessagesDataInput;
+  upsert?: UserUpsertWithoutSentMessagesInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserUpdateWithoutSentMessagesDataInput {
+  fullName?: String;
+  email?: String;
+  password?: String;
+  age?: Int;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  confirmation?: Boolean;
+  Appointments?: AppointmentUpdateManyWithoutClientInput;
+  recievedMessages?: ServiceMessageUpdateManyWithoutRecieverInput;
+}
+
+export interface UserUpsertWithoutSentMessagesInput {
+  update: UserUpdateWithoutSentMessagesDataInput;
+  create: UserCreateWithoutSentMessagesInput;
+}
+
+export interface ClientMessageUpsertWithWhereUniqueWithoutRecieverInput {
+  where: ClientMessageWhereUniqueInput;
+  update: ClientMessageUpdateWithoutRecieverDataInput;
+  create: ClientMessageCreateWithoutRecieverInput;
+}
+
+export interface ClientMessageScalarWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  subject?: String;
+  subject_not?: String;
+  subject_in?: String[] | String;
+  subject_not_in?: String[] | String;
+  subject_lt?: String;
+  subject_lte?: String;
+  subject_gt?: String;
+  subject_gte?: String;
+  subject_contains?: String;
+  subject_not_contains?: String;
+  subject_starts_with?: String;
+  subject_not_starts_with?: String;
+  subject_ends_with?: String;
+  subject_not_ends_with?: String;
+  body?: String;
+  body_not?: String;
+  body_in?: String[] | String;
+  body_not_in?: String[] | String;
+  body_lt?: String;
+  body_lte?: String;
+  body_gt?: String;
+  body_gte?: String;
+  body_contains?: String;
+  body_not_contains?: String;
+  body_starts_with?: String;
+  body_not_starts_with?: String;
+  body_ends_with?: String;
+  body_not_ends_with?: String;
+  AND?: ClientMessageScalarWhereInput[] | ClientMessageScalarWhereInput;
+  OR?: ClientMessageScalarWhereInput[] | ClientMessageScalarWhereInput;
+  NOT?: ClientMessageScalarWhereInput[] | ClientMessageScalarWhereInput;
+}
+
+export interface ClientMessageUpdateManyWithWhereNestedInput {
+  where: ClientMessageScalarWhereInput;
+  data: ClientMessageUpdateManyDataInput;
+}
+
+export interface ClientMessageUpdateManyDataInput {
+  subject?: String;
+  body?: String;
+}
+
+export interface DoctorUpsertWithoutSentMessagesInput {
+  update: DoctorUpdateWithoutSentMessagesDataInput;
+  create: DoctorCreateWithoutSentMessagesInput;
+}
+
+export interface ServiceMessageUpsertWithWhereUniqueWithoutRecieverInput {
+  where: ServiceMessageWhereUniqueInput;
+  update: ServiceMessageUpdateWithoutRecieverDataInput;
+  create: ServiceMessageCreateWithoutRecieverInput;
+}
+
+export interface ServiceMessageScalarWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  subject?: String;
+  subject_not?: String;
+  subject_in?: String[] | String;
+  subject_not_in?: String[] | String;
+  subject_lt?: String;
+  subject_lte?: String;
+  subject_gt?: String;
+  subject_gte?: String;
+  subject_contains?: String;
+  subject_not_contains?: String;
+  subject_starts_with?: String;
+  subject_not_starts_with?: String;
+  subject_ends_with?: String;
+  subject_not_ends_with?: String;
+  body?: String;
+  body_not?: String;
+  body_in?: String[] | String;
+  body_not_in?: String[] | String;
+  body_lt?: String;
+  body_lte?: String;
+  body_gt?: String;
+  body_gte?: String;
+  body_contains?: String;
+  body_not_contains?: String;
+  body_starts_with?: String;
+  body_not_starts_with?: String;
+  body_ends_with?: String;
+  body_not_ends_with?: String;
+  AND?: ServiceMessageScalarWhereInput[] | ServiceMessageScalarWhereInput;
+  OR?: ServiceMessageScalarWhereInput[] | ServiceMessageScalarWhereInput;
+  NOT?: ServiceMessageScalarWhereInput[] | ServiceMessageScalarWhereInput;
+}
+
+export interface ServiceMessageUpdateManyWithWhereNestedInput {
+  where: ServiceMessageScalarWhereInput;
+  data: ServiceMessageUpdateManyDataInput;
+}
+
+export interface ServiceMessageUpdateManyDataInput {
+  subject?: String;
+  body?: String;
+}
+
+export interface UserUpsertWithoutAppointmentsInput {
+  update: UserUpdateWithoutAppointmentsDataInput;
+  create: UserCreateWithoutAppointmentsInput;
+}
+
+export interface AppointmentUpsertWithWhereUniqueWithoutServiceInput {
+  where: AppointmentWhereUniqueInput;
+  update: AppointmentUpdateWithoutServiceDataInput;
+  create: AppointmentCreateWithoutServiceInput;
+}
+
+export interface DoctorUpsertWithoutRecievedMessagesInput {
+  update: DoctorUpdateWithoutRecievedMessagesDataInput;
+  create: DoctorCreateWithoutRecievedMessagesInput;
+}
+
+export interface ClientMessageUpsertWithWhereUniqueWithoutSentFromInput {
+  where: ClientMessageWhereUniqueInput;
+  update: ClientMessageUpdateWithoutSentFromDataInput;
+  create: ClientMessageCreateWithoutSentFromInput;
+}
+
+export interface UserUpsertWithoutRecievedMessagesInput {
+  update: UserUpdateWithoutRecievedMessagesDataInput;
+  create: UserCreateWithoutRecievedMessagesInput;
+}
+
+export interface ServiceMessageUpsertWithWhereUniqueWithoutSenderInput {
+  where: ServiceMessageWhereUniqueInput;
+  update: ServiceMessageUpdateWithoutSenderDataInput;
+  create: ServiceMessageCreateWithoutSenderInput;
+}
+
+export interface DoctorUpsertWithoutAppointmentsInput {
+  update: DoctorUpdateWithoutAppointmentsDataInput;
+  create: DoctorCreateWithoutAppointmentsInput;
+}
+
+export interface AppointmentUpdateManyMutationInput {
+  title?: String;
+  startTime?: String;
+  endTime?: String;
+  duration?: AppointmentDuration;
+}
+
+export interface ClientMessageCreateInput {
+  sentFrom: UserCreateOneWithoutSentMessagesInput;
+  reciever: DoctorCreateOneWithoutRecievedMessagesInput;
+  subject: String;
+  body: String;
+}
+
+export interface ClientMessageUpdateInput {
+  sentFrom?: UserUpdateOneRequiredWithoutSentMessagesInput;
+  reciever?: DoctorUpdateOneRequiredWithoutRecievedMessagesInput;
+  subject?: String;
+  body?: String;
+}
+
+export interface ClientMessageUpdateManyMutationInput {
+  subject?: String;
+  body?: String;
+}
+
+export interface DoctorCreateInput {
+  fullName: String;
+  Bio?: String;
+  email: String;
+  password: String;
+  age?: Int;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  appointments?: AppointmentCreateManyWithoutServiceInput;
+  specialty: DoctorSpecialty;
+  sentMessages?: ServiceMessageCreateManyWithoutSenderInput;
+  recievedMessages?: ClientMessageCreateManyWithoutRecieverInput;
+}
+
+export interface DoctorUpdateInput {
+  fullName?: String;
+  Bio?: String;
+  email?: String;
+  password?: String;
+  age?: Int;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  appointments?: AppointmentUpdateManyWithoutServiceInput;
+  specialty?: DoctorSpecialty;
+  sentMessages?: ServiceMessageUpdateManyWithoutSenderInput;
+  recievedMessages?: ClientMessageUpdateManyWithoutRecieverInput;
+}
+
 export interface DoctorUpdateManyMutationInput {
   fullName?: String;
   Bio?: String;
@@ -1071,15 +1691,36 @@ export interface DoctorUpdateManyMutationInput {
 }
 
 export interface ServiceMessageCreateInput {
-  sender: DoctorCreateOneInput;
-  reciever: UserCreateOneInput;
+  sender: DoctorCreateOneWithoutSentMessagesInput;
+  reciever: UserCreateOneWithoutRecievedMessagesInput;
   subject: String;
   body: String;
+}
+
+export interface ServiceMessageUpdateInput {
+  sender?: DoctorUpdateOneRequiredWithoutSentMessagesInput;
+  reciever?: UserUpdateOneRequiredWithoutRecievedMessagesInput;
+  subject?: String;
+  body?: String;
 }
 
 export interface ServiceMessageUpdateManyMutationInput {
   subject?: String;
   body?: String;
+}
+
+export interface UserCreateInput {
+  fullName: String;
+  email: String;
+  password: String;
+  age: Int;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  confirmation?: Boolean;
+  Appointments?: AppointmentCreateManyWithoutClientInput;
+  sentMessages?: ClientMessageCreateManyWithoutSentFromInput;
+  recievedMessages?: ServiceMessageCreateManyWithoutRecieverInput;
 }
 
 export interface UserUpdateInput {
@@ -1092,45 +1733,8 @@ export interface UserUpdateInput {
   avatar?: String;
   confirmation?: Boolean;
   Appointments?: AppointmentUpdateManyWithoutClientInput;
-}
-
-export interface AppointmentUpdateManyWithoutClientInput {
-  create?:
-    | AppointmentCreateWithoutClientInput[]
-    | AppointmentCreateWithoutClientInput;
-  delete?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
-  connect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
-  set?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
-  disconnect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
-  update?:
-    | AppointmentUpdateWithWhereUniqueWithoutClientInput[]
-    | AppointmentUpdateWithWhereUniqueWithoutClientInput;
-  upsert?:
-    | AppointmentUpsertWithWhereUniqueWithoutClientInput[]
-    | AppointmentUpsertWithWhereUniqueWithoutClientInput;
-  deleteMany?: AppointmentScalarWhereInput[] | AppointmentScalarWhereInput;
-  updateMany?:
-    | AppointmentUpdateManyWithWhereNestedInput[]
-    | AppointmentUpdateManyWithWhereNestedInput;
-}
-
-export interface AppointmentUpdateWithWhereUniqueWithoutClientInput {
-  where: AppointmentWhereUniqueInput;
-  data: AppointmentUpdateWithoutClientDataInput;
-}
-
-export interface AppointmentUpdateWithoutClientDataInput {
-  service?: DoctorUpdateOneRequiredWithoutAppointmentsInput;
-  title?: String;
-  startTime?: String;
-  endTime?: String;
-  duration?: AppointmentDuration;
-}
-
-export interface AppointmentUpsertWithWhereUniqueWithoutClientInput {
-  where: AppointmentWhereUniqueInput;
-  update: AppointmentUpdateWithoutClientDataInput;
-  create: AppointmentCreateWithoutClientInput;
+  sentMessages?: ClientMessageUpdateManyWithoutSentFromInput;
+  recievedMessages?: ServiceMessageUpdateManyWithoutRecieverInput;
 }
 
 export interface UserUpdateManyMutationInput {
@@ -1280,6 +1884,28 @@ export interface DoctorPromise extends Promise<Doctor>, Fragmentable {
     }
   ) => T;
   specialty: () => Promise<DoctorSpecialty>;
+  sentMessages: <T = FragmentableArray<ServiceMessage>>(
+    args?: {
+      where?: ServiceMessageWhereInput;
+      orderBy?: ServiceMessageOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
+  recievedMessages: <T = FragmentableArray<ClientMessage>>(
+    args?: {
+      where?: ClientMessageWhereInput;
+      orderBy?: ClientMessageOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
 }
 
 export interface DoctorSubscription
@@ -1306,6 +1932,54 @@ export interface DoctorSubscription
     }
   ) => T;
   specialty: () => Promise<AsyncIterator<DoctorSpecialty>>;
+  sentMessages: <T = Promise<AsyncIterator<ServiceMessageSubscription>>>(
+    args?: {
+      where?: ServiceMessageWhereInput;
+      orderBy?: ServiceMessageOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
+  recievedMessages: <T = Promise<AsyncIterator<ClientMessageSubscription>>>(
+    args?: {
+      where?: ClientMessageWhereInput;
+      orderBy?: ClientMessageOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
+}
+
+export interface ServiceMessage {
+  id: ID_Output;
+  subject: String;
+  body: String;
+}
+
+export interface ServiceMessagePromise
+  extends Promise<ServiceMessage>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  sender: <T = DoctorPromise>() => T;
+  reciever: <T = UserPromise>() => T;
+  subject: () => Promise<String>;
+  body: () => Promise<String>;
+}
+
+export interface ServiceMessageSubscription
+  extends Promise<AsyncIterator<ServiceMessage>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  sender: <T = DoctorSubscription>() => T;
+  reciever: <T = UserSubscription>() => T;
+  subject: () => Promise<AsyncIterator<String>>;
+  body: () => Promise<AsyncIterator<String>>;
 }
 
 export interface User {
@@ -1341,6 +2015,28 @@ export interface UserPromise extends Promise<User>, Fragmentable {
       last?: Int;
     }
   ) => T;
+  sentMessages: <T = FragmentableArray<ClientMessage>>(
+    args?: {
+      where?: ClientMessageWhereInput;
+      orderBy?: ClientMessageOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
+  recievedMessages: <T = FragmentableArray<ServiceMessage>>(
+    args?: {
+      where?: ServiceMessageWhereInput;
+      orderBy?: ServiceMessageOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
 }
 
 export interface UserSubscription
@@ -1366,6 +2062,54 @@ export interface UserSubscription
       last?: Int;
     }
   ) => T;
+  sentMessages: <T = Promise<AsyncIterator<ClientMessageSubscription>>>(
+    args?: {
+      where?: ClientMessageWhereInput;
+      orderBy?: ClientMessageOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
+  recievedMessages: <T = Promise<AsyncIterator<ServiceMessageSubscription>>>(
+    args?: {
+      where?: ServiceMessageWhereInput;
+      orderBy?: ServiceMessageOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
+}
+
+export interface ClientMessage {
+  id: ID_Output;
+  subject: String;
+  body: String;
+}
+
+export interface ClientMessagePromise
+  extends Promise<ClientMessage>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  sentFrom: <T = UserPromise>() => T;
+  reciever: <T = DoctorPromise>() => T;
+  subject: () => Promise<String>;
+  body: () => Promise<String>;
+}
+
+export interface ClientMessageSubscription
+  extends Promise<AsyncIterator<ClientMessage>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  sentFrom: <T = UserSubscription>() => T;
+  reciever: <T = DoctorSubscription>() => T;
+  subject: () => Promise<AsyncIterator<String>>;
+  body: () => Promise<AsyncIterator<String>>;
 }
 
 export interface AppointmentConnection {
@@ -1445,29 +2189,6 @@ export interface AggregateAppointmentSubscription
   extends Promise<AsyncIterator<AggregateAppointment>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface ClientMessage {
-  subject: String;
-  body: String;
-}
-
-export interface ClientMessagePromise
-  extends Promise<ClientMessage>,
-    Fragmentable {
-  sentFrom: <T = UserPromise>() => T;
-  reciever: <T = DoctorPromise>() => T;
-  subject: () => Promise<String>;
-  body: () => Promise<String>;
-}
-
-export interface ClientMessageSubscription
-  extends Promise<AsyncIterator<ClientMessage>>,
-    Fragmentable {
-  sentFrom: <T = UserSubscription>() => T;
-  reciever: <T = DoctorSubscription>() => T;
-  subject: () => Promise<AsyncIterator<String>>;
-  body: () => Promise<AsyncIterator<String>>;
 }
 
 export interface ClientMessageConnection {
@@ -1578,29 +2299,6 @@ export interface AggregateDoctorSubscription
   extends Promise<AsyncIterator<AggregateDoctor>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface ServiceMessage {
-  subject: String;
-  body: String;
-}
-
-export interface ServiceMessagePromise
-  extends Promise<ServiceMessage>,
-    Fragmentable {
-  sender: <T = DoctorPromise>() => T;
-  reciever: <T = UserPromise>() => T;
-  subject: () => Promise<String>;
-  body: () => Promise<String>;
-}
-
-export interface ServiceMessageSubscription
-  extends Promise<AsyncIterator<ServiceMessage>>,
-    Fragmentable {
-  sender: <T = DoctorSubscription>() => T;
-  reciever: <T = UserSubscription>() => T;
-  subject: () => Promise<AsyncIterator<String>>;
-  body: () => Promise<AsyncIterator<String>>;
 }
 
 export interface ServiceMessageConnection {
@@ -1808,6 +2506,7 @@ export interface ClientMessageSubscriptionPayloadSubscription
 }
 
 export interface ClientMessagePreviousValues {
+  id: ID_Output;
   subject: String;
   body: String;
 }
@@ -1815,6 +2514,7 @@ export interface ClientMessagePreviousValues {
 export interface ClientMessagePreviousValuesPromise
   extends Promise<ClientMessagePreviousValues>,
     Fragmentable {
+  id: () => Promise<ID_Output>;
   subject: () => Promise<String>;
   body: () => Promise<String>;
 }
@@ -1822,6 +2522,7 @@ export interface ClientMessagePreviousValuesPromise
 export interface ClientMessagePreviousValuesSubscription
   extends Promise<AsyncIterator<ClientMessagePreviousValues>>,
     Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
   subject: () => Promise<AsyncIterator<String>>;
   body: () => Promise<AsyncIterator<String>>;
 }
@@ -1920,6 +2621,7 @@ export interface ServiceMessageSubscriptionPayloadSubscription
 }
 
 export interface ServiceMessagePreviousValues {
+  id: ID_Output;
   subject: String;
   body: String;
 }
@@ -1927,6 +2629,7 @@ export interface ServiceMessagePreviousValues {
 export interface ServiceMessagePreviousValuesPromise
   extends Promise<ServiceMessagePreviousValues>,
     Fragmentable {
+  id: () => Promise<ID_Output>;
   subject: () => Promise<String>;
   body: () => Promise<String>;
 }
@@ -1934,6 +2637,7 @@ export interface ServiceMessagePreviousValuesPromise
 export interface ServiceMessagePreviousValuesSubscription
   extends Promise<AsyncIterator<ServiceMessagePreviousValues>>,
     Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
   subject: () => Promise<AsyncIterator<String>>;
   body: () => Promise<AsyncIterator<String>>;
 }

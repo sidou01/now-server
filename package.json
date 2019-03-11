@@ -26,6 +26,7 @@
     "jsonwebtoken": "^8.4.0",
     "lodash": "^4.17.11",
     "merge-graphql-schemas": "^1.5.8",
-    "prisma-client-lib": "^1.28.0-beta"
+    "prisma-client-lib": "^1.28.0-beta",
+    "subscriptions-transport-ws": "^0.9.15"
   }
 }

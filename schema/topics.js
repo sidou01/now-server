@@ -1,0 +1,1 @@
+export const MESSAGE_TO_CLIENT = "MESSAGE_TO_CLIENT"
