@@ -777,7 +777,7 @@ export interface ClientMessageWhereInput {
   id_not_starts_with?: ID_Input;
   id_ends_with?: ID_Input;
   id_not_ends_with?: ID_Input;
-  sentFrom?: UserWhereInput;
+  sender?: UserWhereInput;
   reciever?: DoctorWhereInput;
   subject?: String;
   subject_not?: String;
@@ -886,7 +886,7 @@ export interface UserCreateWithoutRecievedMessagesInput {
   avatar?: String;
   confirmation?: Boolean;
   Appointments?: AppointmentCreateManyWithoutClientInput;
-  sentMessages?: ClientMessageCreateManyWithoutSentFromInput;
+  sentMessages?: ClientMessageCreateManyWithoutSenderInput;
 }
 
 export interface AppointmentCreateManyWithoutClientInput {
@@ -904,14 +904,14 @@ export interface AppointmentCreateWithoutClientInput {
   duration: AppointmentDuration;
 }
 
-export interface ClientMessageCreateManyWithoutSentFromInput {
+export interface ClientMessageCreateManyWithoutSenderInput {
   create?:
-    | ClientMessageCreateWithoutSentFromInput[]
-    | ClientMessageCreateWithoutSentFromInput;
+    | ClientMessageCreateWithoutSenderInput[]
+    | ClientMessageCreateWithoutSenderInput;
   connect?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
 }
 
-export interface ClientMessageCreateWithoutSentFromInput {
+export interface ClientMessageCreateWithoutSenderInput {
   reciever: DoctorCreateOneWithoutRecievedMessagesInput;
   subject: String;
   body: String;
@@ -965,7 +965,7 @@ export interface UserCreateWithoutAppointmentsInput {
   gender?: Gender;
   avatar?: String;
   confirmation?: Boolean;
-  sentMessages?: ClientMessageCreateManyWithoutSentFromInput;
+  sentMessages?: ClientMessageCreateManyWithoutSenderInput;
   recievedMessages?: ServiceMessageCreateManyWithoutRecieverInput;
 }
 
@@ -1009,7 +1009,7 @@ export interface ClientMessageCreateManyWithoutRecieverInput {
 }
 
 export interface ClientMessageCreateWithoutRecieverInput {
-  sentFrom: UserCreateOneWithoutSentMessagesInput;
+  sender: UserCreateOneWithoutSentMessagesInput;
   subject: String;
   body: String;
 }
@@ -1114,7 +1114,7 @@ export interface UserUpdateWithoutRecievedMessagesDataInput {
   avatar?: String;
   confirmation?: Boolean;
   Appointments?: AppointmentUpdateManyWithoutClientInput;
-  sentMessages?: ClientMessageUpdateManyWithoutSentFromInput;
+  sentMessages?: ClientMessageUpdateManyWithoutSenderInput;
 }
 
 export interface AppointmentUpdateManyWithoutClientInput {
@@ -1234,32 +1234,32 @@ export interface AppointmentUpdateManyDataInput {
   duration?: AppointmentDuration;
 }
 
-export interface ClientMessageUpdateManyWithoutSentFromInput {
+export interface ClientMessageUpdateManyWithoutSenderInput {
   create?:
-    | ClientMessageCreateWithoutSentFromInput[]
-    | ClientMessageCreateWithoutSentFromInput;
+    | ClientMessageCreateWithoutSenderInput[]
+    | ClientMessageCreateWithoutSenderInput;
   delete?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
   connect?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
   set?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
   disconnect?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
   update?:
-    | ClientMessageUpdateWithWhereUniqueWithoutSentFromInput[]
-    | ClientMessageUpdateWithWhereUniqueWithoutSentFromInput;
+    | ClientMessageUpdateWithWhereUniqueWithoutSenderInput[]
+    | ClientMessageUpdateWithWhereUniqueWithoutSenderInput;
   upsert?:
-    | ClientMessageUpsertWithWhereUniqueWithoutSentFromInput[]
-    | ClientMessageUpsertWithWhereUniqueWithoutSentFromInput;
+    | ClientMessageUpsertWithWhereUniqueWithoutSenderInput[]
+    | ClientMessageUpsertWithWhereUniqueWithoutSenderInput;
   deleteMany?: ClientMessageScalarWhereInput[] | ClientMessageScalarWhereInput;
   updateMany?:
     | ClientMessageUpdateManyWithWhereNestedInput[]
     | ClientMessageUpdateManyWithWhereNestedInput;
 }
 
-export interface ClientMessageUpdateWithWhereUniqueWithoutSentFromInput {
+export interface ClientMessageUpdateWithWhereUniqueWithoutSenderInput {
   where: ClientMessageWhereUniqueInput;
-  data: ClientMessageUpdateWithoutSentFromDataInput;
+  data: ClientMessageUpdateWithoutSenderDataInput;
 }
 
-export interface ClientMessageUpdateWithoutSentFromDataInput {
+export interface ClientMessageUpdateWithoutSenderDataInput {
   reciever?: DoctorUpdateOneRequiredWithoutRecievedMessagesInput;
   subject?: String;
   body?: String;
@@ -1335,7 +1335,7 @@ export interface UserUpdateWithoutAppointmentsDataInput {
   gender?: Gender;
   avatar?: String;
   confirmation?: Boolean;
-  sentMessages?: ClientMessageUpdateManyWithoutSentFromInput;
+  sentMessages?: ClientMessageUpdateManyWithoutSenderInput;
   recievedMessages?: ServiceMessageUpdateManyWithoutRecieverInput;
 }
 
@@ -1421,7 +1421,7 @@ export interface ClientMessageUpdateWithWhereUniqueWithoutRecieverInput {
 }
 
 export interface ClientMessageUpdateWithoutRecieverDataInput {
-  sentFrom?: UserUpdateOneRequiredWithoutSentMessagesInput;
+  sender?: UserUpdateOneRequiredWithoutSentMessagesInput;
   subject?: String;
   body?: String;
 }
@@ -1600,10 +1600,10 @@ export interface DoctorUpsertWithoutRecievedMessagesInput {
   create: DoctorCreateWithoutRecievedMessagesInput;
 }
 
-export interface ClientMessageUpsertWithWhereUniqueWithoutSentFromInput {
+export interface ClientMessageUpsertWithWhereUniqueWithoutSenderInput {
   where: ClientMessageWhereUniqueInput;
-  update: ClientMessageUpdateWithoutSentFromDataInput;
-  create: ClientMessageCreateWithoutSentFromInput;
+  update: ClientMessageUpdateWithoutSenderDataInput;
+  create: ClientMessageCreateWithoutSenderInput;
 }
 
 export interface UserUpsertWithoutRecievedMessagesInput {
@@ -1630,14 +1630,14 @@ export interface AppointmentUpdateManyMutationInput {
 }
 
 export interface ClientMessageCreateInput {
-  sentFrom: UserCreateOneWithoutSentMessagesInput;
+  sender: UserCreateOneWithoutSentMessagesInput;
   reciever: DoctorCreateOneWithoutRecievedMessagesInput;
   subject: String;
   body: String;
 }
 
 export interface ClientMessageUpdateInput {
-  sentFrom?: UserUpdateOneRequiredWithoutSentMessagesInput;
+  sender?: UserUpdateOneRequiredWithoutSentMessagesInput;
   reciever?: DoctorUpdateOneRequiredWithoutRecievedMessagesInput;
   subject?: String;
   body?: String;
@@ -1719,7 +1719,7 @@ export interface UserCreateInput {
   avatar?: String;
   confirmation?: Boolean;
   Appointments?: AppointmentCreateManyWithoutClientInput;
-  sentMessages?: ClientMessageCreateManyWithoutSentFromInput;
+  sentMessages?: ClientMessageCreateManyWithoutSenderInput;
   recievedMessages?: ServiceMessageCreateManyWithoutRecieverInput;
 }
 
@@ -1733,7 +1733,7 @@ export interface UserUpdateInput {
   avatar?: String;
   confirmation?: Boolean;
   Appointments?: AppointmentUpdateManyWithoutClientInput;
-  sentMessages?: ClientMessageUpdateManyWithoutSentFromInput;
+  sentMessages?: ClientMessageUpdateManyWithoutSenderInput;
   recievedMessages?: ServiceMessageUpdateManyWithoutRecieverInput;
 }
 
@@ -2096,7 +2096,7 @@ export interface ClientMessagePromise
   extends Promise<ClientMessage>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  sentFrom: <T = UserPromise>() => T;
+  sender: <T = UserPromise>() => T;
   reciever: <T = DoctorPromise>() => T;
   subject: () => Promise<String>;
   body: () => Promise<String>;
@@ -2106,7 +2106,7 @@ export interface ClientMessageSubscription
   extends Promise<AsyncIterator<ClientMessage>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  sentFrom: <T = UserSubscription>() => T;
+  sender: <T = UserSubscription>() => T;
   reciever: <T = DoctorSubscription>() => T;
   subject: () => Promise<AsyncIterator<String>>;
   body: () => Promise<AsyncIterator<String>>;

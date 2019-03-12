@@ -60,7 +60,7 @@ enum DoctorSpecialty {
 
 type ClientMessage {
   id: ID! @unique
-  sentFrom: User!
+  sender: User!
   reciever: Doctor!
   subject: String!
   body: String!

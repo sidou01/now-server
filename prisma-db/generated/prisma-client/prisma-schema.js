@@ -365,7 +365,7 @@ type BatchPayload {
 
 type ClientMessage {
   id: ID!
-  sentFrom: User!
+  sender: User!
   reciever: Doctor!
   subject: String!
   body: String!
@@ -378,7 +378,7 @@ type ClientMessageConnection {
 }
 
 input ClientMessageCreateInput {
-  sentFrom: UserCreateOneWithoutSentMessagesInput!
+  sender: UserCreateOneWithoutSentMessagesInput!
   reciever: DoctorCreateOneWithoutRecievedMessagesInput!
   subject: String!
   body: String!
@@ -389,18 +389,18 @@ input ClientMessageCreateManyWithoutRecieverInput {
   connect: [ClientMessageWhereUniqueInput!]
 }
 
-input ClientMessageCreateManyWithoutSentFromInput {
-  create: [ClientMessageCreateWithoutSentFromInput!]
+input ClientMessageCreateManyWithoutSenderInput {
+  create: [ClientMessageCreateWithoutSenderInput!]
   connect: [ClientMessageWhereUniqueInput!]
 }
 
 input ClientMessageCreateWithoutRecieverInput {
-  sentFrom: UserCreateOneWithoutSentMessagesInput!
+  sender: UserCreateOneWithoutSentMessagesInput!
   subject: String!
   body: String!
 }
 
-input ClientMessageCreateWithoutSentFromInput {
+input ClientMessageCreateWithoutSenderInput {
   reciever: DoctorCreateOneWithoutRecievedMessagesInput!
   subject: String!
   body: String!
@@ -497,7 +497,7 @@ input ClientMessageSubscriptionWhereInput {
 }
 
 input ClientMessageUpdateInput {
-  sentFrom: UserUpdateOneRequiredWithoutSentMessagesInput
+  sender: UserUpdateOneRequiredWithoutSentMessagesInput
   reciever: DoctorUpdateOneRequiredWithoutRecievedMessagesInput
   subject: String
   body: String
@@ -525,14 +525,14 @@ input ClientMessageUpdateManyWithoutRecieverInput {
   updateMany: [ClientMessageUpdateManyWithWhereNestedInput!]
 }
 
-input ClientMessageUpdateManyWithoutSentFromInput {
-  create: [ClientMessageCreateWithoutSentFromInput!]
+input ClientMessageUpdateManyWithoutSenderInput {
+  create: [ClientMessageCreateWithoutSenderInput!]
   delete: [ClientMessageWhereUniqueInput!]
   connect: [ClientMessageWhereUniqueInput!]
   set: [ClientMessageWhereUniqueInput!]
   disconnect: [ClientMessageWhereUniqueInput!]
-  update: [ClientMessageUpdateWithWhereUniqueWithoutSentFromInput!]
-  upsert: [ClientMessageUpsertWithWhereUniqueWithoutSentFromInput!]
+  update: [ClientMessageUpdateWithWhereUniqueWithoutSenderInput!]
+  upsert: [ClientMessageUpsertWithWhereUniqueWithoutSenderInput!]
   deleteMany: [ClientMessageScalarWhereInput!]
   updateMany: [ClientMessageUpdateManyWithWhereNestedInput!]
 }
@@ -543,12 +543,12 @@ input ClientMessageUpdateManyWithWhereNestedInput {
 }
 
 input ClientMessageUpdateWithoutRecieverDataInput {
-  sentFrom: UserUpdateOneRequiredWithoutSentMessagesInput
+  sender: UserUpdateOneRequiredWithoutSentMessagesInput
   subject: String
   body: String
 }
 
-input ClientMessageUpdateWithoutSentFromDataInput {
+input ClientMessageUpdateWithoutSenderDataInput {
   reciever: DoctorUpdateOneRequiredWithoutRecievedMessagesInput
   subject: String
   body: String
@@ -559,9 +559,9 @@ input ClientMessageUpdateWithWhereUniqueWithoutRecieverInput {
   data: ClientMessageUpdateWithoutRecieverDataInput!
 }
 
-input ClientMessageUpdateWithWhereUniqueWithoutSentFromInput {
+input ClientMessageUpdateWithWhereUniqueWithoutSenderInput {
   where: ClientMessageWhereUniqueInput!
-  data: ClientMessageUpdateWithoutSentFromDataInput!
+  data: ClientMessageUpdateWithoutSenderDataInput!
 }
 
 input ClientMessageUpsertWithWhereUniqueWithoutRecieverInput {
@@ -570,10 +570,10 @@ input ClientMessageUpsertWithWhereUniqueWithoutRecieverInput {
   create: ClientMessageCreateWithoutRecieverInput!
 }
 
-input ClientMessageUpsertWithWhereUniqueWithoutSentFromInput {
+input ClientMessageUpsertWithWhereUniqueWithoutSenderInput {
   where: ClientMessageWhereUniqueInput!
-  update: ClientMessageUpdateWithoutSentFromDataInput!
-  create: ClientMessageCreateWithoutSentFromInput!
+  update: ClientMessageUpdateWithoutSenderDataInput!
+  create: ClientMessageCreateWithoutSenderInput!
 }
 
 input ClientMessageWhereInput {
@@ -591,7 +591,7 @@ input ClientMessageWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
-  sentFrom: UserWhereInput
+  sender: UserWhereInput
   reciever: DoctorWhereInput
   subject: String
   subject_not: String
@@ -1411,7 +1411,7 @@ input UserCreateInput {
   avatar: String
   confirmation: Boolean
   Appointments: AppointmentCreateManyWithoutClientInput
-  sentMessages: ClientMessageCreateManyWithoutSentFromInput
+  sentMessages: ClientMessageCreateManyWithoutSenderInput
   recievedMessages: ServiceMessageCreateManyWithoutRecieverInput
 }
 
@@ -1439,7 +1439,7 @@ input UserCreateWithoutAppointmentsInput {
   gender: Gender
   avatar: String
   confirmation: Boolean
-  sentMessages: ClientMessageCreateManyWithoutSentFromInput
+  sentMessages: ClientMessageCreateManyWithoutSenderInput
   recievedMessages: ServiceMessageCreateManyWithoutRecieverInput
 }
 
@@ -1453,7 +1453,7 @@ input UserCreateWithoutRecievedMessagesInput {
   avatar: String
   confirmation: Boolean
   Appointments: AppointmentCreateManyWithoutClientInput
-  sentMessages: ClientMessageCreateManyWithoutSentFromInput
+  sentMessages: ClientMessageCreateManyWithoutSenderInput
 }
 
 input UserCreateWithoutSentMessagesInput {
@@ -1539,7 +1539,7 @@ input UserUpdateInput {
   avatar: String
   confirmation: Boolean
   Appointments: AppointmentUpdateManyWithoutClientInput
-  sentMessages: ClientMessageUpdateManyWithoutSentFromInput
+  sentMessages: ClientMessageUpdateManyWithoutSenderInput
   recievedMessages: ServiceMessageUpdateManyWithoutRecieverInput
 }
 
@@ -1584,7 +1584,7 @@ input UserUpdateWithoutAppointmentsDataInput {
   gender: Gender
   avatar: String
   confirmation: Boolean
-  sentMessages: ClientMessageUpdateManyWithoutSentFromInput
+  sentMessages: ClientMessageUpdateManyWithoutSenderInput
   recievedMessages: ServiceMessageUpdateManyWithoutRecieverInput
 }
 
@@ -1598,7 +1598,7 @@ input UserUpdateWithoutRecievedMessagesDataInput {
   avatar: String
   confirmation: Boolean
   Appointments: AppointmentUpdateManyWithoutClientInput
-  sentMessages: ClientMessageUpdateManyWithoutSentFromInput
+  sentMessages: ClientMessageUpdateManyWithoutSenderInput
 }
 
 input UserUpdateWithoutSentMessagesDataInput {

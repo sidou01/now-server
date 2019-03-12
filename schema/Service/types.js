@@ -38,7 +38,7 @@ export default `
   }
 
   type Subscription {
-    messageToService(clientEmail: String!): ClientMessage!
+    messageToServiceAdded: ClientMessage!
   }
 
   input addDoctorInput {

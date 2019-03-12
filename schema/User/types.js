@@ -21,10 +21,12 @@ export default `
   type Mutation {
     register(input: registerInput): User!
     login(input: loginInput): String!
+    
+    sendMessageToService(clientId: ID!, serviceId: ID!, subject: String, body: String!): ClientMessage!
   }
 
   type Subscription {
-    messageToClientAdded(clientId: ID!): ServiceMessage!
+    messageToClientAdded: ServiceMessage!
   }
 
   input registerInput {
