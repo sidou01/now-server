@@ -34,7 +34,7 @@ export default `
     loginDoctor(input: loginInput): String!
     addDoctor(input: addDoctorInput): Doctor!
 
-    sendMessageToClient(clientId: ID!, serviceId: ID!, subject: String, body: String!): ServiceMessage!
+    sendMessageToClient(clientId: ID!, subject: String, body: String!): ServiceMessage!
   }
 
   type Subscription {

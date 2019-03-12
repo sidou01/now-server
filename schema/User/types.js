@@ -22,7 +22,7 @@ export default `
     register(input: registerInput): User!
     login(input: loginInput): String!
     
-    sendMessageToService(clientId: ID!, serviceId: ID!, subject: String, body: String!): ClientMessage!
+    sendMessageToService(serviceId: ID!, subject: String, body: String!): ClientMessage!
   }
 
   type Subscription {

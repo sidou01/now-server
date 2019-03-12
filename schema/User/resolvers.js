@@ -18,6 +18,7 @@ export default {
         users {
           id
           fullName
+          email
           gender
           age
           Appointments {
@@ -51,11 +52,12 @@ export default {
     }
   },
   Mutation: {
-    sendMessageToService: async (_, args, { prisma, pubsub }) => {
+    sendMessageToService: async (_, args, { prisma, pubsub, user }) => {
+      if (!user) throw new AuthenticationError('401 unathorized')
       const message = await prisma.createClientMessage({
         sender: {
           connect: {
-            id: args.clientId
+            id: user.id
           }
         },
         reciever: {

@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { MESSAGE_TO_CLIENT, MESSAGE_TO_SERVICE } from '../topics'
-import { messageToClient } from '../../fragments'
-import { withFilter } from 'apollo-server'
+import { messageToClient, AuthenticatedUserInfo } from '../../fragments'
+import { withFilter, AuthenticationError } from 'apollo-server'
 import { pubsub } from '../../server'
 
 export default {
@@ -10,11 +10,12 @@ export default {
     allDoctors: async (_, __, { prisma }) => await prisma.doctors()
   },
   Mutation: {
-    sendMessageToClient: async (_, args, { prisma, pubsub }) => {
+    sendMessageToClient: async (_, args, { prisma, pubsub, user }) => {
+      if (!user) throw new AuthenticationError('401 unathorized')
       const message = await prisma.createServiceMessage({
         sender: {
           connect: {
-            id: args.serviceId
+            id: user.id
           }
         },
         reciever: {
@@ -95,7 +96,6 @@ export default {
       subscribe: withFilter(
         () => pubsub.asyncIterator(MESSAGE_TO_SERVICE),
         (payload, _, context) => {
-          console.log(payload.messageToServiceAdded)
           return payload.messageToServiceAdded.reciever.id === context.user.id
         }
       )

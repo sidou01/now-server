@@ -34,6 +34,7 @@ const server = new ApolloServer({
     }
   },
   context: ({ req, connection }) => {
+    //websocket connection
     if (connection) {
       return {
         prisma,
@@ -42,6 +43,7 @@ const server = new ApolloServer({
         user: connection.context.user
       }
     }
+    //HTTP connection
     const user = getUser(req.headers.authorization, process.env.JWT_SECRET)
     return {
       prisma,
@@ -62,7 +64,6 @@ server.installSubscriptionHandlers(httpServer)
 
 //seperate route on the server that will render success or failure and a button to go back to the main app (client react app)
 app.get('/email/confirmation/:token', async (req, res) => {
-  console.log(process.env.SENDGRID_API_KEY)
   const decoded = jwt.verify(req.params.token, process.env.JWT_EMAIL_SECRET)
   const userFromDb = await prisma.updateUser({
     data: {
