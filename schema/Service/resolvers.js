@@ -1,8 +1,9 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { MESSAGE_TO_CLIENT } from '../topics'
-import { prisma } from '../../prisma-db/generated/prisma-client'
-import { messageFromService } from '../../fragments'
+import { MESSAGE_TO_CLIENT, MESSAGE_TO_SERVICE } from '../topics'
+import { messageToClient } from '../../fragments'
+import { withFilter } from 'apollo-server'
+import { pubsub } from '../../server'
 
 export default {
   Query: {
@@ -26,7 +27,7 @@ export default {
       })
       const messageToPublish = await prisma
         .serviceMessage({ id: message.id })
-        .$fragment(messageFromService)
+        .$fragment(messageToClient)
       pubsub.publish(MESSAGE_TO_CLIENT, {
         messageToClientAdded: messageToPublish
       })
@@ -87,6 +88,17 @@ export default {
         avatar,
         specialty
       })
+    }
+  },
+  Subscription: {
+    messageToServiceAdded: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(MESSAGE_TO_SERVICE),
+        (payload, _, context) => {
+          console.log(payload.messageToServiceAdded)
+          return payload.messageToServiceAdded.reciever.id === context.user.id
+        }
+      )
     }
   }
 }

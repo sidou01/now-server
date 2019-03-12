@@ -3,9 +3,10 @@ import sgMail from '@sendgrid/mail'
 import { AuthenticationError } from 'apollo-server'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { MESSAGE_TO_CLIENT } from '../topics'
+import { MESSAGE_TO_CLIENT, MESSAGE_TO_SERVICE } from '../topics'
 import { withFilter } from 'apollo-server'
 import { pubsub } from '../../server'
+import { messageToService } from '../../fragments'
 
 export default {
   Query: {
@@ -50,6 +51,29 @@ export default {
     }
   },
   Mutation: {
+    sendMessageToService: async (_, args, { prisma, pubsub }) => {
+      const message = await prisma.createClientMessage({
+        sender: {
+          connect: {
+            id: args.clientId
+          }
+        },
+        reciever: {
+          connect: {
+            id: args.serviceId
+          }
+        },
+        subject: args.subject,
+        body: args.body
+      })
+      const messageToPublish = await prisma
+        .clientMessage({ id: message.id })
+        .$fragment(messageToService)
+      pubsub.publish(MESSAGE_TO_SERVICE, {
+        messageToServiceAdded: messageToPublish
+      })
+      return message
+    },
     register: async (
       _,
       { input: { fullName, email, password, age, phone, avatar, gender } },
@@ -122,10 +146,8 @@ export default {
     messageToClientAdded: {
       subscribe: withFilter(
         () => pubsub.asyncIterator(MESSAGE_TO_CLIENT),
-        (payload, args) => {
-          console.log(payload.messageToClientAdded)
-          console.log('args', args)
-          return payload.messageToClientAdded.reciever.id === args.clientId
+        (payload, _, context) => {
+          return payload.messageToClientAdded.reciever.id === context.user.id
         }
       )
     }

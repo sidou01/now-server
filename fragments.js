@@ -42,8 +42,26 @@ export const AuthenticatedUserInfo = `
 
     } 
 `
-export const messageFromService = `
+export const messageToClient = `
     fragment MessageFromService on ServiceMessage {
+      id
+      subject
+      body
+      sender {
+        id
+        fullName
+        email
+      }
+      reciever {
+        id
+        fullName
+        email
+      }
+    }
+`
+
+export const messageToService = `
+    fragment MessageFromService on ClientMessage {
       id
       subject
       body
