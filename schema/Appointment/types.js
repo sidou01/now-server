@@ -3,11 +3,13 @@ export default `
   type Appointment {
     id: ID!
     service: Doctor!
-    client: User!
+    client: User
+    clientName: String
     title: String
     startTime: Date!
     endTime: Date
     duration: AppointmentDuration!
+    local: Boolean!
   }
 
   enum AppointmentDuration {
@@ -17,9 +19,6 @@ export default `
     VERY_LONG #1h
   }
 
-  type Query {
-    userAppointments(userEmail: String!): [Appointment!]
-  }
   type Mutation {
     scheduleAppointment(input: scheduleAppointmentInput): Appointment!
   }

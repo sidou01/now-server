@@ -17,6 +17,8 @@ export default `
   type Query {
       me: User!
       allUsers: [User!]!
+      userAppointments(userId: ID!): [Appointment!]
+      cancelAppointment(serviceId: ID!): Appointment!
   }
   type Mutation {
     register(input: registerInput): User!

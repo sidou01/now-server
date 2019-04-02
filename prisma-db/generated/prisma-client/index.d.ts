@@ -329,6 +329,8 @@ export type AppointmentOrderByInput =
   | "endTime_DESC"
   | "duration_ASC"
   | "duration_DESC"
+  | "local_ASC"
+  | "local_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -493,6 +495,8 @@ export interface AppointmentWhereInput {
   duration_not?: AppointmentDuration;
   duration_in?: AppointmentDuration[] | AppointmentDuration;
   duration_not_in?: AppointmentDuration[] | AppointmentDuration;
+  local?: Boolean;
+  local_not?: Boolean;
   AND?: AppointmentWhereInput[] | AppointmentWhereInput;
   OR?: AppointmentWhereInput[] | AppointmentWhereInput;
   NOT?: AppointmentWhereInput[] | AppointmentWhereInput;
@@ -854,6 +858,7 @@ export interface AppointmentCreateInput {
   startTime: String;
   endTime: String;
   duration: AppointmentDuration;
+  local: Boolean;
 }
 
 export interface DoctorCreateOneWithoutAppointmentsInput {
@@ -920,6 +925,7 @@ export interface AppointmentCreateWithoutClientInput {
   startTime: String;
   endTime: String;
   duration: AppointmentDuration;
+  local: Boolean;
 }
 
 export interface ClientMessageCreateManyWithoutSenderInput {
@@ -968,6 +974,7 @@ export interface AppointmentCreateWithoutServiceInput {
   startTime: String;
   endTime: String;
   duration: AppointmentDuration;
+  local: Boolean;
 }
 
 export interface UserCreateOneWithoutAppointmentsInput {
@@ -1059,6 +1066,7 @@ export interface AppointmentUpdateInput {
   startTime?: String;
   endTime?: String;
   duration?: AppointmentDuration;
+  local?: Boolean;
 }
 
 export interface DoctorUpdateOneRequiredWithoutAppointmentsInput {
@@ -1169,6 +1177,7 @@ export interface AppointmentUpdateWithoutClientDataInput {
   startTime?: String;
   endTime?: String;
   duration?: AppointmentDuration;
+  local?: Boolean;
 }
 
 export interface AppointmentUpsertWithWhereUniqueWithoutClientInput {
@@ -1252,6 +1261,8 @@ export interface AppointmentScalarWhereInput {
   duration_not?: AppointmentDuration;
   duration_in?: AppointmentDuration[] | AppointmentDuration;
   duration_not_in?: AppointmentDuration[] | AppointmentDuration;
+  local?: Boolean;
+  local_not?: Boolean;
   AND?: AppointmentScalarWhereInput[] | AppointmentScalarWhereInput;
   OR?: AppointmentScalarWhereInput[] | AppointmentScalarWhereInput;
   NOT?: AppointmentScalarWhereInput[] | AppointmentScalarWhereInput;
@@ -1268,6 +1279,7 @@ export interface AppointmentUpdateManyDataInput {
   startTime?: String;
   endTime?: String;
   duration?: AppointmentDuration;
+  local?: Boolean;
 }
 
 export interface ClientMessageUpdateManyWithoutSenderInput {
@@ -1354,6 +1366,7 @@ export interface AppointmentUpdateWithoutServiceDataInput {
   startTime?: String;
   endTime?: String;
   duration?: AppointmentDuration;
+  local?: Boolean;
 }
 
 export interface UserUpdateOneWithoutAppointmentsInput {
@@ -1667,6 +1680,7 @@ export interface AppointmentUpdateManyMutationInput {
   startTime?: String;
   endTime?: String;
   duration?: AppointmentDuration;
+  local?: Boolean;
 }
 
 export interface ClientMessageCreateInput {
@@ -1866,6 +1880,7 @@ export interface Appointment {
   startTime: String;
   endTime: String;
   duration: AppointmentDuration;
+  local: Boolean;
 }
 
 export interface AppointmentPromise extends Promise<Appointment>, Fragmentable {
@@ -1877,6 +1892,7 @@ export interface AppointmentPromise extends Promise<Appointment>, Fragmentable {
   startTime: () => Promise<String>;
   endTime: () => Promise<String>;
   duration: () => Promise<AppointmentDuration>;
+  local: () => Promise<Boolean>;
 }
 
 export interface AppointmentSubscription
@@ -1890,6 +1906,7 @@ export interface AppointmentSubscription
   startTime: () => Promise<AsyncIterator<String>>;
   endTime: () => Promise<AsyncIterator<String>>;
   duration: () => Promise<AsyncIterator<AppointmentDuration>>;
+  local: () => Promise<AsyncIterator<Boolean>>;
 }
 
 export interface Doctor {
@@ -2502,6 +2519,7 @@ export interface AppointmentPreviousValues {
   startTime: String;
   endTime: String;
   duration: AppointmentDuration;
+  local: Boolean;
 }
 
 export interface AppointmentPreviousValuesPromise
@@ -2513,6 +2531,7 @@ export interface AppointmentPreviousValuesPromise
   startTime: () => Promise<String>;
   endTime: () => Promise<String>;
   duration: () => Promise<AppointmentDuration>;
+  local: () => Promise<Boolean>;
 }
 
 export interface AppointmentPreviousValuesSubscription
@@ -2524,6 +2543,7 @@ export interface AppointmentPreviousValuesSubscription
   startTime: () => Promise<AsyncIterator<String>>;
   endTime: () => Promise<AsyncIterator<String>>;
   duration: () => Promise<AsyncIterator<AppointmentDuration>>;
+  local: () => Promise<AsyncIterator<Boolean>>;
 }
 
 export interface ClientMessageSubscriptionPayload {

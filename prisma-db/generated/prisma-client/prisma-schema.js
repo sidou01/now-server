@@ -32,6 +32,7 @@ type Appointment {
   startTime: String!
   endTime: String!
   duration: AppointmentDuration!
+  local: Boolean!
 }
 
 type AppointmentConnection {
@@ -48,6 +49,7 @@ input AppointmentCreateInput {
   startTime: String!
   endTime: String!
   duration: AppointmentDuration!
+  local: Boolean!
 }
 
 input AppointmentCreateManyWithoutClientInput {
@@ -67,6 +69,7 @@ input AppointmentCreateWithoutClientInput {
   startTime: String!
   endTime: String!
   duration: AppointmentDuration!
+  local: Boolean!
 }
 
 input AppointmentCreateWithoutServiceInput {
@@ -76,6 +79,7 @@ input AppointmentCreateWithoutServiceInput {
   startTime: String!
   endTime: String!
   duration: AppointmentDuration!
+  local: Boolean!
 }
 
 enum AppointmentDuration {
@@ -103,6 +107,8 @@ enum AppointmentOrderByInput {
   endTime_DESC
   duration_ASC
   duration_DESC
+  local_ASC
+  local_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -116,6 +122,7 @@ type AppointmentPreviousValues {
   startTime: String!
   endTime: String!
   duration: AppointmentDuration!
+  local: Boolean!
 }
 
 input AppointmentScalarWhereInput {
@@ -193,6 +200,8 @@ input AppointmentScalarWhereInput {
   duration_not: AppointmentDuration
   duration_in: [AppointmentDuration!]
   duration_not_in: [AppointmentDuration!]
+  local: Boolean
+  local_not: Boolean
   AND: [AppointmentScalarWhereInput!]
   OR: [AppointmentScalarWhereInput!]
   NOT: [AppointmentScalarWhereInput!]
@@ -224,6 +233,7 @@ input AppointmentUpdateInput {
   startTime: String
   endTime: String
   duration: AppointmentDuration
+  local: Boolean
 }
 
 input AppointmentUpdateManyDataInput {
@@ -232,6 +242,7 @@ input AppointmentUpdateManyDataInput {
   startTime: String
   endTime: String
   duration: AppointmentDuration
+  local: Boolean
 }
 
 input AppointmentUpdateManyMutationInput {
@@ -240,6 +251,7 @@ input AppointmentUpdateManyMutationInput {
   startTime: String
   endTime: String
   duration: AppointmentDuration
+  local: Boolean
 }
 
 input AppointmentUpdateManyWithoutClientInput {
@@ -278,6 +290,7 @@ input AppointmentUpdateWithoutClientDataInput {
   startTime: String
   endTime: String
   duration: AppointmentDuration
+  local: Boolean
 }
 
 input AppointmentUpdateWithoutServiceDataInput {
@@ -287,6 +300,7 @@ input AppointmentUpdateWithoutServiceDataInput {
   startTime: String
   endTime: String
   duration: AppointmentDuration
+  local: Boolean
 }
 
 input AppointmentUpdateWithWhereUniqueWithoutClientInput {
@@ -388,6 +402,8 @@ input AppointmentWhereInput {
   duration_not: AppointmentDuration
   duration_in: [AppointmentDuration!]
   duration_not_in: [AppointmentDuration!]
+  local: Boolean
+  local_not: Boolean
   AND: [AppointmentWhereInput!]
   OR: [AppointmentWhereInput!]
   NOT: [AppointmentWhereInput!]
