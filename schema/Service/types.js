@@ -28,6 +28,7 @@ export default `
 
   type Query {
     allDoctors: [Doctor!]!
+    doctorAppointments(email: String!): [Appointment!]!
   }
 
   type Mutation {
@@ -35,6 +36,7 @@ export default `
     addDoctor(input: addDoctorInput): Doctor!
 
     sendMessageToClient(clientId: ID!, subject: String, body: String!): ServiceMessage!
+    scheduleLocalAppointment(input: localAppointmentInput): Appointment!
   }
 
   type Subscription {
@@ -51,5 +53,13 @@ export default `
     gender: Gender
     avatar: String
     specialty: DoctorSpecialty!
+  }
+  
+  input localAppointmentInput {
+    serviceId: ID!
+    clientName: String!
+    title: String
+    startTime: Date!
+    duration: AppointmentDuration!
   }
 `

@@ -1,13 +1,21 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { MESSAGE_TO_CLIENT, MESSAGE_TO_SERVICE } from '../topics'
-import { messageToClient, AuthenticatedUserInfo } from '../../fragments'
+import { messageToClient } from '../../fragments'
 import { withFilter, AuthenticationError } from 'apollo-server'
 import { pubsub } from '../../server'
+import { doctorAppointments } from '../../fragments'
 
 export default {
   Query: {
-    allDoctors: async (_, __, { prisma }) => await prisma.doctors()
+    allDoctors: async (_, __, { prisma }) => await prisma.doctors(),
+    doctorAppointments: async (_, { email }, { prisma }) => {
+      const output = await prisma
+        .doctor({ email })
+        .$fragment(doctorAppointments)
+      if (!output) throw new Error('no service with that email address')
+      return output.appointments
+    },
   },
   Mutation: {
     sendMessageToClient: async (_, args, { prisma, pubsub, user }) => {
@@ -15,22 +23,22 @@ export default {
       const message = await prisma.createServiceMessage({
         sender: {
           connect: {
-            id: user.id
-          }
+            id: user.id,
+          },
         },
         reciever: {
           connect: {
-            id: args.clientId
-          }
+            id: args.clientId,
+          },
         },
         subject: args.subject,
-        body: args.body
+        body: args.body,
       })
       const messageToPublish = await prisma
         .serviceMessage({ id: message.id })
         .$fragment(messageToClient)
       pubsub.publish(MESSAGE_TO_CLIENT, {
-        messageToClientAdded: messageToPublish
+        messageToClientAdded: messageToPublish,
       })
       return message
     },
@@ -52,7 +60,7 @@ export default {
           email: doctor.email,
           age,
           avatar,
-          phone
+          phone,
         },
         jwt_secret
       )
@@ -70,8 +78,8 @@ export default {
           phone,
           gender,
           avatar,
-          specialty
-        }
+          specialty,
+        },
       },
       { prisma }
     ) => {
@@ -87,9 +95,9 @@ export default {
         phone,
         gender,
         avatar,
-        specialty
+        specialty,
       })
-    }
+    },
   },
   Subscription: {
     messageToServiceAdded: {
@@ -98,7 +106,7 @@ export default {
         (payload, _, context) => {
           return payload.messageToServiceAdded.reciever.id === context.user.id
         }
-      )
-    }
-  }
+      ),
+    },
+  },
 }

@@ -21,6 +21,7 @@ export default {
           email
           gender
           age
+          confirmation
           Appointments {
             id
             startTime
@@ -44,12 +45,16 @@ export default {
     `)
       return output.users
     },
-    userAppointments: async (_, { userEmail }, { prisma }) => {
+    userAppointments: async (_, { userId }, { prisma }) => {
       const output = await prisma
-        .user({ email: userEmail })
+        .user({ id: userId })
         .$fragment(UserAppointments)
+      if (!output) throw new Error("user doesn't exist with that ID")
       return output.Appointments
-    }
+    },
+    cancelAppointment: async (_, { serviceId }, { prisma }) => {
+      return await prisma.delete
+    },
   },
   Mutation: {
     sendMessageToService: async (_, args, { prisma, pubsub, user }) => {
@@ -57,22 +62,22 @@ export default {
       const message = await prisma.createClientMessage({
         sender: {
           connect: {
-            id: user.id
-          }
+            id: user.id,
+          },
         },
         reciever: {
           connect: {
-            id: args.serviceId
-          }
+            id: args.serviceId,
+          },
         },
         subject: args.subject,
-        body: args.body
+        body: args.body,
       })
       const messageToPublish = await prisma
         .clientMessage({ id: message.id })
         .$fragment(messageToService)
       pubsub.publish(MESSAGE_TO_SERVICE, {
-        messageToServiceAdded: messageToPublish
+        messageToServiceAdded: messageToPublish,
       })
       return message
     },
@@ -94,7 +99,7 @@ export default {
         age,
         phone,
         avatar,
-        gender
+        gender,
       })
 
       jwt.sign(
@@ -108,7 +113,7 @@ export default {
             from: 'now@company.com',
             subject: 'Confirmation Email',
             text: 'Confirm your mail using this link',
-            html: `follow this link <a href=${url}>Confirm Email</a>`
+            html: `follow this link <a href=${url}>Confirm Email</a>`,
           }
 
           sgMail.send(msg)
@@ -137,12 +142,12 @@ export default {
           email: user.email,
           age,
           avatar,
-          phone
+          phone,
         },
         jwt_secret
       )
       return token
-    }
+    },
   },
   Subscription: {
     messageToClientAdded: {
@@ -151,7 +156,7 @@ export default {
         (payload, _, context) => {
           return payload.messageToClientAdded.reciever.id === context.user.id
         }
-      )
-    }
-  }
+      ),
+    },
+  },
 }

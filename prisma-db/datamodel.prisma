@@ -32,11 +32,13 @@ type Doctor {
 type Appointment {
   id: ID! @unique
   service: Doctor!
-  client: User!
+  client: User
+  clientName: String
   title: String
   startTime: String! @unique
   endTime: String! @unique
   duration: AppointmentDuration!
+  local: Boolean!
 }
 
 enum AppointmentDuration {

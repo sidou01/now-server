@@ -26,11 +26,13 @@ type AggregateUser {
 type Appointment {
   id: ID!
   service: Doctor!
-  client: User!
+  client: User
+  clientName: String
   title: String
   startTime: String!
   endTime: String!
   duration: AppointmentDuration!
+  local: Boolean!
 }
 
 type AppointmentConnection {
@@ -41,11 +43,13 @@ type AppointmentConnection {
 
 input AppointmentCreateInput {
   service: DoctorCreateOneWithoutAppointmentsInput!
-  client: UserCreateOneWithoutAppointmentsInput!
+  client: UserCreateOneWithoutAppointmentsInput
+  clientName: String
   title: String
   startTime: String!
   endTime: String!
   duration: AppointmentDuration!
+  local: Boolean!
 }
 
 input AppointmentCreateManyWithoutClientInput {
@@ -60,18 +64,22 @@ input AppointmentCreateManyWithoutServiceInput {
 
 input AppointmentCreateWithoutClientInput {
   service: DoctorCreateOneWithoutAppointmentsInput!
+  clientName: String
   title: String
   startTime: String!
   endTime: String!
   duration: AppointmentDuration!
+  local: Boolean!
 }
 
 input AppointmentCreateWithoutServiceInput {
-  client: UserCreateOneWithoutAppointmentsInput!
+  client: UserCreateOneWithoutAppointmentsInput
+  clientName: String
   title: String
   startTime: String!
   endTime: String!
   duration: AppointmentDuration!
+  local: Boolean!
 }
 
 enum AppointmentDuration {
@@ -89,6 +97,8 @@ type AppointmentEdge {
 enum AppointmentOrderByInput {
   id_ASC
   id_DESC
+  clientName_ASC
+  clientName_DESC
   title_ASC
   title_DESC
   startTime_ASC
@@ -97,6 +107,8 @@ enum AppointmentOrderByInput {
   endTime_DESC
   duration_ASC
   duration_DESC
+  local_ASC
+  local_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -105,10 +117,12 @@ enum AppointmentOrderByInput {
 
 type AppointmentPreviousValues {
   id: ID!
+  clientName: String
   title: String
   startTime: String!
   endTime: String!
   duration: AppointmentDuration!
+  local: Boolean!
 }
 
 input AppointmentScalarWhereInput {
@@ -126,6 +140,20 @@ input AppointmentScalarWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
+  clientName: String
+  clientName_not: String
+  clientName_in: [String!]
+  clientName_not_in: [String!]
+  clientName_lt: String
+  clientName_lte: String
+  clientName_gt: String
+  clientName_gte: String
+  clientName_contains: String
+  clientName_not_contains: String
+  clientName_starts_with: String
+  clientName_not_starts_with: String
+  clientName_ends_with: String
+  clientName_not_ends_with: String
   title: String
   title_not: String
   title_in: [String!]
@@ -172,6 +200,8 @@ input AppointmentScalarWhereInput {
   duration_not: AppointmentDuration
   duration_in: [AppointmentDuration!]
   duration_not_in: [AppointmentDuration!]
+  local: Boolean
+  local_not: Boolean
   AND: [AppointmentScalarWhereInput!]
   OR: [AppointmentScalarWhereInput!]
   NOT: [AppointmentScalarWhereInput!]
@@ -197,25 +227,31 @@ input AppointmentSubscriptionWhereInput {
 
 input AppointmentUpdateInput {
   service: DoctorUpdateOneRequiredWithoutAppointmentsInput
-  client: UserUpdateOneRequiredWithoutAppointmentsInput
+  client: UserUpdateOneWithoutAppointmentsInput
+  clientName: String
   title: String
   startTime: String
   endTime: String
   duration: AppointmentDuration
+  local: Boolean
 }
 
 input AppointmentUpdateManyDataInput {
+  clientName: String
   title: String
   startTime: String
   endTime: String
   duration: AppointmentDuration
+  local: Boolean
 }
 
 input AppointmentUpdateManyMutationInput {
+  clientName: String
   title: String
   startTime: String
   endTime: String
   duration: AppointmentDuration
+  local: Boolean
 }
 
 input AppointmentUpdateManyWithoutClientInput {
@@ -249,18 +285,22 @@ input AppointmentUpdateManyWithWhereNestedInput {
 
 input AppointmentUpdateWithoutClientDataInput {
   service: DoctorUpdateOneRequiredWithoutAppointmentsInput
+  clientName: String
   title: String
   startTime: String
   endTime: String
   duration: AppointmentDuration
+  local: Boolean
 }
 
 input AppointmentUpdateWithoutServiceDataInput {
-  client: UserUpdateOneRequiredWithoutAppointmentsInput
+  client: UserUpdateOneWithoutAppointmentsInput
+  clientName: String
   title: String
   startTime: String
   endTime: String
   duration: AppointmentDuration
+  local: Boolean
 }
 
 input AppointmentUpdateWithWhereUniqueWithoutClientInput {
@@ -302,6 +342,20 @@ input AppointmentWhereInput {
   id_not_ends_with: ID
   service: DoctorWhereInput
   client: UserWhereInput
+  clientName: String
+  clientName_not: String
+  clientName_in: [String!]
+  clientName_not_in: [String!]
+  clientName_lt: String
+  clientName_lte: String
+  clientName_gt: String
+  clientName_gte: String
+  clientName_contains: String
+  clientName_not_contains: String
+  clientName_starts_with: String
+  clientName_not_starts_with: String
+  clientName_ends_with: String
+  clientName_not_ends_with: String
   title: String
   title_not: String
   title_in: [String!]
@@ -348,6 +402,8 @@ input AppointmentWhereInput {
   duration_not: AppointmentDuration
   duration_in: [AppointmentDuration!]
   duration_not_in: [AppointmentDuration!]
+  local: Boolean
+  local_not: Boolean
   AND: [AppointmentWhereInput!]
   OR: [AppointmentWhereInput!]
   NOT: [AppointmentWhereInput!]
@@ -1554,13 +1610,6 @@ input UserUpdateManyMutationInput {
   confirmation: Boolean
 }
 
-input UserUpdateOneRequiredWithoutAppointmentsInput {
-  create: UserCreateWithoutAppointmentsInput
-  update: UserUpdateWithoutAppointmentsDataInput
-  upsert: UserUpsertWithoutAppointmentsInput
-  connect: UserWhereUniqueInput
-}
-
 input UserUpdateOneRequiredWithoutRecievedMessagesInput {
   create: UserCreateWithoutRecievedMessagesInput
   update: UserUpdateWithoutRecievedMessagesDataInput
@@ -1572,6 +1621,15 @@ input UserUpdateOneRequiredWithoutSentMessagesInput {
   create: UserCreateWithoutSentMessagesInput
   update: UserUpdateWithoutSentMessagesDataInput
   upsert: UserUpsertWithoutSentMessagesInput
+  connect: UserWhereUniqueInput
+}
+
+input UserUpdateOneWithoutAppointmentsInput {
+  create: UserCreateWithoutAppointmentsInput
+  update: UserUpdateWithoutAppointmentsDataInput
+  upsert: UserUpsertWithoutAppointmentsInput
+  delete: Boolean
+  disconnect: Boolean
   connect: UserWhereUniqueInput
 }
 

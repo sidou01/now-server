@@ -4,6 +4,7 @@ export const UserAppointments = `fragment UserAppointments on User {
             title
             startTime
             endTime
+            duration
             client {
                 fullName
                 email
@@ -12,6 +13,7 @@ export const UserAppointments = `fragment UserAppointments on User {
                 gender
             }
             service {
+              id
               fullName
               phone
               gender
@@ -75,5 +77,23 @@ export const messageToService = `
         fullName
         email
       }
+    }
+`
+
+export const doctorAppointments = `
+    fragment doctorAppointments on Doctor {
+        appointments {
+            id
+            title
+            startTime
+            endTime
+            clientName
+            local
+            client {
+              id
+              fullName
+              email
+            }
+        }
     }
 `
