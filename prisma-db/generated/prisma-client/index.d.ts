@@ -319,6 +319,8 @@ export type AppointmentDuration = "VERY_SHORT" | "SHORT" | "LONG" | "VERY_LONG";
 export type AppointmentOrderByInput =
   | "id_ASC"
   | "id_DESC"
+  | "clientName_ASC"
+  | "clientName_DESC"
   | "title_ASC"
   | "title_DESC"
   | "startTime_ASC"
@@ -431,6 +433,20 @@ export interface AppointmentWhereInput {
   id_not_ends_with?: ID_Input;
   service?: DoctorWhereInput;
   client?: UserWhereInput;
+  clientName?: String;
+  clientName_not?: String;
+  clientName_in?: String[] | String;
+  clientName_not_in?: String[] | String;
+  clientName_lt?: String;
+  clientName_lte?: String;
+  clientName_gt?: String;
+  clientName_gte?: String;
+  clientName_contains?: String;
+  clientName_not_contains?: String;
+  clientName_starts_with?: String;
+  clientName_not_starts_with?: String;
+  clientName_ends_with?: String;
+  clientName_not_ends_with?: String;
   title?: String;
   title_not?: String;
   title_in?: String[] | String;
@@ -832,7 +848,8 @@ export type UserWhereUniqueInput = AtLeastOne<{
 
 export interface AppointmentCreateInput {
   service: DoctorCreateOneWithoutAppointmentsInput;
-  client: UserCreateOneWithoutAppointmentsInput;
+  client?: UserCreateOneWithoutAppointmentsInput;
+  clientName?: String;
   title?: String;
   startTime: String;
   endTime: String;
@@ -898,6 +915,7 @@ export interface AppointmentCreateManyWithoutClientInput {
 
 export interface AppointmentCreateWithoutClientInput {
   service: DoctorCreateOneWithoutAppointmentsInput;
+  clientName?: String;
   title?: String;
   startTime: String;
   endTime: String;
@@ -944,7 +962,8 @@ export interface AppointmentCreateManyWithoutServiceInput {
 }
 
 export interface AppointmentCreateWithoutServiceInput {
-  client: UserCreateOneWithoutAppointmentsInput;
+  client?: UserCreateOneWithoutAppointmentsInput;
+  clientName?: String;
   title?: String;
   startTime: String;
   endTime: String;
@@ -1034,7 +1053,8 @@ export interface UserCreateWithoutSentMessagesInput {
 
 export interface AppointmentUpdateInput {
   service?: DoctorUpdateOneRequiredWithoutAppointmentsInput;
-  client?: UserUpdateOneRequiredWithoutAppointmentsInput;
+  client?: UserUpdateOneWithoutAppointmentsInput;
+  clientName?: String;
   title?: String;
   startTime?: String;
   endTime?: String;
@@ -1144,6 +1164,7 @@ export interface AppointmentUpdateWithWhereUniqueWithoutClientInput {
 
 export interface AppointmentUpdateWithoutClientDataInput {
   service?: DoctorUpdateOneRequiredWithoutAppointmentsInput;
+  clientName?: String;
   title?: String;
   startTime?: String;
   endTime?: String;
@@ -1171,6 +1192,20 @@ export interface AppointmentScalarWhereInput {
   id_not_starts_with?: ID_Input;
   id_ends_with?: ID_Input;
   id_not_ends_with?: ID_Input;
+  clientName?: String;
+  clientName_not?: String;
+  clientName_in?: String[] | String;
+  clientName_not_in?: String[] | String;
+  clientName_lt?: String;
+  clientName_lte?: String;
+  clientName_gt?: String;
+  clientName_gte?: String;
+  clientName_contains?: String;
+  clientName_not_contains?: String;
+  clientName_starts_with?: String;
+  clientName_not_starts_with?: String;
+  clientName_ends_with?: String;
+  clientName_not_ends_with?: String;
   title?: String;
   title_not?: String;
   title_in?: String[] | String;
@@ -1228,6 +1263,7 @@ export interface AppointmentUpdateManyWithWhereNestedInput {
 }
 
 export interface AppointmentUpdateManyDataInput {
+  clientName?: String;
   title?: String;
   startTime?: String;
   endTime?: String;
@@ -1312,17 +1348,20 @@ export interface AppointmentUpdateWithWhereUniqueWithoutServiceInput {
 }
 
 export interface AppointmentUpdateWithoutServiceDataInput {
-  client?: UserUpdateOneRequiredWithoutAppointmentsInput;
+  client?: UserUpdateOneWithoutAppointmentsInput;
+  clientName?: String;
   title?: String;
   startTime?: String;
   endTime?: String;
   duration?: AppointmentDuration;
 }
 
-export interface UserUpdateOneRequiredWithoutAppointmentsInput {
+export interface UserUpdateOneWithoutAppointmentsInput {
   create?: UserCreateWithoutAppointmentsInput;
   update?: UserUpdateWithoutAppointmentsDataInput;
   upsert?: UserUpsertWithoutAppointmentsInput;
+  delete?: Boolean;
+  disconnect?: Boolean;
   connect?: UserWhereUniqueInput;
 }
 
@@ -1623,6 +1662,7 @@ export interface DoctorUpsertWithoutAppointmentsInput {
 }
 
 export interface AppointmentUpdateManyMutationInput {
+  clientName?: String;
   title?: String;
   startTime?: String;
   endTime?: String;
@@ -1821,6 +1861,7 @@ export interface NodeNode {
 
 export interface Appointment {
   id: ID_Output;
+  clientName?: String;
   title?: String;
   startTime: String;
   endTime: String;
@@ -1831,6 +1872,7 @@ export interface AppointmentPromise extends Promise<Appointment>, Fragmentable {
   id: () => Promise<ID_Output>;
   service: <T = DoctorPromise>() => T;
   client: <T = UserPromise>() => T;
+  clientName: () => Promise<String>;
   title: () => Promise<String>;
   startTime: () => Promise<String>;
   endTime: () => Promise<String>;
@@ -1843,6 +1885,7 @@ export interface AppointmentSubscription
   id: () => Promise<AsyncIterator<ID_Output>>;
   service: <T = DoctorSubscription>() => T;
   client: <T = UserSubscription>() => T;
+  clientName: () => Promise<AsyncIterator<String>>;
   title: () => Promise<AsyncIterator<String>>;
   startTime: () => Promise<AsyncIterator<String>>;
   endTime: () => Promise<AsyncIterator<String>>;
@@ -2454,6 +2497,7 @@ export interface AppointmentSubscriptionPayloadSubscription
 
 export interface AppointmentPreviousValues {
   id: ID_Output;
+  clientName?: String;
   title?: String;
   startTime: String;
   endTime: String;
@@ -2464,6 +2508,7 @@ export interface AppointmentPreviousValuesPromise
   extends Promise<AppointmentPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
+  clientName: () => Promise<String>;
   title: () => Promise<String>;
   startTime: () => Promise<String>;
   endTime: () => Promise<String>;
@@ -2474,6 +2519,7 @@ export interface AppointmentPreviousValuesSubscription
   extends Promise<AsyncIterator<AppointmentPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
+  clientName: () => Promise<AsyncIterator<String>>;
   title: () => Promise<AsyncIterator<String>>;
   startTime: () => Promise<AsyncIterator<String>>;
   endTime: () => Promise<AsyncIterator<String>>;
