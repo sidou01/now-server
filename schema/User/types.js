@@ -24,6 +24,7 @@ export default `
     register(input: registerInput): User!
     login(input: loginInput): String!
     
+    scheduleAppointment(input: scheduleAppointmentInput): Appointment!
     sendMessageToService(serviceId: ID!, subject: String, body: String!): ClientMessage!
   }
 
@@ -31,6 +32,13 @@ export default `
     messageToClientAdded: ServiceMessage!
   }
 
+  input scheduleAppointmentInput {
+    serviceId: ID!
+    clientId: ID!
+    title: String
+    startTime: Date!
+    duration: AppointmentDuration!
+  }
   input registerInput {
     fullName: String!
     email: String!
@@ -49,4 +57,4 @@ export default `
     FEMALE
   }
 
-`
+`;

@@ -41,6 +41,7 @@ export default `
 
   type Subscription {
     messageToServiceAdded: ClientMessage!
+    appointmentRecieved: Appointment!
   }
 
   input addDoctorInput {
@@ -54,7 +55,7 @@ export default `
     avatar: String
     specialty: DoctorSpecialty!
   }
-  
+
   input localAppointmentInput {
     serviceId: ID!
     clientName: String!
