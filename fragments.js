@@ -1,3 +1,5 @@
+import { APPOINTMENT_TO_SERVICE } from "./schema/topics"
+
 export const UserAppointments = `fragment UserAppointments on User {
           Appointments {
             id
@@ -95,5 +97,17 @@ export const doctorAppointments = `
               email
             }
         }
+    }
+`
+export const appointmentToService = `
+    fragment appointmentToService on Appointment {
+      id
+      title
+      startTime
+      endTime
+      duration
+      service {
+        id
+      }
     }
 `

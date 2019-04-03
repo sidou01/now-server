@@ -18,16 +18,4 @@ export default `
     LONG #45m
     VERY_LONG #1h
   }
-
-  type Mutation {
-    scheduleAppointment(input: scheduleAppointmentInput): Appointment!
-  }
-
-  input scheduleAppointmentInput {
-    serviceId: ID!
-    clientId: ID!
-    title: String
-    startTime: Date!
-    duration: AppointmentDuration!
-  }
-`
+`;
