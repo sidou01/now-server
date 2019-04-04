@@ -17,14 +17,6 @@ var models = [
     embedded: false
   },
   {
-    name: "ClientMessage",
-    embedded: false
-  },
-  {
-    name: "ServiceMessage",
-    embedded: false
-  },
-  {
     name: "AppointmentDuration",
     embedded: false
   },
@@ -34,6 +26,14 @@ var models = [
   },
   {
     name: "DoctorSpecialty",
+    embedded: false
+  },
+  {
+    name: "ClientMessage",
+    embedded: false
+  },
+  {
+    name: "ServiceMessage",
     embedded: false
   }
 ];

@@ -1,4 +1,4 @@
-import { APPOINTMENT_TO_SERVICE } from "./schema/topics"
+import { APPOINTMENT_TO_SERVICE } from './schema/topics'
 
 export const UserAppointments = `fragment UserAppointments on User {
           Appointments {
@@ -7,6 +7,7 @@ export const UserAppointments = `fragment UserAppointments on User {
             startTime
             endTime
             duration
+	    createdTime
             client {
                 fullName
                 email
@@ -35,6 +36,7 @@ export const AuthenticatedUserInfo = `
             title
             startTime
             endTime
+	    createdTime
             service {
                 id
                 fullName
@@ -44,7 +46,7 @@ export const AuthenticatedUserInfo = `
             }
         }
 
-    } 
+    }
 `
 export const messageToClient = `
     fragment MessageFromService on ServiceMessage {
@@ -89,6 +91,7 @@ export const doctorAppointments = `
             title
             startTime
             endTime
+	    createdTime
             clientName
             local
             client {
@@ -106,6 +109,7 @@ export const appointmentToService = `
       startTime
       endTime
       duration
+      createdTime
       service {
         id
       }

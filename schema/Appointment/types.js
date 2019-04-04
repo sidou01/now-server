@@ -10,6 +10,7 @@ export default `
     endTime: Date
     duration: AppointmentDuration!
     local: Boolean!
+    createdTime: Date!
   }
 
   enum AppointmentDuration {
@@ -18,4 +19,4 @@ export default `
     LONG #45m
     VERY_LONG #1h
   }
-`;
+`

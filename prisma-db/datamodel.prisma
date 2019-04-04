@@ -39,6 +39,7 @@ type Appointment {
   endTime: String! @unique
   duration: AppointmentDuration!
   local: Boolean!
+  createdTime: String!
 }
 
 enum AppointmentDuration {

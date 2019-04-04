@@ -1,21 +1,23 @@
-import { UserAppointments, AuthenticatedUserInfo } from "../../fragments"
-import sgMail from "@sendgrid/mail"
-import { AuthenticationError } from "apollo-server"
-import bcrypt from "bcrypt"
-import jwt from "jsonwebtoken"
+import { UserAppointments, AuthenticatedUserInfo } from '../../fragments'
+import sgMail from '@sendgrid/mail'
+import { AuthenticationError } from 'apollo-server'
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 import {
   MESSAGE_TO_CLIENT,
   MESSAGE_TO_SERVICE,
-  APPOINTMENT_TO_SERVICE
-} from "../topics"
-import { withFilter } from "apollo-server"
-import { pubsub } from "../../server"
-import { messageToService, appointmentToService } from "../../fragments"
+  APPOINTMENT_TO_SERVICE,
+} from '../topics'
+import { withFilter } from 'apollo-server'
+import { pubsub } from '../../server'
+import { messageToService, appointmentToService } from '../../fragments'
+import dayjs from 'dayjs'
 
 export default {
   Query: {
     me: async (_, __, { user: { id }, prisma }) =>
       await prisma.user({ id }).$fragment(AuthenticatedUserInfo),
+    //allUsers query will be deleted
     allUsers: async (_, __, { prisma }) => {
       const output = await prisma.$graphql(`
       query {
@@ -49,6 +51,7 @@ export default {
     `)
       return output.users
     },
+    //change userId param to context.user.id from token
     userAppointments: async (_, { userId }, { prisma }) => {
       const output = await prisma
         .user({ id: userId })
@@ -58,90 +61,94 @@ export default {
     },
     cancelAppointment: async (_, { serviceId }, { prisma }) => {
       return await prisma.delete
-    }
+    },
   },
   Mutation: {
     scheduleAppointment: async (
       _,
       { input: { serviceId, clientId, title, startTime, duration } },
-      { prisma, pubsub }
+      { prisma, pubsub, user },
     ) => {
+      const isUser = await prisma.user({ id })
+      if (!isUser) throw new Error('401 unauthorized')
+
       const isDuplicate = await prisma.appointment({ startTime })
-      if (isDuplicate) throw Error("an appointment already exists at that time")
+      if (isDuplicate) throw Error('an appointment already exists at that time')
       let endTime
       switch (duration) {
-        case "VERY_SHORT":
-          endTime = startTime.add(15, "minute")
+        case 'VERY_SHORT':
+          endTime = startTime.add(15, 'minute')
           break
-        case "SHORT":
-          endTime = startTime.add(30, "minute")
+        case 'SHORT':
+          endTime = startTime.add(30, 'minute')
           break
-        case "LONG":
-          endTime = startTime.add(45, "minute")
+        case 'LONG':
+          endTime = startTime.add(45, 'minute')
           break
-        case "VERY_LONG":
-          endTime = startTime.add(60, "minute")
+        case 'VERY_LONG':
+          endTime = startTime.add(60, 'minute')
           break
       }
-      endTime = endTime.format("YYYY-MM-DD HH:mm:ss")
+      endTime = endTime.format('YYYY-MM-DD HH:mm:ss')
       //can't return client and service data from this resolver
       const output = await prisma.createAppointment({
         service: {
           connect: {
-            id: serviceId
-          }
+            id: serviceId,
+          },
         },
         client: {
           connect: {
-            id: clientId
-          }
+            id: clientId,
+          },
         },
         title,
         startTime,
         endTime,
         duration,
-        local: false
+        local: false,
+        createdTime: dayjs().format('MM-DD-YYYY HH:mm:ss'),
       })
       const createdAppointment = await prisma
         .appointment({ id: output.id })
         .$fragment(appointmentToService)
 
       pubsub.publish(APPOINTMENT_TO_SERVICE, {
-        appointmentRecieved: createdAppointment
+        appointmentRecieved: createdAppointment,
       })
       return output
     },
     sendMessageToService: async (_, args, { prisma, pubsub, user }) => {
-      if (!user) throw new AuthenticationError("401 unathorized")
+      if (!user) throw new AuthenticationError('401 unathorized')
       const message = await prisma.createClientMessage({
         sender: {
           connect: {
-            id: user.id
-          }
+            id: user.id,
+          },
         },
         reciever: {
           connect: {
-            id: args.serviceId
-          }
+            id: args.serviceId,
+          },
         },
         subject: args.subject,
-        body: args.body
+        body: args.body,
       })
       const messageToPublish = await prisma
         .clientMessage({ id: message.id })
         .$fragment(messageToService)
       pubsub.publish(MESSAGE_TO_SERVICE, {
-        messageToServiceAdded: messageToPublish
+        messageToServiceAdded: messageToPublish,
       })
       return message
     },
     register: async (
       _,
       { input: { fullName, email, password, age, phone, avatar, gender } },
-      { prisma }
+      { prisma },
     ) => {
       const isUser = await prisma.user({ email })
-      if (isUser) throw new Error("user already exists")
+      if (isUser) throw new Error('user already exists')
       let saltRounds = 10
 
       const hashedPassword = await bcrypt.hash(password, saltRounds)
@@ -153,7 +160,7 @@ export default {
         age,
         phone,
         avatar,
-        gender
+        gender,
       })
 
       jwt.sign(
@@ -164,14 +171,14 @@ export default {
           const url = `http://localhost:4000/email/confirmation/${emailToken}`
           const msg = {
             to: `${createdUser.email}`,
-            from: "now@company.com",
-            subject: "Confirmation Email",
-            text: "Confirm your mail using this link",
-            html: `follow this link <a href=${url}>Confirm Email</a>`
+            from: 'now@company.com',
+            subject: 'Confirmation Email',
+            text: 'Confirm your mail using this link',
+            html: `follow this link <a href=${url}>Confirm Email</a>`,
           }
 
           sgMail.send(msg)
-        }
+        },
       )
 
       return createdUser
@@ -179,16 +186,16 @@ export default {
     login: async (
       _,
       { input: { email, password } },
-      { prisma, jwt_secret }
+      { prisma, jwt_secret },
     ) => {
       const user = await prisma.user({ email })
       if (!user) throw new Error("User deosn't exist")
       const auth = await bcrypt.compare(password, user.password)
-      if (!auth) throw new Error("your email or password is wrong")
+      if (!auth) throw new Error('your email or password is wrong')
 
       const { id, fullName, age, phone, avatar, confirmation } = user
       if (!confirmation)
-        throw new AuthenticationError("you must confirm your email first!")
+        throw new AuthenticationError('you must confirm your email first!')
       const token = jwt.sign(
         {
           id,
@@ -196,12 +203,12 @@ export default {
           email: user.email,
           age,
           avatar,
-          phone
+          phone,
         },
-        jwt_secret
+        jwt_secret,
       )
       return token
-    }
+    },
   },
   Subscription: {
     messageToClientAdded: {
@@ -209,8 +216,8 @@ export default {
         () => pubsub.asyncIterator(MESSAGE_TO_CLIENT),
         (payload, _, context) => {
           return payload.messageToClientAdded.reciever.id === context.user.id
-        }
-      )
-    }
-  }
+        },
+      ),
+    },
+  },
 }
