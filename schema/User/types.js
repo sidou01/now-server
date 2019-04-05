@@ -18,13 +18,13 @@ export default `
       me: User!
       allUsers: [User!]!
       userAppointments(userId: ID!): [Appointment!]
-      cancelAppointment(serviceId: ID!): Appointment!
   }
   type Mutation {
     register(input: registerInput): User!
     login(input: loginInput): String!
-    
+
     scheduleAppointment(input: scheduleAppointmentInput): Appointment!
+    cancelAppointment(appointmentId: ID!): Appointment!
     sendMessageToService(serviceId: ID!, subject: String, body: String!): ClientMessage!
   }
 
@@ -57,4 +57,4 @@ export default `
     FEMALE
   }
 
-`;
+`

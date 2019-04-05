@@ -12,6 +12,7 @@ import { withFilter } from 'apollo-server'
 import { pubsub } from '../../server'
 import { messageToService, appointmentToService } from '../../fragments'
 import dayjs from 'dayjs'
+import { prisma } from '../../prisma-db/generated/prisma-client/'
 
 export default {
   Query: {
@@ -59,18 +60,26 @@ export default {
       if (!output) throw new Error("user doesn't exist with that ID")
       return output.Appointments
     },
-    cancelAppointment: async (_, { serviceId }, { prisma }) => {
-      return await prisma.delete
-    },
   },
   Mutation: {
+    cancelAppointment: async (_, { appointmentId }, { prisma, user }) => {
+      if (!user) throw new Error('401 unauthorized')
+      const appointment = await prisma.appointment({ id: appointmentId })
+      if (!appointment) throw new Error("appointment doesn't exist")
+      const cancelTime = dayjs()
+      if (cancelTime.diff(dayjs(appointment.createdTime), 'minute') > 10) {
+        throw new Error(
+          'Sorry you cannot cancel this appointment because you waited too long (10 minutes)',
+        )
+      }
+      return await prisma.deleteAppointment({ id: appointmentId })
+    },
     scheduleAppointment: async (
       _,
       { input: { serviceId, clientId, title, startTime, duration } },
       { prisma, pubsub, user },
     ) => {
-      const isUser = await prisma.user({ id })
-      if (!isUser) throw new Error('401 unauthorized')
+      if (!user) throw new Error('401 unauthorized')
 
       const isDuplicate = await prisma.appointment({ startTime })
       if (isDuplicate) throw Error('an appointment already exists at that time')
@@ -118,6 +127,7 @@ export default {
       })
       return output
     },
+
     sendMessageToService: async (_, args, { prisma, pubsub, user }) => {
       if (!user) throw new AuthenticationError('401 unathorized')
       const message = await prisma.createClientMessage({
@@ -166,7 +176,7 @@ export default {
       jwt.sign(
         { userEmail: email },
         process.env.JWT_EMAIL_SECRET,
-        (err, emailToken) => {
+        (_, emailToken) => {
           sgMail.setApiKey(process.env.SENDGRID_API_KEY)
           const url = `http://localhost:4000/email/confirmation/${emailToken}`
           const msg = {

@@ -1,5 +1,3 @@
-import { APPOINTMENT_TO_SERVICE } from './schema/topics'
-
 export const UserAppointments = `fragment UserAppointments on User {
           Appointments {
             id
