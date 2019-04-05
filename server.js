@@ -7,19 +7,15 @@ import bodyParser from 'body-parser'
 import { prisma } from './prisma-db/generated/prisma-client'
 import jwt from 'jsonwebtoken'
 import { PubSub } from 'graphql-subscriptions'
+import { getUser } from './utils'
 
 export const pubsub = new PubSub()
 const PORT = 4000
 
-const getUser = (token, secret) => {
-  if (!token) return null
-  const decoded = jwt.verify(token, secret)
-  return decoded
-}
 const server = new ApolloServer({
   schema,
   subscriptions: {
-    onConnect: (connectionParams, webSocket) => {
+    onConnect: connectionParams => {
       if (connectionParams.authorization) {
         const user = getUser(
           connectionParams.authorization,

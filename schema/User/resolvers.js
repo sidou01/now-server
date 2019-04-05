@@ -12,7 +12,7 @@ import { withFilter } from 'apollo-server'
 import { pubsub } from '../../server'
 import { messageToService, appointmentToService } from '../../fragments'
 import dayjs from 'dayjs'
-import { prisma } from '../../prisma-db/generated/prisma-client/'
+import { getEndTime } from '../../utils'
 
 export default {
   Query: {
@@ -83,22 +83,7 @@ export default {
 
       const isDuplicate = await prisma.appointment({ startTime })
       if (isDuplicate) throw Error('an appointment already exists at that time')
-      let endTime
-      switch (duration) {
-        case 'VERY_SHORT':
-          endTime = startTime.add(15, 'minute')
-          break
-        case 'SHORT':
-          endTime = startTime.add(30, 'minute')
-          break
-        case 'LONG':
-          endTime = startTime.add(45, 'minute')
-          break
-        case 'VERY_LONG':
-          endTime = startTime.add(60, 'minute')
-          break
-      }
-      endTime = endTime.format('YYYY-MM-DD HH:mm:ss')
+      endTime = getEndTime(startTime, duration)
       //can't return client and service data from this resolver
       const output = await prisma.createAppointment({
         service: {
