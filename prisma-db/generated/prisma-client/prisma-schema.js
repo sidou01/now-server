@@ -15,7 +15,7 @@ type AggregateDoctor {
   count: Int!
 }
 
-type AggregateReviews {
+type AggregateReview {
   count: Int!
 }
 
@@ -1155,12 +1155,12 @@ type Mutation {
   upsertDoctor(where: DoctorWhereUniqueInput!, create: DoctorCreateInput!, update: DoctorUpdateInput!): Doctor!
   deleteDoctor(where: DoctorWhereUniqueInput!): Doctor
   deleteManyDoctors(where: DoctorWhereInput): BatchPayload!
-  createReviews(data: ReviewsCreateInput!): Reviews!
-  updateReviews(data: ReviewsUpdateInput!, where: ReviewsWhereUniqueInput!): Reviews
-  updateManyReviewses(data: ReviewsUpdateManyMutationInput!, where: ReviewsWhereInput): BatchPayload!
-  upsertReviews(where: ReviewsWhereUniqueInput!, create: ReviewsCreateInput!, update: ReviewsUpdateInput!): Reviews!
-  deleteReviews(where: ReviewsWhereUniqueInput!): Reviews
-  deleteManyReviewses(where: ReviewsWhereInput): BatchPayload!
+  createReview(data: ReviewCreateInput!): Review!
+  updateReview(data: ReviewUpdateInput!, where: ReviewWhereUniqueInput!): Review
+  updateManyReviews(data: ReviewUpdateManyMutationInput!, where: ReviewWhereInput): BatchPayload!
+  upsertReview(where: ReviewWhereUniqueInput!, create: ReviewCreateInput!, update: ReviewUpdateInput!): Review!
+  deleteReview(where: ReviewWhereUniqueInput!): Review
+  deleteManyReviews(where: ReviewWhereInput): BatchPayload!
   createServiceMessage(data: ServiceMessageCreateInput!): ServiceMessage!
   updateServiceMessage(data: ServiceMessageUpdateInput!, where: ServiceMessageWhereUniqueInput!): ServiceMessage
   updateManyServiceMessages(data: ServiceMessageUpdateManyMutationInput!, where: ServiceMessageWhereInput): BatchPayload!
@@ -1202,9 +1202,9 @@ type Query {
   doctor(where: DoctorWhereUniqueInput!): Doctor
   doctors(where: DoctorWhereInput, orderBy: DoctorOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Doctor]!
   doctorsConnection(where: DoctorWhereInput, orderBy: DoctorOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): DoctorConnection!
-  reviews(where: ReviewsWhereUniqueInput!): Reviews
-  reviewses(where: ReviewsWhereInput, orderBy: ReviewsOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Reviews]!
-  reviewsesConnection(where: ReviewsWhereInput, orderBy: ReviewsOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ReviewsConnection!
+  review(where: ReviewWhereUniqueInput!): Review
+  reviews(where: ReviewWhereInput, orderBy: ReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Review]!
+  reviewsConnection(where: ReviewWhereInput, orderBy: ReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ReviewConnection!
   serviceMessage(where: ServiceMessageWhereUniqueInput!): ServiceMessage
   serviceMessages(where: ServiceMessageWhereInput, orderBy: ServiceMessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ServiceMessage]!
   serviceMessagesConnection(where: ServiceMessageWhereInput, orderBy: ServiceMessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ServiceMessageConnection!
@@ -1214,7 +1214,7 @@ type Query {
   node(id: ID!): Node
 }
 
-type Reviews {
+type Review {
   id: ID!
   user: ID!
   service: ID!
@@ -1223,13 +1223,13 @@ type Reviews {
   rating: Int!
 }
 
-type ReviewsConnection {
+type ReviewConnection {
   pageInfo: PageInfo!
-  edges: [ReviewsEdge]!
-  aggregate: AggregateReviews!
+  edges: [ReviewEdge]!
+  aggregate: AggregateReview!
 }
 
-input ReviewsCreateInput {
+input ReviewCreateInput {
   user: ID!
   service: ID!
   title: String!
@@ -1237,12 +1237,12 @@ input ReviewsCreateInput {
   rating: Int!
 }
 
-type ReviewsEdge {
-  node: Reviews!
+type ReviewEdge {
+  node: Review!
   cursor: String!
 }
 
-enum ReviewsOrderByInput {
+enum ReviewOrderByInput {
   id_ASC
   id_DESC
   user_ASC
@@ -1261,7 +1261,7 @@ enum ReviewsOrderByInput {
   updatedAt_DESC
 }
 
-type ReviewsPreviousValues {
+type ReviewPreviousValues {
   id: ID!
   user: ID!
   service: ID!
@@ -1270,25 +1270,25 @@ type ReviewsPreviousValues {
   rating: Int!
 }
 
-type ReviewsSubscriptionPayload {
+type ReviewSubscriptionPayload {
   mutation: MutationType!
-  node: Reviews
+  node: Review
   updatedFields: [String!]
-  previousValues: ReviewsPreviousValues
+  previousValues: ReviewPreviousValues
 }
 
-input ReviewsSubscriptionWhereInput {
+input ReviewSubscriptionWhereInput {
   mutation_in: [MutationType!]
   updatedFields_contains: String
   updatedFields_contains_every: [String!]
   updatedFields_contains_some: [String!]
-  node: ReviewsWhereInput
-  AND: [ReviewsSubscriptionWhereInput!]
-  OR: [ReviewsSubscriptionWhereInput!]
-  NOT: [ReviewsSubscriptionWhereInput!]
+  node: ReviewWhereInput
+  AND: [ReviewSubscriptionWhereInput!]
+  OR: [ReviewSubscriptionWhereInput!]
+  NOT: [ReviewSubscriptionWhereInput!]
 }
 
-input ReviewsUpdateInput {
+input ReviewUpdateInput {
   user: ID
   service: ID
   title: String
@@ -1296,7 +1296,7 @@ input ReviewsUpdateInput {
   rating: Int
 }
 
-input ReviewsUpdateManyMutationInput {
+input ReviewUpdateManyMutationInput {
   user: ID
   service: ID
   title: String
@@ -1304,7 +1304,7 @@ input ReviewsUpdateManyMutationInput {
   rating: Int
 }
 
-input ReviewsWhereInput {
+input ReviewWhereInput {
   id: ID
   id_not: ID
   id_in: [ID!]
@@ -1383,14 +1383,13 @@ input ReviewsWhereInput {
   rating_lte: Int
   rating_gt: Int
   rating_gte: Int
-  AND: [ReviewsWhereInput!]
-  OR: [ReviewsWhereInput!]
-  NOT: [ReviewsWhereInput!]
+  AND: [ReviewWhereInput!]
+  OR: [ReviewWhereInput!]
+  NOT: [ReviewWhereInput!]
 }
 
-input ReviewsWhereUniqueInput {
+input ReviewWhereUniqueInput {
   id: ID
-  user: ID
 }
 
 type ServiceMessage {
@@ -1664,7 +1663,7 @@ type Subscription {
   appointment(where: AppointmentSubscriptionWhereInput): AppointmentSubscriptionPayload
   clientMessage(where: ClientMessageSubscriptionWhereInput): ClientMessageSubscriptionPayload
   doctor(where: DoctorSubscriptionWhereInput): DoctorSubscriptionPayload
-  reviews(where: ReviewsSubscriptionWhereInput): ReviewsSubscriptionPayload
+  review(where: ReviewSubscriptionWhereInput): ReviewSubscriptionPayload
   serviceMessage(where: ServiceMessageSubscriptionWhereInput): ServiceMessageSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }

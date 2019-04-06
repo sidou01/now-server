@@ -17,7 +17,7 @@ var models = [
     embedded: false
   },
   {
-    name: "Reviews",
+    name: "Review",
     embedded: false
   },
   {

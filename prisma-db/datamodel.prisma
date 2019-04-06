@@ -42,9 +42,9 @@ type Appointment {
   createdTime: String!
 }
 
-type Reviews {
+type Review {
   id: ID! @unique
-  user: ID! @unique
+  user: ID!
   service: ID!
   title: String!
   content: String!

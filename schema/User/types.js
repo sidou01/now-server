@@ -12,6 +12,7 @@ export default `
     Appointments: [Appointment!]
     sentMessages: [ClientMessage!]
     recievedMessages: [ServiceMessage!]
+    reviews: [Review!]!
   }
 
   type Query {
@@ -23,13 +24,23 @@ export default `
     register(input: registerInput): User!
     login(input: loginInput): String!
 
+
     scheduleAppointment(input: scheduleAppointmentInput): Appointment!
     cancelAppointment(appointmentId: ID!): Appointment!
     sendMessageToService(serviceId: ID!, subject: String, body: String!): ClientMessage!
+
+    reviewService(input: reviewServiceInput): Review!
   }
 
   type Subscription {
     messageToClientAdded: ServiceMessage!
+  }
+
+  input reviewServiceInput {
+    serviceId: ID!
+    title: String!
+    content: String!
+    rating: Int!
   }
 
   input scheduleAppointmentInput {

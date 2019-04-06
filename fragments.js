@@ -113,3 +113,20 @@ export const appointmentToService = `
       }
     }
 `
+export const reviewToService = `
+    fragment reviewToService on Review  {
+      id
+      title
+      content
+      user {
+      	id
+	fullName
+	email
+      }
+      service {
+      	id
+	fullName
+	email
+      }
+    }
+`

@@ -14,6 +14,7 @@ export default `
     specialty: DoctorSpecialty!
     sentMessages: [ServiceMessage!]
     recievedMessages: [ClientMessage!]
+    reviews: [Review!]!
   }
 
 
@@ -42,6 +43,7 @@ export default `
   type Subscription {
     messageToServiceAdded: ClientMessage!
     appointmentRecieved: Appointment!
+    reviewRecieved: Review!
   }
 
   input addDoctorInput {

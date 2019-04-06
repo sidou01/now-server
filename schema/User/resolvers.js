@@ -1,4 +1,8 @@
-import { UserAppointments, AuthenticatedUserInfo } from '../../fragments'
+import {
+  UserAppointments,
+  AuthenticatedUserInfo,
+  reviewToService,
+} from '../../fragments'
 import sgMail from '@sendgrid/mail'
 import { AuthenticationError } from 'apollo-server'
 import bcrypt from 'bcrypt'
@@ -7,12 +11,14 @@ import {
   MESSAGE_TO_CLIENT,
   MESSAGE_TO_SERVICE,
   APPOINTMENT_TO_SERVICE,
+  REVIEW_TO_SERVICE,
 } from '../topics'
 import { withFilter } from 'apollo-server'
 import { pubsub } from '../../server'
 import { messageToService, appointmentToService } from '../../fragments'
 import dayjs from 'dayjs'
 import { getEndTime } from '../../utils'
+import { prisma } from '../../prisma-db/generated/prisma-client/'
 
 export default {
   Query: {
@@ -62,6 +68,37 @@ export default {
     },
   },
   Mutation: {
+    reviewService: async (
+      _,
+      { serviceId, title, content, rating },
+      { prisma, user },
+    ) => {
+      if (!user) throw new Error('401 unauthorized')
+      const output = await prisma.createReview({
+        service: {
+          connect: {
+            id: serviceId,
+          },
+        },
+        user: {
+          connect: {
+            id: user.id,
+          },
+        },
+        title,
+        content,
+        rating,
+      })
+
+      const createdReview = await prisma
+        .review({ id: output.id })
+        .$fragment(reviewToService)
+
+      pubsub.publish(REVIEW_TO_SERVICE, {
+        reviewRecieved: createdReview,
+      })
+      return createdReview
+    },
     cancelAppointment: async (_, { appointmentId }, { prisma, user }) => {
       if (!user) throw new Error('401 unauthorized')
       const appointment = await prisma.appointment({ id: appointmentId })

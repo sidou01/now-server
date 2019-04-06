@@ -4,11 +4,14 @@ import { makeExecutableSchema } from 'graphql-tools'
 
 import appointmentType from './Appointment/types'
 import userType from './User/types'
-import doctorType from './Service/types'
-
 import userResolvers from './User/resolvers'
+
+import doctorType from './Service/types'
 import doctorResolvers from './Service/resolvers'
 import appointmentResolvers from './Appointment/resolvers'
+
+import reviewType from './Reviews/types'
+import reviewResolvers from './Reviews/resolvers'
 
 const commonTypes = `
     type ClientMessage {
@@ -27,9 +30,20 @@ const commonTypes = `
         body: String!
     }
 `
-const typeDefsArray = [commonTypes, userType, doctorType, appointmentType]
+const typeDefsArray = [
+  commonTypes,
+  userType,
+  doctorType,
+  appointmentType,
+  reviewType,
+]
 
-const resolversArray = [userResolvers, doctorResolvers, appointmentResolvers]
+const resolversArray = [
+  userResolvers,
+  doctorResolvers,
+  appointmentResolvers,
+  reviewResolvers,
+]
 
 const typeDefs = mergeTypes(typeDefsArray)
 const resolvers = mergeResolvers(resolversArray)
