@@ -44,8 +44,8 @@ type Appointment {
 
 type Review {
   id: ID! @unique
-  user: ID!
-  service: ID!
+  user: User!
+  service: Doctor!
   title: String!
   content: String!
   rating: Int!

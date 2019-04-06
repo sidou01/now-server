@@ -1,3 +1,5 @@
+import jwt from 'jsonwebtoken'
+
 export function getEndTime(startTime, duration) {
   let endTime
   switch (duration) {

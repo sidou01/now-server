@@ -18,7 +18,6 @@ import { pubsub } from '../../server'
 import { messageToService, appointmentToService } from '../../fragments'
 import dayjs from 'dayjs'
 import { getEndTime } from '../../utils'
-import { prisma } from '../../prisma-db/generated/prisma-client/'
 
 export default {
   Query: {
@@ -70,24 +69,24 @@ export default {
   Mutation: {
     reviewService: async (
       _,
-      { serviceId, title, content, rating },
+      { input: { serviceId, title, content, rating } },
       { prisma, user },
     ) => {
       if (!user) throw new Error('401 unauthorized')
       const output = await prisma.createReview({
-        service: {
-          connect: {
-            id: serviceId,
-          },
-        },
+        title,
+        content,
+        rating,
         user: {
           connect: {
             id: user.id,
           },
         },
-        title,
-        content,
-        rating,
+        service: {
+          connect: {
+            id: serviceId,
+          },
+        },
       })
 
       const createdReview = await prisma

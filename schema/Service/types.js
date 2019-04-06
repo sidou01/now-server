@@ -1,5 +1,4 @@
 export default `
-
   type Doctor {
     id: ID!
     fullName: String!

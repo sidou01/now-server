@@ -434,10 +434,6 @@ export type DoctorOrderByInput =
 export type ReviewOrderByInput =
   | "id_ASC"
   | "id_DESC"
-  | "user_ASC"
-  | "user_DESC"
-  | "service_ASC"
-  | "service_DESC"
   | "title_ASC"
   | "title_DESC"
   | "content_ASC"
@@ -937,34 +933,8 @@ export interface ReviewWhereInput {
   id_not_starts_with?: ID_Input;
   id_ends_with?: ID_Input;
   id_not_ends_with?: ID_Input;
-  user?: ID_Input;
-  user_not?: ID_Input;
-  user_in?: ID_Input[] | ID_Input;
-  user_not_in?: ID_Input[] | ID_Input;
-  user_lt?: ID_Input;
-  user_lte?: ID_Input;
-  user_gt?: ID_Input;
-  user_gte?: ID_Input;
-  user_contains?: ID_Input;
-  user_not_contains?: ID_Input;
-  user_starts_with?: ID_Input;
-  user_not_starts_with?: ID_Input;
-  user_ends_with?: ID_Input;
-  user_not_ends_with?: ID_Input;
-  service?: ID_Input;
-  service_not?: ID_Input;
-  service_in?: ID_Input[] | ID_Input;
-  service_not_in?: ID_Input[] | ID_Input;
-  service_lt?: ID_Input;
-  service_lte?: ID_Input;
-  service_gt?: ID_Input;
-  service_gte?: ID_Input;
-  service_contains?: ID_Input;
-  service_not_contains?: ID_Input;
-  service_starts_with?: ID_Input;
-  service_not_starts_with?: ID_Input;
-  service_ends_with?: ID_Input;
-  service_not_ends_with?: ID_Input;
+  user?: UserWhereInput;
+  service?: DoctorWhereInput;
   title?: String;
   title_not?: String;
   title_in?: String[] | String;
@@ -1932,24 +1902,99 @@ export interface DoctorUpdateManyMutationInput {
 }
 
 export interface ReviewCreateInput {
-  user: ID_Input;
-  service: ID_Input;
+  user: UserCreateOneInput;
+  service: DoctorCreateOneInput;
   title: String;
   content: String;
   rating: Int;
 }
 
+export interface UserCreateOneInput {
+  create?: UserCreateInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserCreateInput {
+  fullName: String;
+  email: String;
+  password: String;
+  age: Int;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  confirmation?: Boolean;
+  Appointments?: AppointmentCreateManyWithoutClientInput;
+  sentMessages?: ClientMessageCreateManyWithoutSenderInput;
+  recievedMessages?: ServiceMessageCreateManyWithoutRecieverInput;
+}
+
+export interface DoctorCreateOneInput {
+  create?: DoctorCreateInput;
+  connect?: DoctorWhereUniqueInput;
+}
+
 export interface ReviewUpdateInput {
-  user?: ID_Input;
-  service?: ID_Input;
+  user?: UserUpdateOneRequiredInput;
+  service?: DoctorUpdateOneRequiredInput;
   title?: String;
   content?: String;
   rating?: Int;
 }
 
+export interface UserUpdateOneRequiredInput {
+  create?: UserCreateInput;
+  update?: UserUpdateDataInput;
+  upsert?: UserUpsertNestedInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserUpdateDataInput {
+  fullName?: String;
+  email?: String;
+  password?: String;
+  age?: Int;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  confirmation?: Boolean;
+  Appointments?: AppointmentUpdateManyWithoutClientInput;
+  sentMessages?: ClientMessageUpdateManyWithoutSenderInput;
+  recievedMessages?: ServiceMessageUpdateManyWithoutRecieverInput;
+}
+
+export interface UserUpsertNestedInput {
+  update: UserUpdateDataInput;
+  create: UserCreateInput;
+}
+
+export interface DoctorUpdateOneRequiredInput {
+  create?: DoctorCreateInput;
+  update?: DoctorUpdateDataInput;
+  upsert?: DoctorUpsertNestedInput;
+  connect?: DoctorWhereUniqueInput;
+}
+
+export interface DoctorUpdateDataInput {
+  fullName?: String;
+  Bio?: String;
+  email?: String;
+  password?: String;
+  age?: Int;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  appointments?: AppointmentUpdateManyWithoutServiceInput;
+  specialty?: DoctorSpecialty;
+  sentMessages?: ServiceMessageUpdateManyWithoutSenderInput;
+  recievedMessages?: ClientMessageUpdateManyWithoutRecieverInput;
+}
+
+export interface DoctorUpsertNestedInput {
+  update: DoctorUpdateDataInput;
+  create: DoctorCreateInput;
+}
+
 export interface ReviewUpdateManyMutationInput {
-  user?: ID_Input;
-  service?: ID_Input;
   title?: String;
   content?: String;
   rating?: Int;
@@ -1972,20 +2017,6 @@ export interface ServiceMessageUpdateInput {
 export interface ServiceMessageUpdateManyMutationInput {
   subject?: String;
   body?: String;
-}
-
-export interface UserCreateInput {
-  fullName: String;
-  email: String;
-  password: String;
-  age: Int;
-  phone?: Int;
-  gender?: Gender;
-  avatar?: String;
-  confirmation?: Boolean;
-  Appointments?: AppointmentCreateManyWithoutClientInput;
-  sentMessages?: ClientMessageCreateManyWithoutSenderInput;
-  recievedMessages?: ServiceMessageCreateManyWithoutRecieverInput;
 }
 
 export interface UserUpdateInput {
@@ -2588,8 +2619,6 @@ export interface AggregateDoctorSubscription
 
 export interface Review {
   id: ID_Output;
-  user: ID_Output;
-  service: ID_Output;
   title: String;
   content: String;
   rating: Int;
@@ -2597,8 +2626,8 @@ export interface Review {
 
 export interface ReviewPromise extends Promise<Review>, Fragmentable {
   id: () => Promise<ID_Output>;
-  user: () => Promise<ID_Output>;
-  service: () => Promise<ID_Output>;
+  user: <T = UserPromise>() => T;
+  service: <T = DoctorPromise>() => T;
   title: () => Promise<String>;
   content: () => Promise<String>;
   rating: () => Promise<Int>;
@@ -2608,8 +2637,8 @@ export interface ReviewSubscription
   extends Promise<AsyncIterator<Review>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  user: () => Promise<AsyncIterator<ID_Output>>;
-  service: () => Promise<AsyncIterator<ID_Output>>;
+  user: <T = UserSubscription>() => T;
+  service: <T = DoctorSubscription>() => T;
   title: () => Promise<AsyncIterator<String>>;
   content: () => Promise<AsyncIterator<String>>;
   rating: () => Promise<AsyncIterator<Int>>;
@@ -2999,8 +3028,6 @@ export interface ReviewSubscriptionPayloadSubscription
 
 export interface ReviewPreviousValues {
   id: ID_Output;
-  user: ID_Output;
-  service: ID_Output;
   title: String;
   content: String;
   rating: Int;
@@ -3010,8 +3037,6 @@ export interface ReviewPreviousValuesPromise
   extends Promise<ReviewPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  user: () => Promise<ID_Output>;
-  service: () => Promise<ID_Output>;
   title: () => Promise<String>;
   content: () => Promise<String>;
   rating: () => Promise<Int>;
@@ -3021,8 +3046,6 @@ export interface ReviewPreviousValuesSubscription
   extends Promise<AsyncIterator<ReviewPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  user: () => Promise<AsyncIterator<ID_Output>>;
-  service: () => Promise<AsyncIterator<ID_Output>>;
   title: () => Promise<AsyncIterator<String>>;
   content: () => Promise<AsyncIterator<String>>;
   rating: () => Promise<AsyncIterator<Int>>;
