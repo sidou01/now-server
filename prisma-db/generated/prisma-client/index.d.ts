@@ -17,6 +17,7 @@ export interface Exists {
   appointment: (where?: AppointmentWhereInput) => Promise<boolean>;
   clientMessage: (where?: ClientMessageWhereInput) => Promise<boolean>;
   doctor: (where?: DoctorWhereInput) => Promise<boolean>;
+  reviews: (where?: ReviewsWhereInput) => Promise<boolean>;
   serviceMessage: (where?: ServiceMessageWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
 }
@@ -109,6 +110,29 @@ export interface Prisma {
       last?: Int;
     }
   ) => DoctorConnectionPromise;
+  reviews: (where: ReviewsWhereUniqueInput) => ReviewsPromise;
+  reviewses: (
+    args?: {
+      where?: ReviewsWhereInput;
+      orderBy?: ReviewsOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => FragmentableArray<Reviews>;
+  reviewsesConnection: (
+    args?: {
+      where?: ReviewsWhereInput;
+      orderBy?: ReviewsOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => ReviewsConnectionPromise;
   serviceMessage: (
     where: ServiceMessageWhereUniqueInput
   ) => ServiceMessagePromise;
@@ -226,6 +250,22 @@ export interface Prisma {
   ) => DoctorPromise;
   deleteDoctor: (where: DoctorWhereUniqueInput) => DoctorPromise;
   deleteManyDoctors: (where?: DoctorWhereInput) => BatchPayloadPromise;
+  createReviews: (data: ReviewsCreateInput) => ReviewsPromise;
+  updateReviews: (
+    args: { data: ReviewsUpdateInput; where: ReviewsWhereUniqueInput }
+  ) => ReviewsPromise;
+  updateManyReviewses: (
+    args: { data: ReviewsUpdateManyMutationInput; where?: ReviewsWhereInput }
+  ) => BatchPayloadPromise;
+  upsertReviews: (
+    args: {
+      where: ReviewsWhereUniqueInput;
+      create: ReviewsCreateInput;
+      update: ReviewsUpdateInput;
+    }
+  ) => ReviewsPromise;
+  deleteReviews: (where: ReviewsWhereUniqueInput) => ReviewsPromise;
+  deleteManyReviewses: (where?: ReviewsWhereInput) => BatchPayloadPromise;
   createServiceMessage: (
     data: ServiceMessageCreateInput
   ) => ServiceMessagePromise;
@@ -288,6 +328,9 @@ export interface Subscription {
   doctor: (
     where?: DoctorSubscriptionWhereInput
   ) => DoctorSubscriptionPayloadSubscription;
+  reviews: (
+    where?: ReviewsSubscriptionWhereInput
+  ) => ReviewsSubscriptionPayloadSubscription;
   serviceMessage: (
     where?: ServiceMessageSubscriptionWhereInput
   ) => ServiceMessageSubscriptionPayloadSubscription;
@@ -383,6 +426,24 @@ export type DoctorOrderByInput =
   | "avatar_DESC"
   | "specialty_ASC"
   | "specialty_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC";
+
+export type ReviewsOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "user_ASC"
+  | "user_DESC"
+  | "service_ASC"
+  | "service_DESC"
+  | "title_ASC"
+  | "title_DESC"
+  | "content_ASC"
+  | "content_DESC"
+  | "rating_ASC"
+  | "rating_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -856,6 +917,95 @@ export type DoctorWhereUniqueInput = AtLeastOne<{
   id: ID_Input;
   email?: String;
 }>;
+
+export type ReviewsWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+  user?: ID_Input;
+}>;
+
+export interface ReviewsWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  user?: ID_Input;
+  user_not?: ID_Input;
+  user_in?: ID_Input[] | ID_Input;
+  user_not_in?: ID_Input[] | ID_Input;
+  user_lt?: ID_Input;
+  user_lte?: ID_Input;
+  user_gt?: ID_Input;
+  user_gte?: ID_Input;
+  user_contains?: ID_Input;
+  user_not_contains?: ID_Input;
+  user_starts_with?: ID_Input;
+  user_not_starts_with?: ID_Input;
+  user_ends_with?: ID_Input;
+  user_not_ends_with?: ID_Input;
+  service?: ID_Input;
+  service_not?: ID_Input;
+  service_in?: ID_Input[] | ID_Input;
+  service_not_in?: ID_Input[] | ID_Input;
+  service_lt?: ID_Input;
+  service_lte?: ID_Input;
+  service_gt?: ID_Input;
+  service_gte?: ID_Input;
+  service_contains?: ID_Input;
+  service_not_contains?: ID_Input;
+  service_starts_with?: ID_Input;
+  service_not_starts_with?: ID_Input;
+  service_ends_with?: ID_Input;
+  service_not_ends_with?: ID_Input;
+  title?: String;
+  title_not?: String;
+  title_in?: String[] | String;
+  title_not_in?: String[] | String;
+  title_lt?: String;
+  title_lte?: String;
+  title_gt?: String;
+  title_gte?: String;
+  title_contains?: String;
+  title_not_contains?: String;
+  title_starts_with?: String;
+  title_not_starts_with?: String;
+  title_ends_with?: String;
+  title_not_ends_with?: String;
+  content?: String;
+  content_not?: String;
+  content_in?: String[] | String;
+  content_not_in?: String[] | String;
+  content_lt?: String;
+  content_lte?: String;
+  content_gt?: String;
+  content_gte?: String;
+  content_contains?: String;
+  content_not_contains?: String;
+  content_starts_with?: String;
+  content_not_starts_with?: String;
+  content_ends_with?: String;
+  content_not_ends_with?: String;
+  rating?: Int;
+  rating_not?: Int;
+  rating_in?: Int[] | Int;
+  rating_not_in?: Int[] | Int;
+  rating_lt?: Int;
+  rating_lte?: Int;
+  rating_gt?: Int;
+  rating_gte?: Int;
+  AND?: ReviewsWhereInput[] | ReviewsWhereInput;
+  OR?: ReviewsWhereInput[] | ReviewsWhereInput;
+  NOT?: ReviewsWhereInput[] | ReviewsWhereInput;
+}
 
 export type ServiceMessageWhereUniqueInput = AtLeastOne<{
   id: ID_Input;
@@ -1782,6 +1932,30 @@ export interface DoctorUpdateManyMutationInput {
   specialty?: DoctorSpecialty;
 }
 
+export interface ReviewsCreateInput {
+  user: ID_Input;
+  service: ID_Input;
+  title: String;
+  content: String;
+  rating: Int;
+}
+
+export interface ReviewsUpdateInput {
+  user?: ID_Input;
+  service?: ID_Input;
+  title?: String;
+  content?: String;
+  rating?: Int;
+}
+
+export interface ReviewsUpdateManyMutationInput {
+  user?: ID_Input;
+  service?: ID_Input;
+  title?: String;
+  content?: String;
+  rating?: Int;
+}
+
 export interface ServiceMessageCreateInput {
   sender: DoctorCreateOneWithoutSentMessagesInput;
   reciever: UserCreateOneWithoutRecievedMessagesInput;
@@ -1877,6 +2051,17 @@ export interface DoctorSubscriptionWhereInput {
   AND?: DoctorSubscriptionWhereInput[] | DoctorSubscriptionWhereInput;
   OR?: DoctorSubscriptionWhereInput[] | DoctorSubscriptionWhereInput;
   NOT?: DoctorSubscriptionWhereInput[] | DoctorSubscriptionWhereInput;
+}
+
+export interface ReviewsSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: ReviewsWhereInput;
+  AND?: ReviewsSubscriptionWhereInput[] | ReviewsSubscriptionWhereInput;
+  OR?: ReviewsSubscriptionWhereInput[] | ReviewsSubscriptionWhereInput;
+  NOT?: ReviewsSubscriptionWhereInput[] | ReviewsSubscriptionWhereInput;
 }
 
 export interface ServiceMessageSubscriptionWhereInput {
@@ -2402,6 +2587,89 @@ export interface AggregateDoctorSubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
+export interface Reviews {
+  id: ID_Output;
+  user: ID_Output;
+  service: ID_Output;
+  title: String;
+  content: String;
+  rating: Int;
+}
+
+export interface ReviewsPromise extends Promise<Reviews>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  user: () => Promise<ID_Output>;
+  service: () => Promise<ID_Output>;
+  title: () => Promise<String>;
+  content: () => Promise<String>;
+  rating: () => Promise<Int>;
+}
+
+export interface ReviewsSubscription
+  extends Promise<AsyncIterator<Reviews>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  user: () => Promise<AsyncIterator<ID_Output>>;
+  service: () => Promise<AsyncIterator<ID_Output>>;
+  title: () => Promise<AsyncIterator<String>>;
+  content: () => Promise<AsyncIterator<String>>;
+  rating: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface ReviewsConnection {
+  pageInfo: PageInfo;
+  edges: ReviewsEdge[];
+}
+
+export interface ReviewsConnectionPromise
+  extends Promise<ReviewsConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<ReviewsEdge>>() => T;
+  aggregate: <T = AggregateReviewsPromise>() => T;
+}
+
+export interface ReviewsConnectionSubscription
+  extends Promise<AsyncIterator<ReviewsConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<ReviewsEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateReviewsSubscription>() => T;
+}
+
+export interface ReviewsEdge {
+  node: Reviews;
+  cursor: String;
+}
+
+export interface ReviewsEdgePromise extends Promise<ReviewsEdge>, Fragmentable {
+  node: <T = ReviewsPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface ReviewsEdgeSubscription
+  extends Promise<AsyncIterator<ReviewsEdge>>,
+    Fragmentable {
+  node: <T = ReviewsSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateReviews {
+  count: Int;
+}
+
+export interface AggregateReviewsPromise
+  extends Promise<AggregateReviews>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateReviewsSubscription
+  extends Promise<AsyncIterator<AggregateReviews>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
 export interface ServiceMessageConnection {
   pageInfo: PageInfo;
   edges: ServiceMessageEdge[];
@@ -2705,6 +2973,62 @@ export interface DoctorPreviousValuesSubscription
   specialty: () => Promise<AsyncIterator<DoctorSpecialty>>;
 }
 
+export interface ReviewsSubscriptionPayload {
+  mutation: MutationType;
+  node: Reviews;
+  updatedFields: String[];
+  previousValues: ReviewsPreviousValues;
+}
+
+export interface ReviewsSubscriptionPayloadPromise
+  extends Promise<ReviewsSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = ReviewsPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = ReviewsPreviousValuesPromise>() => T;
+}
+
+export interface ReviewsSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<ReviewsSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = ReviewsSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = ReviewsPreviousValuesSubscription>() => T;
+}
+
+export interface ReviewsPreviousValues {
+  id: ID_Output;
+  user: ID_Output;
+  service: ID_Output;
+  title: String;
+  content: String;
+  rating: Int;
+}
+
+export interface ReviewsPreviousValuesPromise
+  extends Promise<ReviewsPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  user: () => Promise<ID_Output>;
+  service: () => Promise<ID_Output>;
+  title: () => Promise<String>;
+  content: () => Promise<String>;
+  rating: () => Promise<Int>;
+}
+
+export interface ReviewsPreviousValuesSubscription
+  extends Promise<AsyncIterator<ReviewsPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  user: () => Promise<AsyncIterator<ID_Output>>;
+  service: () => Promise<AsyncIterator<ID_Output>>;
+  title: () => Promise<AsyncIterator<String>>;
+  content: () => Promise<AsyncIterator<String>>;
+  rating: () => Promise<AsyncIterator<Int>>;
+}
+
 export interface ServiceMessageSubscriptionPayload {
   mutation: MutationType;
   node: ServiceMessage;
@@ -2855,6 +3179,10 @@ export const models: Model[] = [
   },
   {
     name: "Appointment",
+    embedded: false
+  },
+  {
+    name: "Reviews",
     embedded: false
   },
   {

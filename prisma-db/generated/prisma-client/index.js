@@ -17,6 +17,10 @@ var models = [
     embedded: false
   },
   {
+    name: "Reviews",
+    embedded: false
+  },
+  {
     name: "AppointmentDuration",
     embedded: false
   },

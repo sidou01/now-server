@@ -42,6 +42,15 @@ type Appointment {
   createdTime: String!
 }
 
+type Reviews {
+  id: ID! @unique
+  user: ID! @unique
+  service: ID!
+  title: String!
+  content: String!
+  rating: Int!
+}
+
 enum AppointmentDuration {
   VERY_SHORT #15m
   SHORT #30m
