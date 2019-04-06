@@ -744,6 +744,7 @@ type Doctor {
   specialty: DoctorSpecialty!
   sentMessages(where: ServiceMessageWhereInput, orderBy: ServiceMessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ServiceMessage!]
   recievedMessages(where: ClientMessageWhereInput, orderBy: ClientMessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ClientMessage!]
+  reviews(where: ReviewWhereInput, orderBy: ReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Review!]
 }
 
 type DoctorConnection {
@@ -765,11 +766,7 @@ input DoctorCreateInput {
   specialty: DoctorSpecialty!
   sentMessages: ServiceMessageCreateManyWithoutSenderInput
   recievedMessages: ClientMessageCreateManyWithoutRecieverInput
-}
-
-input DoctorCreateOneInput {
-  create: DoctorCreateInput
-  connect: DoctorWhereUniqueInput
+  reviews: ReviewCreateManyWithoutServiceInput
 }
 
 input DoctorCreateOneWithoutAppointmentsInput {
@@ -779,6 +776,11 @@ input DoctorCreateOneWithoutAppointmentsInput {
 
 input DoctorCreateOneWithoutRecievedMessagesInput {
   create: DoctorCreateWithoutRecievedMessagesInput
+  connect: DoctorWhereUniqueInput
+}
+
+input DoctorCreateOneWithoutReviewsInput {
+  create: DoctorCreateWithoutReviewsInput
   connect: DoctorWhereUniqueInput
 }
 
@@ -799,6 +801,7 @@ input DoctorCreateWithoutAppointmentsInput {
   specialty: DoctorSpecialty!
   sentMessages: ServiceMessageCreateManyWithoutSenderInput
   recievedMessages: ClientMessageCreateManyWithoutRecieverInput
+  reviews: ReviewCreateManyWithoutServiceInput
 }
 
 input DoctorCreateWithoutRecievedMessagesInput {
@@ -813,6 +816,22 @@ input DoctorCreateWithoutRecievedMessagesInput {
   appointments: AppointmentCreateManyWithoutServiceInput
   specialty: DoctorSpecialty!
   sentMessages: ServiceMessageCreateManyWithoutSenderInput
+  reviews: ReviewCreateManyWithoutServiceInput
+}
+
+input DoctorCreateWithoutReviewsInput {
+  fullName: String!
+  Bio: String
+  email: String!
+  password: String!
+  age: Int
+  phone: Int
+  gender: Gender
+  avatar: String
+  appointments: AppointmentCreateManyWithoutServiceInput
+  specialty: DoctorSpecialty!
+  sentMessages: ServiceMessageCreateManyWithoutSenderInput
+  recievedMessages: ClientMessageCreateManyWithoutRecieverInput
 }
 
 input DoctorCreateWithoutSentMessagesInput {
@@ -827,6 +846,7 @@ input DoctorCreateWithoutSentMessagesInput {
   appointments: AppointmentCreateManyWithoutServiceInput
   specialty: DoctorSpecialty!
   recievedMessages: ClientMessageCreateManyWithoutRecieverInput
+  reviews: ReviewCreateManyWithoutServiceInput
 }
 
 type DoctorEdge {
@@ -901,21 +921,6 @@ input DoctorSubscriptionWhereInput {
   NOT: [DoctorSubscriptionWhereInput!]
 }
 
-input DoctorUpdateDataInput {
-  fullName: String
-  Bio: String
-  email: String
-  password: String
-  age: Int
-  phone: Int
-  gender: Gender
-  avatar: String
-  appointments: AppointmentUpdateManyWithoutServiceInput
-  specialty: DoctorSpecialty
-  sentMessages: ServiceMessageUpdateManyWithoutSenderInput
-  recievedMessages: ClientMessageUpdateManyWithoutRecieverInput
-}
-
 input DoctorUpdateInput {
   fullName: String
   Bio: String
@@ -929,6 +934,7 @@ input DoctorUpdateInput {
   specialty: DoctorSpecialty
   sentMessages: ServiceMessageUpdateManyWithoutSenderInput
   recievedMessages: ClientMessageUpdateManyWithoutRecieverInput
+  reviews: ReviewUpdateManyWithoutServiceInput
 }
 
 input DoctorUpdateManyMutationInput {
@@ -943,13 +949,6 @@ input DoctorUpdateManyMutationInput {
   specialty: DoctorSpecialty
 }
 
-input DoctorUpdateOneRequiredInput {
-  create: DoctorCreateInput
-  update: DoctorUpdateDataInput
-  upsert: DoctorUpsertNestedInput
-  connect: DoctorWhereUniqueInput
-}
-
 input DoctorUpdateOneRequiredWithoutAppointmentsInput {
   create: DoctorCreateWithoutAppointmentsInput
   update: DoctorUpdateWithoutAppointmentsDataInput
@@ -961,6 +960,13 @@ input DoctorUpdateOneRequiredWithoutRecievedMessagesInput {
   create: DoctorCreateWithoutRecievedMessagesInput
   update: DoctorUpdateWithoutRecievedMessagesDataInput
   upsert: DoctorUpsertWithoutRecievedMessagesInput
+  connect: DoctorWhereUniqueInput
+}
+
+input DoctorUpdateOneRequiredWithoutReviewsInput {
+  create: DoctorCreateWithoutReviewsInput
+  update: DoctorUpdateWithoutReviewsDataInput
+  upsert: DoctorUpsertWithoutReviewsInput
   connect: DoctorWhereUniqueInput
 }
 
@@ -983,6 +989,7 @@ input DoctorUpdateWithoutAppointmentsDataInput {
   specialty: DoctorSpecialty
   sentMessages: ServiceMessageUpdateManyWithoutSenderInput
   recievedMessages: ClientMessageUpdateManyWithoutRecieverInput
+  reviews: ReviewUpdateManyWithoutServiceInput
 }
 
 input DoctorUpdateWithoutRecievedMessagesDataInput {
@@ -997,6 +1004,22 @@ input DoctorUpdateWithoutRecievedMessagesDataInput {
   appointments: AppointmentUpdateManyWithoutServiceInput
   specialty: DoctorSpecialty
   sentMessages: ServiceMessageUpdateManyWithoutSenderInput
+  reviews: ReviewUpdateManyWithoutServiceInput
+}
+
+input DoctorUpdateWithoutReviewsDataInput {
+  fullName: String
+  Bio: String
+  email: String
+  password: String
+  age: Int
+  phone: Int
+  gender: Gender
+  avatar: String
+  appointments: AppointmentUpdateManyWithoutServiceInput
+  specialty: DoctorSpecialty
+  sentMessages: ServiceMessageUpdateManyWithoutSenderInput
+  recievedMessages: ClientMessageUpdateManyWithoutRecieverInput
 }
 
 input DoctorUpdateWithoutSentMessagesDataInput {
@@ -1011,11 +1034,7 @@ input DoctorUpdateWithoutSentMessagesDataInput {
   appointments: AppointmentUpdateManyWithoutServiceInput
   specialty: DoctorSpecialty
   recievedMessages: ClientMessageUpdateManyWithoutRecieverInput
-}
-
-input DoctorUpsertNestedInput {
-  update: DoctorUpdateDataInput!
-  create: DoctorCreateInput!
+  reviews: ReviewUpdateManyWithoutServiceInput
 }
 
 input DoctorUpsertWithoutAppointmentsInput {
@@ -1026,6 +1045,11 @@ input DoctorUpsertWithoutAppointmentsInput {
 input DoctorUpsertWithoutRecievedMessagesInput {
   update: DoctorUpdateWithoutRecievedMessagesDataInput!
   create: DoctorCreateWithoutRecievedMessagesInput!
+}
+
+input DoctorUpsertWithoutReviewsInput {
+  update: DoctorUpdateWithoutReviewsDataInput!
+  create: DoctorCreateWithoutReviewsInput!
 }
 
 input DoctorUpsertWithoutSentMessagesInput {
@@ -1151,6 +1175,9 @@ input DoctorWhereInput {
   recievedMessages_every: ClientMessageWhereInput
   recievedMessages_some: ClientMessageWhereInput
   recievedMessages_none: ClientMessageWhereInput
+  reviews_every: ReviewWhereInput
+  reviews_some: ReviewWhereInput
+  reviews_none: ReviewWhereInput
   AND: [DoctorWhereInput!]
   OR: [DoctorWhereInput!]
   NOT: [DoctorWhereInput!]
@@ -1262,8 +1289,32 @@ type ReviewConnection {
 }
 
 input ReviewCreateInput {
-  user: UserCreateOneInput!
-  service: DoctorCreateOneInput!
+  user: UserCreateOneWithoutReviewsInput!
+  service: DoctorCreateOneWithoutReviewsInput!
+  title: String!
+  content: String!
+  rating: Int!
+}
+
+input ReviewCreateManyWithoutServiceInput {
+  create: [ReviewCreateWithoutServiceInput!]
+  connect: [ReviewWhereUniqueInput!]
+}
+
+input ReviewCreateManyWithoutUserInput {
+  create: [ReviewCreateWithoutUserInput!]
+  connect: [ReviewWhereUniqueInput!]
+}
+
+input ReviewCreateWithoutServiceInput {
+  user: UserCreateOneWithoutReviewsInput!
+  title: String!
+  content: String!
+  rating: Int!
+}
+
+input ReviewCreateWithoutUserInput {
+  service: DoctorCreateOneWithoutReviewsInput!
   title: String!
   content: String!
   rating: Int!
@@ -1296,6 +1347,62 @@ type ReviewPreviousValues {
   rating: Int!
 }
 
+input ReviewScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  content: String
+  content_not: String
+  content_in: [String!]
+  content_not_in: [String!]
+  content_lt: String
+  content_lte: String
+  content_gt: String
+  content_gte: String
+  content_contains: String
+  content_not_contains: String
+  content_starts_with: String
+  content_not_starts_with: String
+  content_ends_with: String
+  content_not_ends_with: String
+  rating: Int
+  rating_not: Int
+  rating_in: [Int!]
+  rating_not_in: [Int!]
+  rating_lt: Int
+  rating_lte: Int
+  rating_gt: Int
+  rating_gte: Int
+  AND: [ReviewScalarWhereInput!]
+  OR: [ReviewScalarWhereInput!]
+  NOT: [ReviewScalarWhereInput!]
+}
+
 type ReviewSubscriptionPayload {
   mutation: MutationType!
   node: Review
@@ -1315,8 +1422,14 @@ input ReviewSubscriptionWhereInput {
 }
 
 input ReviewUpdateInput {
-  user: UserUpdateOneRequiredInput
-  service: DoctorUpdateOneRequiredInput
+  user: UserUpdateOneRequiredWithoutReviewsInput
+  service: DoctorUpdateOneRequiredWithoutReviewsInput
+  title: String
+  content: String
+  rating: Int
+}
+
+input ReviewUpdateManyDataInput {
   title: String
   content: String
   rating: Int
@@ -1326,6 +1439,71 @@ input ReviewUpdateManyMutationInput {
   title: String
   content: String
   rating: Int
+}
+
+input ReviewUpdateManyWithoutServiceInput {
+  create: [ReviewCreateWithoutServiceInput!]
+  delete: [ReviewWhereUniqueInput!]
+  connect: [ReviewWhereUniqueInput!]
+  set: [ReviewWhereUniqueInput!]
+  disconnect: [ReviewWhereUniqueInput!]
+  update: [ReviewUpdateWithWhereUniqueWithoutServiceInput!]
+  upsert: [ReviewUpsertWithWhereUniqueWithoutServiceInput!]
+  deleteMany: [ReviewScalarWhereInput!]
+  updateMany: [ReviewUpdateManyWithWhereNestedInput!]
+}
+
+input ReviewUpdateManyWithoutUserInput {
+  create: [ReviewCreateWithoutUserInput!]
+  delete: [ReviewWhereUniqueInput!]
+  connect: [ReviewWhereUniqueInput!]
+  set: [ReviewWhereUniqueInput!]
+  disconnect: [ReviewWhereUniqueInput!]
+  update: [ReviewUpdateWithWhereUniqueWithoutUserInput!]
+  upsert: [ReviewUpsertWithWhereUniqueWithoutUserInput!]
+  deleteMany: [ReviewScalarWhereInput!]
+  updateMany: [ReviewUpdateManyWithWhereNestedInput!]
+}
+
+input ReviewUpdateManyWithWhereNestedInput {
+  where: ReviewScalarWhereInput!
+  data: ReviewUpdateManyDataInput!
+}
+
+input ReviewUpdateWithoutServiceDataInput {
+  user: UserUpdateOneRequiredWithoutReviewsInput
+  title: String
+  content: String
+  rating: Int
+}
+
+input ReviewUpdateWithoutUserDataInput {
+  service: DoctorUpdateOneRequiredWithoutReviewsInput
+  title: String
+  content: String
+  rating: Int
+}
+
+input ReviewUpdateWithWhereUniqueWithoutServiceInput {
+  where: ReviewWhereUniqueInput!
+  data: ReviewUpdateWithoutServiceDataInput!
+}
+
+input ReviewUpdateWithWhereUniqueWithoutUserInput {
+  where: ReviewWhereUniqueInput!
+  data: ReviewUpdateWithoutUserDataInput!
+}
+
+input ReviewUpsertWithWhereUniqueWithoutServiceInput {
+  where: ReviewWhereUniqueInput!
+  update: ReviewUpdateWithoutServiceDataInput!
+  create: ReviewCreateWithoutServiceInput!
+}
+
+input ReviewUpsertWithWhereUniqueWithoutUserInput {
+  where: ReviewWhereUniqueInput!
+  update: ReviewUpdateWithoutUserDataInput!
+  create: ReviewCreateWithoutUserInput!
 }
 
 input ReviewWhereInput {
@@ -1679,6 +1857,7 @@ type User {
   Appointments(where: AppointmentWhereInput, orderBy: AppointmentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Appointment!]
   sentMessages(where: ClientMessageWhereInput, orderBy: ClientMessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ClientMessage!]
   recievedMessages(where: ServiceMessageWhereInput, orderBy: ServiceMessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ServiceMessage!]
+  reviews(where: ReviewWhereInput, orderBy: ReviewOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Review!]
 }
 
 type UserConnection {
@@ -1699,11 +1878,7 @@ input UserCreateInput {
   Appointments: AppointmentCreateManyWithoutClientInput
   sentMessages: ClientMessageCreateManyWithoutSenderInput
   recievedMessages: ServiceMessageCreateManyWithoutRecieverInput
-}
-
-input UserCreateOneInput {
-  create: UserCreateInput
-  connect: UserWhereUniqueInput
+  reviews: ReviewCreateManyWithoutUserInput
 }
 
 input UserCreateOneWithoutAppointmentsInput {
@@ -1713,6 +1888,11 @@ input UserCreateOneWithoutAppointmentsInput {
 
 input UserCreateOneWithoutRecievedMessagesInput {
   create: UserCreateWithoutRecievedMessagesInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutReviewsInput {
+  create: UserCreateWithoutReviewsInput
   connect: UserWhereUniqueInput
 }
 
@@ -1732,6 +1912,7 @@ input UserCreateWithoutAppointmentsInput {
   confirmation: Boolean
   sentMessages: ClientMessageCreateManyWithoutSenderInput
   recievedMessages: ServiceMessageCreateManyWithoutRecieverInput
+  reviews: ReviewCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutRecievedMessagesInput {
@@ -1745,6 +1926,21 @@ input UserCreateWithoutRecievedMessagesInput {
   confirmation: Boolean
   Appointments: AppointmentCreateManyWithoutClientInput
   sentMessages: ClientMessageCreateManyWithoutSenderInput
+  reviews: ReviewCreateManyWithoutUserInput
+}
+
+input UserCreateWithoutReviewsInput {
+  fullName: String!
+  email: String!
+  password: String!
+  age: Int!
+  phone: Int
+  gender: Gender
+  avatar: String
+  confirmation: Boolean
+  Appointments: AppointmentCreateManyWithoutClientInput
+  sentMessages: ClientMessageCreateManyWithoutSenderInput
+  recievedMessages: ServiceMessageCreateManyWithoutRecieverInput
 }
 
 input UserCreateWithoutSentMessagesInput {
@@ -1758,6 +1954,7 @@ input UserCreateWithoutSentMessagesInput {
   confirmation: Boolean
   Appointments: AppointmentCreateManyWithoutClientInput
   recievedMessages: ServiceMessageCreateManyWithoutRecieverInput
+  reviews: ReviewCreateManyWithoutUserInput
 }
 
 type UserEdge {
@@ -1820,20 +2017,6 @@ input UserSubscriptionWhereInput {
   NOT: [UserSubscriptionWhereInput!]
 }
 
-input UserUpdateDataInput {
-  fullName: String
-  email: String
-  password: String
-  age: Int
-  phone: Int
-  gender: Gender
-  avatar: String
-  confirmation: Boolean
-  Appointments: AppointmentUpdateManyWithoutClientInput
-  sentMessages: ClientMessageUpdateManyWithoutSenderInput
-  recievedMessages: ServiceMessageUpdateManyWithoutRecieverInput
-}
-
 input UserUpdateInput {
   fullName: String
   email: String
@@ -1846,6 +2029,7 @@ input UserUpdateInput {
   Appointments: AppointmentUpdateManyWithoutClientInput
   sentMessages: ClientMessageUpdateManyWithoutSenderInput
   recievedMessages: ServiceMessageUpdateManyWithoutRecieverInput
+  reviews: ReviewUpdateManyWithoutUserInput
 }
 
 input UserUpdateManyMutationInput {
@@ -1859,17 +2043,17 @@ input UserUpdateManyMutationInput {
   confirmation: Boolean
 }
 
-input UserUpdateOneRequiredInput {
-  create: UserCreateInput
-  update: UserUpdateDataInput
-  upsert: UserUpsertNestedInput
-  connect: UserWhereUniqueInput
-}
-
 input UserUpdateOneRequiredWithoutRecievedMessagesInput {
   create: UserCreateWithoutRecievedMessagesInput
   update: UserUpdateWithoutRecievedMessagesDataInput
   upsert: UserUpsertWithoutRecievedMessagesInput
+  connect: UserWhereUniqueInput
+}
+
+input UserUpdateOneRequiredWithoutReviewsInput {
+  create: UserCreateWithoutReviewsInput
+  update: UserUpdateWithoutReviewsDataInput
+  upsert: UserUpsertWithoutReviewsInput
   connect: UserWhereUniqueInput
 }
 
@@ -1900,6 +2084,7 @@ input UserUpdateWithoutAppointmentsDataInput {
   confirmation: Boolean
   sentMessages: ClientMessageUpdateManyWithoutSenderInput
   recievedMessages: ServiceMessageUpdateManyWithoutRecieverInput
+  reviews: ReviewUpdateManyWithoutUserInput
 }
 
 input UserUpdateWithoutRecievedMessagesDataInput {
@@ -1913,6 +2098,21 @@ input UserUpdateWithoutRecievedMessagesDataInput {
   confirmation: Boolean
   Appointments: AppointmentUpdateManyWithoutClientInput
   sentMessages: ClientMessageUpdateManyWithoutSenderInput
+  reviews: ReviewUpdateManyWithoutUserInput
+}
+
+input UserUpdateWithoutReviewsDataInput {
+  fullName: String
+  email: String
+  password: String
+  age: Int
+  phone: Int
+  gender: Gender
+  avatar: String
+  confirmation: Boolean
+  Appointments: AppointmentUpdateManyWithoutClientInput
+  sentMessages: ClientMessageUpdateManyWithoutSenderInput
+  recievedMessages: ServiceMessageUpdateManyWithoutRecieverInput
 }
 
 input UserUpdateWithoutSentMessagesDataInput {
@@ -1926,11 +2126,7 @@ input UserUpdateWithoutSentMessagesDataInput {
   confirmation: Boolean
   Appointments: AppointmentUpdateManyWithoutClientInput
   recievedMessages: ServiceMessageUpdateManyWithoutRecieverInput
-}
-
-input UserUpsertNestedInput {
-  update: UserUpdateDataInput!
-  create: UserCreateInput!
+  reviews: ReviewUpdateManyWithoutUserInput
 }
 
 input UserUpsertWithoutAppointmentsInput {
@@ -1941,6 +2137,11 @@ input UserUpsertWithoutAppointmentsInput {
 input UserUpsertWithoutRecievedMessagesInput {
   update: UserUpdateWithoutRecievedMessagesDataInput!
   create: UserCreateWithoutRecievedMessagesInput!
+}
+
+input UserUpsertWithoutReviewsInput {
+  update: UserUpdateWithoutReviewsDataInput!
+  create: UserCreateWithoutReviewsInput!
 }
 
 input UserUpsertWithoutSentMessagesInput {
@@ -2050,6 +2251,9 @@ input UserWhereInput {
   recievedMessages_every: ServiceMessageWhereInput
   recievedMessages_some: ServiceMessageWhereInput
   recievedMessages_none: ServiceMessageWhereInput
+  reviews_every: ReviewWhereInput
+  reviews_some: ReviewWhereInput
+  reviews_none: ReviewWhereInput
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]

@@ -20,6 +20,17 @@ export const UserAppointments = `fragment UserAppointments on User {
               gender
               specialty
             }
+	    reviews {
+	      id
+	      title
+	      content
+	      rating
+	      service {
+	      	id
+		fullName
+		email
+	      }
+	    }
           }
         }`
 
@@ -27,7 +38,6 @@ export const AuthenticatedUserInfo = `
     fragment AuthenticatedUserInfo on User {
         id
         fullName
-	email
         gender
         age
         Appointments {
@@ -44,18 +54,6 @@ export const AuthenticatedUserInfo = `
                 Bio
             }
         }
-	reviews {
-	  id
-	  title
-	   content
-	   rating
-	   service {
-	     id
-             fullName
-             email
-	     specialty
-	   }
-	}
 
     }
 `

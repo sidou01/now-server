@@ -11,6 +11,7 @@ type User {
   Appointments: [Appointment!]
   sentMessages: [ClientMessage!]
   recievedMessages: [ServiceMessage!]
+  reviews: [Review!]
 }
 
 type Doctor {
@@ -27,6 +28,7 @@ type Doctor {
   specialty: DoctorSpecialty!
   sentMessages: [ServiceMessage!]
   recievedMessages: [ClientMessage!]
+  reviews: [Review!]
 }
 
 type Appointment {

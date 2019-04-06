@@ -405,6 +405,20 @@ export type ClientMessageOrderByInput =
   | "updatedAt_ASC"
   | "updatedAt_DESC";
 
+export type ReviewOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "title_ASC"
+  | "title_DESC"
+  | "content_ASC"
+  | "content_DESC"
+  | "rating_ASC"
+  | "rating_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC";
+
 export type DoctorOrderByInput =
   | "id_ASC"
   | "id_DESC"
@@ -426,20 +440,6 @@ export type DoctorOrderByInput =
   | "avatar_DESC"
   | "specialty_ASC"
   | "specialty_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC"
-  | "updatedAt_ASC"
-  | "updatedAt_DESC";
-
-export type ReviewOrderByInput =
-  | "id_ASC"
-  | "id_DESC"
-  | "title_ASC"
-  | "title_DESC"
-  | "content_ASC"
-  | "content_DESC"
-  | "rating_ASC"
-  | "rating_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -693,6 +693,9 @@ export interface DoctorWhereInput {
   recievedMessages_every?: ClientMessageWhereInput;
   recievedMessages_some?: ClientMessageWhereInput;
   recievedMessages_none?: ClientMessageWhereInput;
+  reviews_every?: ReviewWhereInput;
+  reviews_some?: ReviewWhereInput;
+  reviews_none?: ReviewWhereInput;
   AND?: DoctorWhereInput[] | DoctorWhereInput;
   OR?: DoctorWhereInput[] | DoctorWhereInput;
   NOT?: DoctorWhereInput[] | DoctorWhereInput;
@@ -850,6 +853,9 @@ export interface UserWhereInput {
   recievedMessages_every?: ServiceMessageWhereInput;
   recievedMessages_some?: ServiceMessageWhereInput;
   recievedMessages_none?: ServiceMessageWhereInput;
+  reviews_every?: ReviewWhereInput;
+  reviews_some?: ReviewWhereInput;
+  reviews_none?: ReviewWhereInput;
   AND?: UserWhereInput[] | UserWhereInput;
   OR?: UserWhereInput[] | UserWhereInput;
   NOT?: UserWhereInput[] | UserWhereInput;
@@ -904,19 +910,6 @@ export interface ClientMessageWhereInput {
   OR?: ClientMessageWhereInput[] | ClientMessageWhereInput;
   NOT?: ClientMessageWhereInput[] | ClientMessageWhereInput;
 }
-
-export type ClientMessageWhereUniqueInput = AtLeastOne<{
-  id: ID_Input;
-}>;
-
-export type DoctorWhereUniqueInput = AtLeastOne<{
-  id: ID_Input;
-  email?: String;
-}>;
-
-export type ReviewWhereUniqueInput = AtLeastOne<{
-  id: ID_Input;
-}>;
 
 export interface ReviewWhereInput {
   id?: ID_Input;
@@ -976,6 +969,19 @@ export interface ReviewWhereInput {
   NOT?: ReviewWhereInput[] | ReviewWhereInput;
 }
 
+export type ClientMessageWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+}>;
+
+export type DoctorWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+  email?: String;
+}>;
+
+export type ReviewWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+}>;
+
 export type ServiceMessageWhereUniqueInput = AtLeastOne<{
   id: ID_Input;
 }>;
@@ -1014,6 +1020,7 @@ export interface DoctorCreateWithoutAppointmentsInput {
   specialty: DoctorSpecialty;
   sentMessages?: ServiceMessageCreateManyWithoutSenderInput;
   recievedMessages?: ClientMessageCreateManyWithoutRecieverInput;
+  reviews?: ReviewCreateManyWithoutServiceInput;
 }
 
 export interface ServiceMessageCreateManyWithoutSenderInput {
@@ -1045,6 +1052,7 @@ export interface UserCreateWithoutRecievedMessagesInput {
   confirmation?: Boolean;
   Appointments?: AppointmentCreateManyWithoutClientInput;
   sentMessages?: ClientMessageCreateManyWithoutSenderInput;
+  reviews?: ReviewCreateManyWithoutUserInput;
 }
 
 export interface AppointmentCreateManyWithoutClientInput {
@@ -1095,6 +1103,7 @@ export interface DoctorCreateWithoutRecievedMessagesInput {
   appointments?: AppointmentCreateManyWithoutServiceInput;
   specialty: DoctorSpecialty;
   sentMessages?: ServiceMessageCreateManyWithoutSenderInput;
+  reviews?: ReviewCreateManyWithoutServiceInput;
 }
 
 export interface AppointmentCreateManyWithoutServiceInput {
@@ -1131,6 +1140,7 @@ export interface UserCreateWithoutAppointmentsInput {
   confirmation?: Boolean;
   sentMessages?: ClientMessageCreateManyWithoutSenderInput;
   recievedMessages?: ServiceMessageCreateManyWithoutRecieverInput;
+  reviews?: ReviewCreateManyWithoutUserInput;
 }
 
 export interface ServiceMessageCreateManyWithoutRecieverInput {
@@ -1163,6 +1173,7 @@ export interface DoctorCreateWithoutSentMessagesInput {
   appointments?: AppointmentCreateManyWithoutServiceInput;
   specialty: DoctorSpecialty;
   recievedMessages?: ClientMessageCreateManyWithoutRecieverInput;
+  reviews?: ReviewCreateManyWithoutServiceInput;
 }
 
 export interface ClientMessageCreateManyWithoutRecieverInput {
@@ -1193,6 +1204,70 @@ export interface UserCreateWithoutSentMessagesInput {
   avatar?: String;
   confirmation?: Boolean;
   Appointments?: AppointmentCreateManyWithoutClientInput;
+  recievedMessages?: ServiceMessageCreateManyWithoutRecieverInput;
+  reviews?: ReviewCreateManyWithoutUserInput;
+}
+
+export interface ReviewCreateManyWithoutUserInput {
+  create?: ReviewCreateWithoutUserInput[] | ReviewCreateWithoutUserInput;
+  connect?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
+}
+
+export interface ReviewCreateWithoutUserInput {
+  service: DoctorCreateOneWithoutReviewsInput;
+  title: String;
+  content: String;
+  rating: Int;
+}
+
+export interface DoctorCreateOneWithoutReviewsInput {
+  create?: DoctorCreateWithoutReviewsInput;
+  connect?: DoctorWhereUniqueInput;
+}
+
+export interface DoctorCreateWithoutReviewsInput {
+  fullName: String;
+  Bio?: String;
+  email: String;
+  password: String;
+  age?: Int;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  appointments?: AppointmentCreateManyWithoutServiceInput;
+  specialty: DoctorSpecialty;
+  sentMessages?: ServiceMessageCreateManyWithoutSenderInput;
+  recievedMessages?: ClientMessageCreateManyWithoutRecieverInput;
+}
+
+export interface ReviewCreateManyWithoutServiceInput {
+  create?: ReviewCreateWithoutServiceInput[] | ReviewCreateWithoutServiceInput;
+  connect?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
+}
+
+export interface ReviewCreateWithoutServiceInput {
+  user: UserCreateOneWithoutReviewsInput;
+  title: String;
+  content: String;
+  rating: Int;
+}
+
+export interface UserCreateOneWithoutReviewsInput {
+  create?: UserCreateWithoutReviewsInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserCreateWithoutReviewsInput {
+  fullName: String;
+  email: String;
+  password: String;
+  age: Int;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  confirmation?: Boolean;
+  Appointments?: AppointmentCreateManyWithoutClientInput;
+  sentMessages?: ClientMessageCreateManyWithoutSenderInput;
   recievedMessages?: ServiceMessageCreateManyWithoutRecieverInput;
 }
 
@@ -1227,6 +1302,7 @@ export interface DoctorUpdateWithoutAppointmentsDataInput {
   specialty?: DoctorSpecialty;
   sentMessages?: ServiceMessageUpdateManyWithoutSenderInput;
   recievedMessages?: ClientMessageUpdateManyWithoutRecieverInput;
+  reviews?: ReviewUpdateManyWithoutServiceInput;
 }
 
 export interface ServiceMessageUpdateManyWithoutSenderInput {
@@ -1282,6 +1358,7 @@ export interface UserUpdateWithoutRecievedMessagesDataInput {
   confirmation?: Boolean;
   Appointments?: AppointmentUpdateManyWithoutClientInput;
   sentMessages?: ClientMessageUpdateManyWithoutSenderInput;
+  reviews?: ReviewUpdateManyWithoutUserInput;
 }
 
 export interface AppointmentUpdateManyWithoutClientInput {
@@ -1487,6 +1564,7 @@ export interface DoctorUpdateWithoutRecievedMessagesDataInput {
   appointments?: AppointmentUpdateManyWithoutServiceInput;
   specialty?: DoctorSpecialty;
   sentMessages?: ServiceMessageUpdateManyWithoutSenderInput;
+  reviews?: ReviewUpdateManyWithoutServiceInput;
 }
 
 export interface AppointmentUpdateManyWithoutServiceInput {
@@ -1545,6 +1623,7 @@ export interface UserUpdateWithoutAppointmentsDataInput {
   confirmation?: Boolean;
   sentMessages?: ClientMessageUpdateManyWithoutSenderInput;
   recievedMessages?: ServiceMessageUpdateManyWithoutRecieverInput;
+  reviews?: ReviewUpdateManyWithoutUserInput;
 }
 
 export interface ServiceMessageUpdateManyWithoutRecieverInput {
@@ -1601,6 +1680,7 @@ export interface DoctorUpdateWithoutSentMessagesDataInput {
   appointments?: AppointmentUpdateManyWithoutServiceInput;
   specialty?: DoctorSpecialty;
   recievedMessages?: ClientMessageUpdateManyWithoutRecieverInput;
+  reviews?: ReviewUpdateManyWithoutServiceInput;
 }
 
 export interface ClientMessageUpdateManyWithoutRecieverInput {
@@ -1652,6 +1732,137 @@ export interface UserUpdateWithoutSentMessagesDataInput {
   confirmation?: Boolean;
   Appointments?: AppointmentUpdateManyWithoutClientInput;
   recievedMessages?: ServiceMessageUpdateManyWithoutRecieverInput;
+  reviews?: ReviewUpdateManyWithoutUserInput;
+}
+
+export interface ReviewUpdateManyWithoutUserInput {
+  create?: ReviewCreateWithoutUserInput[] | ReviewCreateWithoutUserInput;
+  delete?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
+  connect?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
+  set?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
+  disconnect?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
+  update?:
+    | ReviewUpdateWithWhereUniqueWithoutUserInput[]
+    | ReviewUpdateWithWhereUniqueWithoutUserInput;
+  upsert?:
+    | ReviewUpsertWithWhereUniqueWithoutUserInput[]
+    | ReviewUpsertWithWhereUniqueWithoutUserInput;
+  deleteMany?: ReviewScalarWhereInput[] | ReviewScalarWhereInput;
+  updateMany?:
+    | ReviewUpdateManyWithWhereNestedInput[]
+    | ReviewUpdateManyWithWhereNestedInput;
+}
+
+export interface ReviewUpdateWithWhereUniqueWithoutUserInput {
+  where: ReviewWhereUniqueInput;
+  data: ReviewUpdateWithoutUserDataInput;
+}
+
+export interface ReviewUpdateWithoutUserDataInput {
+  service?: DoctorUpdateOneRequiredWithoutReviewsInput;
+  title?: String;
+  content?: String;
+  rating?: Int;
+}
+
+export interface DoctorUpdateOneRequiredWithoutReviewsInput {
+  create?: DoctorCreateWithoutReviewsInput;
+  update?: DoctorUpdateWithoutReviewsDataInput;
+  upsert?: DoctorUpsertWithoutReviewsInput;
+  connect?: DoctorWhereUniqueInput;
+}
+
+export interface DoctorUpdateWithoutReviewsDataInput {
+  fullName?: String;
+  Bio?: String;
+  email?: String;
+  password?: String;
+  age?: Int;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  appointments?: AppointmentUpdateManyWithoutServiceInput;
+  specialty?: DoctorSpecialty;
+  sentMessages?: ServiceMessageUpdateManyWithoutSenderInput;
+  recievedMessages?: ClientMessageUpdateManyWithoutRecieverInput;
+}
+
+export interface DoctorUpsertWithoutReviewsInput {
+  update: DoctorUpdateWithoutReviewsDataInput;
+  create: DoctorCreateWithoutReviewsInput;
+}
+
+export interface ReviewUpsertWithWhereUniqueWithoutUserInput {
+  where: ReviewWhereUniqueInput;
+  update: ReviewUpdateWithoutUserDataInput;
+  create: ReviewCreateWithoutUserInput;
+}
+
+export interface ReviewScalarWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  title?: String;
+  title_not?: String;
+  title_in?: String[] | String;
+  title_not_in?: String[] | String;
+  title_lt?: String;
+  title_lte?: String;
+  title_gt?: String;
+  title_gte?: String;
+  title_contains?: String;
+  title_not_contains?: String;
+  title_starts_with?: String;
+  title_not_starts_with?: String;
+  title_ends_with?: String;
+  title_not_ends_with?: String;
+  content?: String;
+  content_not?: String;
+  content_in?: String[] | String;
+  content_not_in?: String[] | String;
+  content_lt?: String;
+  content_lte?: String;
+  content_gt?: String;
+  content_gte?: String;
+  content_contains?: String;
+  content_not_contains?: String;
+  content_starts_with?: String;
+  content_not_starts_with?: String;
+  content_ends_with?: String;
+  content_not_ends_with?: String;
+  rating?: Int;
+  rating_not?: Int;
+  rating_in?: Int[] | Int;
+  rating_not_in?: Int[] | Int;
+  rating_lt?: Int;
+  rating_lte?: Int;
+  rating_gt?: Int;
+  rating_gte?: Int;
+  AND?: ReviewScalarWhereInput[] | ReviewScalarWhereInput;
+  OR?: ReviewScalarWhereInput[] | ReviewScalarWhereInput;
+  NOT?: ReviewScalarWhereInput[] | ReviewScalarWhereInput;
+}
+
+export interface ReviewUpdateManyWithWhereNestedInput {
+  where: ReviewScalarWhereInput;
+  data: ReviewUpdateManyDataInput;
+}
+
+export interface ReviewUpdateManyDataInput {
+  title?: String;
+  content?: String;
+  rating?: Int;
 }
 
 export interface UserUpsertWithoutSentMessagesInput {
@@ -1721,6 +1932,68 @@ export interface ClientMessageUpdateManyWithWhereNestedInput {
 export interface ClientMessageUpdateManyDataInput {
   subject?: String;
   body?: String;
+}
+
+export interface ReviewUpdateManyWithoutServiceInput {
+  create?: ReviewCreateWithoutServiceInput[] | ReviewCreateWithoutServiceInput;
+  delete?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
+  connect?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
+  set?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
+  disconnect?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
+  update?:
+    | ReviewUpdateWithWhereUniqueWithoutServiceInput[]
+    | ReviewUpdateWithWhereUniqueWithoutServiceInput;
+  upsert?:
+    | ReviewUpsertWithWhereUniqueWithoutServiceInput[]
+    | ReviewUpsertWithWhereUniqueWithoutServiceInput;
+  deleteMany?: ReviewScalarWhereInput[] | ReviewScalarWhereInput;
+  updateMany?:
+    | ReviewUpdateManyWithWhereNestedInput[]
+    | ReviewUpdateManyWithWhereNestedInput;
+}
+
+export interface ReviewUpdateWithWhereUniqueWithoutServiceInput {
+  where: ReviewWhereUniqueInput;
+  data: ReviewUpdateWithoutServiceDataInput;
+}
+
+export interface ReviewUpdateWithoutServiceDataInput {
+  user?: UserUpdateOneRequiredWithoutReviewsInput;
+  title?: String;
+  content?: String;
+  rating?: Int;
+}
+
+export interface UserUpdateOneRequiredWithoutReviewsInput {
+  create?: UserCreateWithoutReviewsInput;
+  update?: UserUpdateWithoutReviewsDataInput;
+  upsert?: UserUpsertWithoutReviewsInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserUpdateWithoutReviewsDataInput {
+  fullName?: String;
+  email?: String;
+  password?: String;
+  age?: Int;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  confirmation?: Boolean;
+  Appointments?: AppointmentUpdateManyWithoutClientInput;
+  sentMessages?: ClientMessageUpdateManyWithoutSenderInput;
+  recievedMessages?: ServiceMessageUpdateManyWithoutRecieverInput;
+}
+
+export interface UserUpsertWithoutReviewsInput {
+  update: UserUpdateWithoutReviewsDataInput;
+  create: UserCreateWithoutReviewsInput;
+}
+
+export interface ReviewUpsertWithWhereUniqueWithoutServiceInput {
+  where: ReviewWhereUniqueInput;
+  update: ReviewUpdateWithoutServiceDataInput;
+  create: ReviewCreateWithoutServiceInput;
 }
 
 export interface DoctorUpsertWithoutSentMessagesInput {
@@ -1872,6 +2145,7 @@ export interface DoctorCreateInput {
   specialty: DoctorSpecialty;
   sentMessages?: ServiceMessageCreateManyWithoutSenderInput;
   recievedMessages?: ClientMessageCreateManyWithoutRecieverInput;
+  reviews?: ReviewCreateManyWithoutServiceInput;
 }
 
 export interface DoctorUpdateInput {
@@ -1887,6 +2161,7 @@ export interface DoctorUpdateInput {
   specialty?: DoctorSpecialty;
   sentMessages?: ServiceMessageUpdateManyWithoutSenderInput;
   recievedMessages?: ClientMessageUpdateManyWithoutRecieverInput;
+  reviews?: ReviewUpdateManyWithoutServiceInput;
 }
 
 export interface DoctorUpdateManyMutationInput {
@@ -1902,96 +2177,19 @@ export interface DoctorUpdateManyMutationInput {
 }
 
 export interface ReviewCreateInput {
-  user: UserCreateOneInput;
-  service: DoctorCreateOneInput;
+  user: UserCreateOneWithoutReviewsInput;
+  service: DoctorCreateOneWithoutReviewsInput;
   title: String;
   content: String;
   rating: Int;
 }
 
-export interface UserCreateOneInput {
-  create?: UserCreateInput;
-  connect?: UserWhereUniqueInput;
-}
-
-export interface UserCreateInput {
-  fullName: String;
-  email: String;
-  password: String;
-  age: Int;
-  phone?: Int;
-  gender?: Gender;
-  avatar?: String;
-  confirmation?: Boolean;
-  Appointments?: AppointmentCreateManyWithoutClientInput;
-  sentMessages?: ClientMessageCreateManyWithoutSenderInput;
-  recievedMessages?: ServiceMessageCreateManyWithoutRecieverInput;
-}
-
-export interface DoctorCreateOneInput {
-  create?: DoctorCreateInput;
-  connect?: DoctorWhereUniqueInput;
-}
-
 export interface ReviewUpdateInput {
-  user?: UserUpdateOneRequiredInput;
-  service?: DoctorUpdateOneRequiredInput;
+  user?: UserUpdateOneRequiredWithoutReviewsInput;
+  service?: DoctorUpdateOneRequiredWithoutReviewsInput;
   title?: String;
   content?: String;
   rating?: Int;
-}
-
-export interface UserUpdateOneRequiredInput {
-  create?: UserCreateInput;
-  update?: UserUpdateDataInput;
-  upsert?: UserUpsertNestedInput;
-  connect?: UserWhereUniqueInput;
-}
-
-export interface UserUpdateDataInput {
-  fullName?: String;
-  email?: String;
-  password?: String;
-  age?: Int;
-  phone?: Int;
-  gender?: Gender;
-  avatar?: String;
-  confirmation?: Boolean;
-  Appointments?: AppointmentUpdateManyWithoutClientInput;
-  sentMessages?: ClientMessageUpdateManyWithoutSenderInput;
-  recievedMessages?: ServiceMessageUpdateManyWithoutRecieverInput;
-}
-
-export interface UserUpsertNestedInput {
-  update: UserUpdateDataInput;
-  create: UserCreateInput;
-}
-
-export interface DoctorUpdateOneRequiredInput {
-  create?: DoctorCreateInput;
-  update?: DoctorUpdateDataInput;
-  upsert?: DoctorUpsertNestedInput;
-  connect?: DoctorWhereUniqueInput;
-}
-
-export interface DoctorUpdateDataInput {
-  fullName?: String;
-  Bio?: String;
-  email?: String;
-  password?: String;
-  age?: Int;
-  phone?: Int;
-  gender?: Gender;
-  avatar?: String;
-  appointments?: AppointmentUpdateManyWithoutServiceInput;
-  specialty?: DoctorSpecialty;
-  sentMessages?: ServiceMessageUpdateManyWithoutSenderInput;
-  recievedMessages?: ClientMessageUpdateManyWithoutRecieverInput;
-}
-
-export interface DoctorUpsertNestedInput {
-  update: DoctorUpdateDataInput;
-  create: DoctorCreateInput;
 }
 
 export interface ReviewUpdateManyMutationInput {
@@ -2019,6 +2217,21 @@ export interface ServiceMessageUpdateManyMutationInput {
   body?: String;
 }
 
+export interface UserCreateInput {
+  fullName: String;
+  email: String;
+  password: String;
+  age: Int;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  confirmation?: Boolean;
+  Appointments?: AppointmentCreateManyWithoutClientInput;
+  sentMessages?: ClientMessageCreateManyWithoutSenderInput;
+  recievedMessages?: ServiceMessageCreateManyWithoutRecieverInput;
+  reviews?: ReviewCreateManyWithoutUserInput;
+}
+
 export interface UserUpdateInput {
   fullName?: String;
   email?: String;
@@ -2031,6 +2244,7 @@ export interface UserUpdateInput {
   Appointments?: AppointmentUpdateManyWithoutClientInput;
   sentMessages?: ClientMessageUpdateManyWithoutSenderInput;
   recievedMessages?: ServiceMessageUpdateManyWithoutRecieverInput;
+  reviews?: ReviewUpdateManyWithoutUserInput;
 }
 
 export interface UserUpdateManyMutationInput {
@@ -2222,6 +2436,17 @@ export interface DoctorPromise extends Promise<Doctor>, Fragmentable {
       last?: Int;
     }
   ) => T;
+  reviews: <T = FragmentableArray<Review>>(
+    args?: {
+      where?: ReviewWhereInput;
+      orderBy?: ReviewOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
 }
 
 export interface DoctorSubscription
@@ -2263,6 +2488,17 @@ export interface DoctorSubscription
     args?: {
       where?: ClientMessageWhereInput;
       orderBy?: ClientMessageOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
+  reviews: <T = Promise<AsyncIterator<ReviewSubscription>>>(
+    args?: {
+      where?: ReviewWhereInput;
+      orderBy?: ReviewOrderByInput;
       skip?: Int;
       after?: String;
       before?: String;
@@ -2353,6 +2589,17 @@ export interface UserPromise extends Promise<User>, Fragmentable {
       last?: Int;
     }
   ) => T;
+  reviews: <T = FragmentableArray<Review>>(
+    args?: {
+      where?: ReviewWhereInput;
+      orderBy?: ReviewOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
 }
 
 export interface UserSubscription
@@ -2400,6 +2647,17 @@ export interface UserSubscription
       last?: Int;
     }
   ) => T;
+  reviews: <T = Promise<AsyncIterator<ReviewSubscription>>>(
+    args?: {
+      where?: ReviewWhereInput;
+      orderBy?: ReviewOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
 }
 
 export interface ClientMessage {
@@ -2426,6 +2684,33 @@ export interface ClientMessageSubscription
   reciever: <T = DoctorSubscription>() => T;
   subject: () => Promise<AsyncIterator<String>>;
   body: () => Promise<AsyncIterator<String>>;
+}
+
+export interface Review {
+  id: ID_Output;
+  title: String;
+  content: String;
+  rating: Int;
+}
+
+export interface ReviewPromise extends Promise<Review>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  user: <T = UserPromise>() => T;
+  service: <T = DoctorPromise>() => T;
+  title: () => Promise<String>;
+  content: () => Promise<String>;
+  rating: () => Promise<Int>;
+}
+
+export interface ReviewSubscription
+  extends Promise<AsyncIterator<Review>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  user: <T = UserSubscription>() => T;
+  service: <T = DoctorSubscription>() => T;
+  title: () => Promise<AsyncIterator<String>>;
+  content: () => Promise<AsyncIterator<String>>;
+  rating: () => Promise<AsyncIterator<Int>>;
 }
 
 export interface AppointmentConnection {
@@ -2615,33 +2900,6 @@ export interface AggregateDoctorSubscription
   extends Promise<AsyncIterator<AggregateDoctor>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface Review {
-  id: ID_Output;
-  title: String;
-  content: String;
-  rating: Int;
-}
-
-export interface ReviewPromise extends Promise<Review>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  user: <T = UserPromise>() => T;
-  service: <T = DoctorPromise>() => T;
-  title: () => Promise<String>;
-  content: () => Promise<String>;
-  rating: () => Promise<Int>;
-}
-
-export interface ReviewSubscription
-  extends Promise<AsyncIterator<Review>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  user: <T = UserSubscription>() => T;
-  service: <T = DoctorSubscription>() => T;
-  title: () => Promise<AsyncIterator<String>>;
-  content: () => Promise<AsyncIterator<String>>;
-  rating: () => Promise<AsyncIterator<Int>>;
 }
 
 export interface ReviewConnection {
