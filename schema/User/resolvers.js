@@ -59,6 +59,7 @@ export default {
     },
     //change userId param to context.user.id from token
     userAppointments: async (_, __, { prisma, user }) => {
+      if (!user) throw new Error('401 unauthorized')
       const output = await prisma
         .user({ id: user.id })
         .$fragment(UserAppointments)
