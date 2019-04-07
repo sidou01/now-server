@@ -14,9 +14,10 @@ import { doctorAppointments } from '../../fragments'
 export default {
   Query: {
     allDoctors: async (_, __, { prisma }) => await prisma.doctors(),
-    doctorAppointments: async (_, { email }, { prisma }) => {
+    doctorAppointments: async (_, __, { prisma, user }) => {
+      if (!user) throw new AuthenticationError('401 unathorized')
       const output = await prisma
-        .doctor({ email })
+        .doctor({ id: user.id })
         .$fragment(doctorAppointments)
       if (!output) throw new Error('no service with that email address')
       return output.appointments

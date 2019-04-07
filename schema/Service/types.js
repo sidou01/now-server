@@ -34,7 +34,7 @@ export default `
     """
     Query service appointments (can be used in the profile page of the desktop app)
     """
-    doctorAppointments(email: String!): [Appointment!]!
+    doctorAppointments: [Appointment!]!
   }
 
   type Mutation {
