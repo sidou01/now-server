@@ -58,9 +58,9 @@ export default {
       return output.users
     },
     //change userId param to context.user.id from token
-    userAppointments: async (_, { userId }, { prisma }) => {
+    userAppointments: async (_, __, { prisma, user }) => {
       const output = await prisma
-        .user({ id: userId })
+        .user({ id: user.id })
         .$fragment(UserAppointments)
       if (!output) throw new Error("user doesn't exist with that ID")
       return output.Appointments

@@ -58,7 +58,6 @@ server.applyMiddleware({ app })
 const httpServer = http.createServer(app)
 server.installSubscriptionHandlers(httpServer)
 
-//seperate route on the server that will render success or failure and a button to go back to the main app (client react app)
 app.get('/email/confirmation/:token', async (req, res) => {
   const decoded = jwt.verify(req.params.token, process.env.JWT_EMAIL_SECRET)
   const userFromDb = await prisma.updateUser({

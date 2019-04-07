@@ -16,23 +16,47 @@ export default `
   }
 
   type Query {
+      """
+      Query user data (can be  used  in the profile page).
+      """
       me: User!
-      allUsers: [User!]!
-      userAppointments(userId: ID!): [Appointment!]
+      """
+      this query is only used for testing and will be deleted in production.
+      """
+      allUsers: [User!]! @deprecated
+      """
+      Query user appointments (calendar page)
+      """
+      userAppointments: [Appointment!]
   }
+
   type Mutation {
     register(input: registerInput): User!
+    """
+    this mutation will return a token (String).
+    token must be added to the headers for each protected request (authorization).
+    Notice that you cannot get the token back if confirmation is still set to false.
+    """
     login(input: loginInput): String!
 
 
     scheduleAppointment(input: scheduleAppointmentInput): Appointment!
+    """
+    The cancel appointment mutation can be executed less than 10 minutes from the scheduleAppointment mutation.
+    """
     cancelAppointment(appointmentId: ID!): Appointment!
+    """
+    Sends a message to a service. This message will be returned in the subscription messageToServiceAdded (service subscription).
+    """
     sendMessageToService(serviceId: ID!, subject: String, body: String!): ClientMessage!
 
     reviewService(input: reviewServiceInput): Review!
   }
 
   type Subscription {
+    """
+    listen for messages from services (for notifications)
+    """
     messageToClientAdded: ServiceMessage!
   }
 
@@ -50,6 +74,7 @@ export default `
     startTime: Date!
     duration: AppointmentDuration!
   }
+
   input registerInput {
     fullName: String!
     email: String!
@@ -59,10 +84,12 @@ export default `
     avatar: String
     gender: Gender
   }
+
   input loginInput {
     email: String!
     password: String!
   }
+
   enum Gender {
     MALE
     FEMALE
