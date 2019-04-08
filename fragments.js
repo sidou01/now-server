@@ -1,4 +1,4 @@
-//change to a function that takes two argumanets: first and skip
+//change to a function that takes two arguments: first and skip
 export function UserAppointments(first, skip) {
   return `fragment UserAppointments on User {
           Appointments(first: ${first}, skip: ${skip}){
