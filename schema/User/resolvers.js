@@ -24,6 +24,10 @@ export default {
     me: async (_, __, { user: { id }, prisma }) =>
       await prisma.user({ id }).$fragment(AuthenticatedUserInfo),
     //allUsers query will be deleted
+    fetchDoctors: async (_, { first, skip }, { prisma, user }) => {
+      if (!user) throw new AuthenticationError('401 unathorized')
+      return await prisma.doctors(first, skip)
+    },
     allUsers: async (_, __, { prisma }) => {
       const output = await prisma.$graphql(`
       query {
@@ -120,7 +124,7 @@ export default {
 
       const isDuplicate = await prisma.appointment({ startTime })
       if (isDuplicate) throw Error('an appointment already exists at that time')
-      endTime = getEndTime(startTime, duration)
+      const endTime = getEndTime(startTime, duration)
       //can't return client and service data from this resolver
       const output = await prisma.createAppointment({
         service: {

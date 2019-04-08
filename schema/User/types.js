@@ -28,6 +28,8 @@ export default `
       Query user appointments (calendar page)
       """
       userAppointments: [Appointment!]
+
+      fetchDoctors(first: Int, skip: Int): [Doctor!]
   }
 
   type Mutation {

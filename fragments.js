@@ -1,5 +1,6 @@
+//change to a function that takes two argumanets: first and skip
 export const UserAppointments = `fragment UserAppointments on User {
-          Appointments {
+          Appointments(first: 1){
             id
             title
             startTime
