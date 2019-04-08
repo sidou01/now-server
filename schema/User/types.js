@@ -27,9 +27,11 @@ export default `
       """
       Query user appointments (calendar page)
       """
-      userAppointments(first: Int, skip:Int): [Appointment!]
+      fetchUserAppointments(first: Int, skip:Int): [Appointment!]
 
       fetchDoctors(first: Int, skip: Int): [Doctor!]
+      fetchSentMessages(first: Int, skip: Int): [ClientMessage!]
+      fetchRecievedMessages(first: Int, skip: Int): [ServiceMessage!]
   }
 
   type Mutation {

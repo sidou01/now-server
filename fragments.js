@@ -163,3 +163,37 @@ export function doctorReviews(first, skip) {
 	}
   `
 }
+
+export function clientSentMessages(first, skip) {
+  return `
+		fragment clientSentMessages on User {
+			sentMessages(first: ${first}, skip: ${skip}) {
+				id
+				reciever {
+					id,
+					fullName
+					email
+				}
+				subject
+				body
+			}
+		}
+	`
+}
+
+export function clientRecievedMessages(first, skip) {
+  return `
+		fragment clientRecievedMessages on User {
+			recievedMessages(first: ${first}, skip: ${skip}) {
+				id
+				sender {
+					id,
+					fullName
+					email
+				}
+				subject
+				body
+			}
+		}
+	`
+}

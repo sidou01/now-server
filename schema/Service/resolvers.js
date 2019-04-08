@@ -13,7 +13,7 @@ import { doctorAppointments, doctorReviews } from '../../fragments'
 
 export default {
   Query: {
-    allDoctors: async (_, __, { prisma }) => await prisma.doctors(),
+    allServices: async (_, __, { prisma }) => await prisma.doctors(),
     doctorReviews: async (_, { first, skip }, { prisma, user }) => {
       if (!user) throw new Error('401 unauthorized')
       if (skip === undefined) skip = null
@@ -25,7 +25,7 @@ export default {
       if (!output) throw new Error("doctor doesn't exist with that ID")
       return output.reviews
     },
-    doctorAppointments: async (_, __, { prisma, user }) => {
+    fetchServiceAppointments: async (_, __, { prisma, user }) => {
       if (!user) throw new AuthenticationError('401 unathorized')
       const output = await prisma
         .doctor({ id: user.id })
@@ -59,7 +59,7 @@ export default {
       })
       return message
     },
-    loginDoctor: async (
+    loginService: async (
       _,
       { input: { email, password } },
       { prisma, jwt_secret },
@@ -83,7 +83,7 @@ export default {
       )
       return token
     },
-    addDoctor: async (
+    addService: async (
       _,
       {
         input: {

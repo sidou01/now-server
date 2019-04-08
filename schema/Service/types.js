@@ -30,11 +30,11 @@ export default `
     """
     this query is only used for testing and will be deleted in production.
     """
-    allDoctors: [Doctor!]! @deprecated
+    allServices: [Doctor!]! @deprecated
     """
     Query service appointments (can be used in the profile page of the desktop app)
     """
-    doctorAppointments: [Appointment!]!
+    fetchServiceAppointments: [Appointment!]!
     doctorReviews(first: Int, skip: Int): [Review!]
   }
 
@@ -43,11 +43,11 @@ export default `
     this mutation will return a token (String).
     token must be added to the headers for each protected request (authorization)
     """
-    loginDoctor(input: loginInput): String!
+    loginService(input: loginInput): String!
     """
     this mutation should only be executed by admins.
     """
-    addDoctor(input: addDoctorInput): Doctor!
+    addService(input: addDoctorInput): Doctor!
 
     """
     Sends a message to a client. This message will be returned in the subscription messageToClientAdded (client subscription).

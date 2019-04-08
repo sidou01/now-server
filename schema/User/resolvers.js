@@ -2,6 +2,8 @@ import {
   UserAppointments,
   AuthenticatedUserInfo,
   reviewToService,
+  clientSentMessages,
+  clientRecievedMessages,
 } from '../../fragments'
 import sgMail from '@sendgrid/mail'
 import { AuthenticationError } from 'apollo-server'
@@ -62,7 +64,7 @@ export default {
       return output.users
     },
     //change userId param to context.user.id from token
-    userAppointments: async (_, { first, skip }, { prisma, user }) => {
+    fetchUserAppointments: async (_, { first, skip }, { prisma, user }) => {
       if (!user) throw new Error('401 unauthorized')
       if (skip === undefined) skip = null
       if (first === undefined) first = null
@@ -71,6 +73,30 @@ export default {
         .$fragment(UserAppointments(first, skip))
       if (!output) throw new Error("user doesn't exist with that ID")
       return output.Appointments
+    },
+    fetchSentMessages: async (_, { first, skip }, { prisma, user }) => {
+      if (!user) throw new Error('401 unauthorized')
+      if (skip === undefined) skip = null
+      if (first === undefined) first = null
+
+      const output = await prisma
+        .user({ id: user.id })
+        .$fragment(clientSentMessages(first, skip))
+
+      if (!output) throw new Error("user doesn't exist with that ID")
+      return output.sentMessages
+    },
+    fetchRecievedMessages: async (_, { first, skip }, { prisma, user }) => {
+      if (!user) throw new Error('401 unauthorized')
+      if (skip === undefined) skip = null
+      if (first === undefined) first = null
+
+      const output = await prisma
+        .user({ id: user.id })
+        .$fragment(clientRecievedMessages(first, skip))
+
+      if (!output) throw new Error("user doesn't exist with that ID")
+      return output.recievedMessages
     },
   },
   Mutation: {
