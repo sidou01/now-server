@@ -9,11 +9,22 @@ import {
 import { messageToClient } from '../../fragments'
 import { withFilter, AuthenticationError } from 'apollo-server'
 import { pubsub } from '../../server'
-import { doctorAppointments } from '../../fragments'
+import { doctorAppointments, doctorReviews } from '../../fragments'
 
 export default {
   Query: {
     allDoctors: async (_, __, { prisma }) => await prisma.doctors(),
+    doctorReviews: async (_, { first, skip }, { prisma, user }) => {
+      if (!user) throw new Error('401 unauthorized')
+      if (skip === undefined) skip = null
+      if (first === undefined) first = null
+      const output = await prisma
+        .doctor({ id: user.id })
+        .$fragment(doctorReviews(first, skip))
+
+      if (!output) throw new Error("doctor doesn't exist with that ID")
+      return output.reviews
+    },
     doctorAppointments: async (_, __, { prisma, user }) => {
       if (!user) throw new AuthenticationError('401 unathorized')
       const output = await prisma

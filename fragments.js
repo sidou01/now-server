@@ -1,6 +1,7 @@
 //change to a function that takes two argumanets: first and skip
-export const UserAppointments = `fragment UserAppointments on User {
-          Appointments(first: 1){
+export function UserAppointments(first, skip) {
+  return `fragment UserAppointments on User {
+          Appointments(first: ${first}, skip: ${skip}){
             id
             title
             startTime
@@ -17,13 +18,15 @@ export const UserAppointments = `fragment UserAppointments on User {
             service {
               id
               fullName
+	      age
+	      email
               phone
               gender
               specialty
             }
           }
         }`
-
+}
 export const AuthenticatedUserInfo = `
     fragment AuthenticatedUserInfo on User {
         id
@@ -144,3 +147,19 @@ export const reviewToService = `
       }
     }
 `
+
+export function doctorReviews(first, skip) {
+  return `
+ 	fragment doctorReviews on Doctor {
+		reviews(first:${first}, skip: ${skip}) {
+			id,
+			user {
+			  fullName
+			}
+			title
+			content
+			rating
+		}
+	}
+  `
+}

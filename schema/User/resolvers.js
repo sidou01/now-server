@@ -62,11 +62,13 @@ export default {
       return output.users
     },
     //change userId param to context.user.id from token
-    userAppointments: async (_, __, { prisma, user }) => {
+    userAppointments: async (_, { first, skip }, { prisma, user }) => {
       if (!user) throw new Error('401 unauthorized')
+      if (skip === undefined) skip = null
+      if (first === undefined) first = null
       const output = await prisma
         .user({ id: user.id })
-        .$fragment(UserAppointments)
+        .$fragment(UserAppointments(first, skip))
       if (!output) throw new Error("user doesn't exist with that ID")
       return output.Appointments
     },

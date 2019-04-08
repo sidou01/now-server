@@ -27,7 +27,7 @@ export default `
       """
       Query user appointments (calendar page)
       """
-      userAppointments: [Appointment!]
+      userAppointments(first: Int, skip:Int): [Appointment!]
 
       fetchDoctors(first: Int, skip: Int): [Doctor!]
   }
