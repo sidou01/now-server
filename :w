@@ -9,24 +9,18 @@ import {
 import { messageToClient } from '../../fragments'
 import { withFilter, AuthenticationError } from 'apollo-server'
 import { pubsub } from '../../server'
-import { serviceAppointments, serviceReviews } from '../../fragments'
+import { doctorAppointments, doctorReviews } from '../../fragments'
 
 export default {
   Query: {
-    fetchService: async (_, { serviceId }, { prisma, user }) => {},
-    fetchServicesByType: async (
-      _,
-      { type, first, skip },
-      { prisma, user },
-    ) => {},
-    fetchAllServices: async (_, { first, skip }, { prisma, user }) => {},
-    serviceReviews: async (_, { first, skip }, { prisma, user }) => {
+    allServices: async (_, __, { prisma }) => await prisma.doctors(),
+    doctorReviews: async (_, { first, skip }, { prisma, user }) => {
       if (!user) throw new Error('401 unauthorized')
       if (skip === undefined) skip = null
       if (first === undefined) first = null
       const output = await prisma
-        .service({ id: user.id })
-        .$fragment(serviceReviews(first, skip))
+        .doctor({ id: user.id })
+        .$fragment(doctorReviews(first, skip))
 
       if (!output) throw new Error("doctor doesn't exist with that ID")
       return output.reviews
@@ -34,8 +28,8 @@ export default {
     fetchServiceAppointments: async (_, __, { prisma, user }) => {
       if (!user) throw new AuthenticationError('401 unathorized')
       const output = await prisma
-        .service({ id: user.id })
-        .$fragment(serviceAppointments)
+        .doctor({ id: user.id })
+        .$fragment(doctorAppointments)
       if (!output) throw new Error('no service with that email address')
       return output.appointments
     },
@@ -43,7 +37,7 @@ export default {
   Mutation: {
     sendMessageToClient: async (_, args, { prisma, pubsub, user }) => {
       if (!user) throw new AuthenticationError('401 unathorized')
-      if (user.client)
+      if (!user.client)
         throw new AuthenticationError(
           'Error: you cannot send service messages from a client account',
         )
@@ -74,17 +68,17 @@ export default {
       { input: { email, password } },
       { prisma, jwt_secret },
     ) => {
-      const service = await prisma.service({ email })
-      if (!service) throw new Error("doctor deosn't exist")
-      const auth = await bcrypt.compare(password, service.password)
+      const doctor = await prisma.doctor({ email })
+      if (!doctor) throw new Error("doctor deosn't exist")
+      const auth = await bcrypt.compare(password, doctor.password)
       if (!auth) throw new Error('your email or password is wrong')
 
-      const { id, fullName, age, phone, avatar } = service
+      const { id, fullName, age, phone, avatar } = doctor
       const token = jwt.sign(
         {
           id,
           fullName,
-          email: service.email,
+          email: doctor.email,
           age,
           avatar,
           phone,
@@ -106,29 +100,15 @@ export default {
           phone,
           gender,
           avatar,
-          doctorField,
-          LawyerField,
-          type,
+          specialty,
         },
       },
       { prisma },
     ) => {
+      const isDoctor = await prisma.doctor({ email })
+      if (isDoctor) throw new Error('Doctor already exists with that email.')
       const hashedPassword = await bcrypt.hash(password, 10)
-      if (type === 'Lawyer') {
-        return await prisma.createService({
-          fullName,
-          Bio,
-          email,
-          password: hashedPassword,
-          age,
-          phone,
-          gender,
-          avatar,
-          lawyerField,
-          serviceType: type,
-        })
-      }
-      return await prisma.createService({
+      return await prisma.createDoctor({
         fullName,
         Bio,
         email,
@@ -137,8 +117,7 @@ export default {
         phone,
         gender,
         avatar,
-        doctorField,
-        serviceType: type,
+        specialty,
       })
     },
   },

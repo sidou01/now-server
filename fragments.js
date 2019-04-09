@@ -34,33 +34,25 @@ export const AuthenticatedUserInfo = `
 	email
         gender
         age
-        Appointments {
-            id
-            title
-            startTime
-            endTime
-	    createdTime
-            service {
-                id
-                fullName
-                email
-                specialty
-                Bio
-            }
-        }
-	reviews {
-	  id
-	  title
-	   content
-	   rating
-	   service {
-	     id
-             fullName
-             email
-	     specialty
-	   }
-	}
-
+	phone
+	avatar
+	confirmation
+    }
+`
+export const AuthenticatedServiceInfo = `
+    fragment AuthenticatedServiceInfo on Doctor {
+        id
+        fullName
+	Bio
+	email
+	phone
+	address
+	office_hours
+	education
+        age
+        gender
+	avatar
+	specialty
     }
 `
 export const messageToClient = `
@@ -99,8 +91,8 @@ export const messageToService = `
     }
 `
 
-export const doctorAppointments = `
-    fragment doctorAppointments on Doctor {
+export const serviceAppointments = `
+    fragment doctorAppointments on Service {
         appointments {
             id
             title
@@ -148,9 +140,9 @@ export const reviewToService = `
     }
 `
 
-export function doctorReviews(first, skip) {
+export function serviceReviews(first, skip) {
   return `
- 	fragment doctorReviews on Doctor {
+ 	fragment serviceReviews on Service {
 		reviews(first:${first}, skip: ${skip}) {
 			id,
 			user {

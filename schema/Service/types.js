@@ -1,23 +1,31 @@
 export default `
-  type Doctor {
-    id: ID!
-    fullName: String!
-    Bio: String
-    email: String!
-    password: String!
-    age: Int
-    phone: Int
-    gender: Gender
-    avatar: String
-    appointments: [Appointment!]
-    specialty: DoctorSpecialty!
-    sentMessages: [ServiceMessage!]
-    recievedMessages: [ClientMessage!]
-    reviews: [Review!]!
-  }
+
+type Service {
+  id: ID!
+  fullName: String!
+  Bio: String
+  email: String!
+  password: String!
+  age: Int
+  phone: Int
+  address: String
+  gender: Gender
+  avatar: String
+  appointments: [Appointment!]
+  sentMessages: [ServiceMessage!]
+  recievedMessages: [ClientMessage!]
+  reviews: [Review!]
+  office_hours: String
+  education: String
+  serviceType: ServiceType!
+
+  doctorField: DoctorField
+  lawyerField: LawyerField
+}
 
 
-  enum DoctorSpecialty {
+
+  enum DoctorField {
     Generaliste
     Psychiatre
     Psychologue
@@ -26,16 +34,22 @@ export default `
     Gynecologue
   }
 
+  enum LawyerField {
+    Bankruptcy_Law
+    Corporate_Law
+    Civil_Rights_Law
+    Criminal_Law
+    Family_Law
+  }
+
   type Query {
-    """
-    this query is only used for testing and will be deleted in production.
-    """
-    allServices: [Doctor!]! @deprecated
     """
     Query service appointments (can be used in the profile page of the desktop app)
     """
     fetchServiceAppointments: [Appointment!]!
-    doctorReviews(first: Int, skip: Int): [Review!]
+    serviceReviews(first: Int, skip: Int): [Review!]
+    fetchServicesByType(type: ServiceType!, first: Int, skip: Int): [Service!]
+    fetchAllServices(first: Int, skip: Int): [Service!]
   }
 
   type Mutation {
@@ -47,7 +61,7 @@ export default `
     """
     this mutation should only be executed by admins.
     """
-    addService(input: addDoctorInput): Doctor!
+    addService(input: addServiceType): Service!
 
     """
     Sends a message to a client. This message will be returned in the subscription messageToClientAdded (client subscription).
@@ -78,7 +92,7 @@ export default `
     reviewRecieved: Review!
   }
 
-  input addDoctorInput {
+  input addServiceType {
     fullName: String!
     Bio: String
     email: String!
@@ -87,7 +101,9 @@ export default `
     phone: Int
     gender: Gender
     avatar: String
-    specialty: DoctorSpecialty!
+    doctorField: DoctorField
+    lawyerField: LawyerField
+    type: ServiceType!
   }
 
   input localAppointmentInput {
@@ -96,5 +112,9 @@ export default `
     title: String
     startTime: Date!
     duration: AppointmentDuration!
+  }
+  enum ServiceType {
+    Doctor
+    Lawyer
   }
 `

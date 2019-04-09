@@ -2,7 +2,7 @@ export default `
   type Review {
     id: ID!
     user: User!
-    service: Doctor!
+    service: Service!
     title: String!
     content: String!
     rating: Int!

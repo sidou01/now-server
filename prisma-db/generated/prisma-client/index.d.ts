@@ -16,8 +16,8 @@ export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
 export interface Exists {
   appointment: (where?: AppointmentWhereInput) => Promise<boolean>;
   clientMessage: (where?: ClientMessageWhereInput) => Promise<boolean>;
-  doctor: (where?: DoctorWhereInput) => Promise<boolean>;
   review: (where?: ReviewWhereInput) => Promise<boolean>;
+  service: (where?: ServiceWhereInput) => Promise<boolean>;
   serviceMessage: (where?: ServiceMessageWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
 }
@@ -87,29 +87,6 @@ export interface Prisma {
       last?: Int;
     }
   ) => ClientMessageConnectionPromise;
-  doctor: (where: DoctorWhereUniqueInput) => DoctorPromise;
-  doctors: (
-    args?: {
-      where?: DoctorWhereInput;
-      orderBy?: DoctorOrderByInput;
-      skip?: Int;
-      after?: String;
-      before?: String;
-      first?: Int;
-      last?: Int;
-    }
-  ) => FragmentableArray<Doctor>;
-  doctorsConnection: (
-    args?: {
-      where?: DoctorWhereInput;
-      orderBy?: DoctorOrderByInput;
-      skip?: Int;
-      after?: String;
-      before?: String;
-      first?: Int;
-      last?: Int;
-    }
-  ) => DoctorConnectionPromise;
   review: (where: ReviewWhereUniqueInput) => ReviewPromise;
   reviews: (
     args?: {
@@ -133,6 +110,29 @@ export interface Prisma {
       last?: Int;
     }
   ) => ReviewConnectionPromise;
+  service: (where: ServiceWhereUniqueInput) => ServicePromise;
+  services: (
+    args?: {
+      where?: ServiceWhereInput;
+      orderBy?: ServiceOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => FragmentableArray<Service>;
+  servicesConnection: (
+    args?: {
+      where?: ServiceWhereInput;
+      orderBy?: ServiceOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => ServiceConnectionPromise;
   serviceMessage: (
     where: ServiceMessageWhereUniqueInput
   ) => ServiceMessagePromise;
@@ -234,22 +234,6 @@ export interface Prisma {
   deleteManyClientMessages: (
     where?: ClientMessageWhereInput
   ) => BatchPayloadPromise;
-  createDoctor: (data: DoctorCreateInput) => DoctorPromise;
-  updateDoctor: (
-    args: { data: DoctorUpdateInput; where: DoctorWhereUniqueInput }
-  ) => DoctorPromise;
-  updateManyDoctors: (
-    args: { data: DoctorUpdateManyMutationInput; where?: DoctorWhereInput }
-  ) => BatchPayloadPromise;
-  upsertDoctor: (
-    args: {
-      where: DoctorWhereUniqueInput;
-      create: DoctorCreateInput;
-      update: DoctorUpdateInput;
-    }
-  ) => DoctorPromise;
-  deleteDoctor: (where: DoctorWhereUniqueInput) => DoctorPromise;
-  deleteManyDoctors: (where?: DoctorWhereInput) => BatchPayloadPromise;
   createReview: (data: ReviewCreateInput) => ReviewPromise;
   updateReview: (
     args: { data: ReviewUpdateInput; where: ReviewWhereUniqueInput }
@@ -266,6 +250,22 @@ export interface Prisma {
   ) => ReviewPromise;
   deleteReview: (where: ReviewWhereUniqueInput) => ReviewPromise;
   deleteManyReviews: (where?: ReviewWhereInput) => BatchPayloadPromise;
+  createService: (data: ServiceCreateInput) => ServicePromise;
+  updateService: (
+    args: { data: ServiceUpdateInput; where: ServiceWhereUniqueInput }
+  ) => ServicePromise;
+  updateManyServices: (
+    args: { data: ServiceUpdateManyMutationInput; where?: ServiceWhereInput }
+  ) => BatchPayloadPromise;
+  upsertService: (
+    args: {
+      where: ServiceWhereUniqueInput;
+      create: ServiceCreateInput;
+      update: ServiceUpdateInput;
+    }
+  ) => ServicePromise;
+  deleteService: (where: ServiceWhereUniqueInput) => ServicePromise;
+  deleteManyServices: (where?: ServiceWhereInput) => BatchPayloadPromise;
   createServiceMessage: (
     data: ServiceMessageCreateInput
   ) => ServiceMessagePromise;
@@ -325,12 +325,12 @@ export interface Subscription {
   clientMessage: (
     where?: ClientMessageSubscriptionWhereInput
   ) => ClientMessageSubscriptionPayloadSubscription;
-  doctor: (
-    where?: DoctorSubscriptionWhereInput
-  ) => DoctorSubscriptionPayloadSubscription;
   review: (
     where?: ReviewSubscriptionWhereInput
   ) => ReviewSubscriptionPayloadSubscription;
+  service: (
+    where?: ServiceSubscriptionWhereInput
+  ) => ServiceSubscriptionPayloadSubscription;
   serviceMessage: (
     where?: ServiceMessageSubscriptionWhereInput
   ) => ServiceMessageSubscriptionPayloadSubscription;
@@ -349,13 +349,22 @@ export interface ClientConstructor<T> {
 
 export type Gender = "MALE" | "FEMALE";
 
-export type DoctorSpecialty =
+export type ServiceType = "Doctor" | "Lawyer";
+
+export type DoctorField =
   | "Generaliste"
   | "Psychiatre"
   | "Psychologue"
   | "Dermatologue"
   | "Dentiste"
   | "Gynecologue";
+
+export type LawyerField =
+  | "Bankruptcy_Law"
+  | "Corporate_Law"
+  | "Civil_Rights_Law"
+  | "Criminal_Law"
+  | "Family_Law";
 
 export type AppointmentDuration = "VERY_SHORT" | "SHORT" | "LONG" | "VERY_LONG";
 
@@ -419,7 +428,7 @@ export type ReviewOrderByInput =
   | "updatedAt_ASC"
   | "updatedAt_DESC";
 
-export type DoctorOrderByInput =
+export type ServiceOrderByInput =
   | "id_ASC"
   | "id_DESC"
   | "fullName_ASC"
@@ -434,12 +443,22 @@ export type DoctorOrderByInput =
   | "age_DESC"
   | "phone_ASC"
   | "phone_DESC"
+  | "address_ASC"
+  | "address_DESC"
   | "gender_ASC"
   | "gender_DESC"
   | "avatar_ASC"
   | "avatar_DESC"
-  | "specialty_ASC"
-  | "specialty_DESC"
+  | "office_hours_ASC"
+  | "office_hours_DESC"
+  | "education_ASC"
+  | "education_DESC"
+  | "serviceType_ASC"
+  | "serviceType_DESC"
+  | "doctorField_ASC"
+  | "doctorField_DESC"
+  | "lawyerField_ASC"
+  | "lawyerField_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -492,7 +511,7 @@ export interface AppointmentWhereInput {
   id_not_starts_with?: ID_Input;
   id_ends_with?: ID_Input;
   id_not_ends_with?: ID_Input;
-  service?: DoctorWhereInput;
+  service?: ServiceWhereInput;
   client?: UserWhereInput;
   clientName?: String;
   clientName_not?: String;
@@ -575,7 +594,7 @@ export interface AppointmentWhereInput {
   NOT?: AppointmentWhereInput[] | AppointmentWhereInput;
 }
 
-export interface DoctorWhereInput {
+export interface ServiceWhereInput {
   id?: ID_Input;
   id_not?: ID_Input;
   id_in?: ID_Input[] | ID_Input;
@@ -662,6 +681,20 @@ export interface DoctorWhereInput {
   phone_lte?: Int;
   phone_gt?: Int;
   phone_gte?: Int;
+  address?: String;
+  address_not?: String;
+  address_in?: String[] | String;
+  address_not_in?: String[] | String;
+  address_lt?: String;
+  address_lte?: String;
+  address_gt?: String;
+  address_gte?: String;
+  address_contains?: String;
+  address_not_contains?: String;
+  address_starts_with?: String;
+  address_not_starts_with?: String;
+  address_ends_with?: String;
+  address_not_ends_with?: String;
   gender?: Gender;
   gender_not?: Gender;
   gender_in?: Gender[] | Gender;
@@ -683,10 +716,6 @@ export interface DoctorWhereInput {
   appointments_every?: AppointmentWhereInput;
   appointments_some?: AppointmentWhereInput;
   appointments_none?: AppointmentWhereInput;
-  specialty?: DoctorSpecialty;
-  specialty_not?: DoctorSpecialty;
-  specialty_in?: DoctorSpecialty[] | DoctorSpecialty;
-  specialty_not_in?: DoctorSpecialty[] | DoctorSpecialty;
   sentMessages_every?: ServiceMessageWhereInput;
   sentMessages_some?: ServiceMessageWhereInput;
   sentMessages_none?: ServiceMessageWhereInput;
@@ -696,9 +725,49 @@ export interface DoctorWhereInput {
   reviews_every?: ReviewWhereInput;
   reviews_some?: ReviewWhereInput;
   reviews_none?: ReviewWhereInput;
-  AND?: DoctorWhereInput[] | DoctorWhereInput;
-  OR?: DoctorWhereInput[] | DoctorWhereInput;
-  NOT?: DoctorWhereInput[] | DoctorWhereInput;
+  office_hours?: String;
+  office_hours_not?: String;
+  office_hours_in?: String[] | String;
+  office_hours_not_in?: String[] | String;
+  office_hours_lt?: String;
+  office_hours_lte?: String;
+  office_hours_gt?: String;
+  office_hours_gte?: String;
+  office_hours_contains?: String;
+  office_hours_not_contains?: String;
+  office_hours_starts_with?: String;
+  office_hours_not_starts_with?: String;
+  office_hours_ends_with?: String;
+  office_hours_not_ends_with?: String;
+  education?: String;
+  education_not?: String;
+  education_in?: String[] | String;
+  education_not_in?: String[] | String;
+  education_lt?: String;
+  education_lte?: String;
+  education_gt?: String;
+  education_gte?: String;
+  education_contains?: String;
+  education_not_contains?: String;
+  education_starts_with?: String;
+  education_not_starts_with?: String;
+  education_ends_with?: String;
+  education_not_ends_with?: String;
+  serviceType?: ServiceType;
+  serviceType_not?: ServiceType;
+  serviceType_in?: ServiceType[] | ServiceType;
+  serviceType_not_in?: ServiceType[] | ServiceType;
+  doctorField?: DoctorField;
+  doctorField_not?: DoctorField;
+  doctorField_in?: DoctorField[] | DoctorField;
+  doctorField_not_in?: DoctorField[] | DoctorField;
+  lawyerField?: LawyerField;
+  lawyerField_not?: LawyerField;
+  lawyerField_in?: LawyerField[] | LawyerField;
+  lawyerField_not_in?: LawyerField[] | LawyerField;
+  AND?: ServiceWhereInput[] | ServiceWhereInput;
+  OR?: ServiceWhereInput[] | ServiceWhereInput;
+  NOT?: ServiceWhereInput[] | ServiceWhereInput;
 }
 
 export interface ServiceMessageWhereInput {
@@ -716,7 +785,7 @@ export interface ServiceMessageWhereInput {
   id_not_starts_with?: ID_Input;
   id_ends_with?: ID_Input;
   id_not_ends_with?: ID_Input;
-  sender?: DoctorWhereInput;
+  sender?: ServiceWhereInput;
   reciever?: UserWhereInput;
   subject?: String;
   subject_not?: String;
@@ -844,9 +913,6 @@ export interface UserWhereInput {
   avatar_not_ends_with?: String;
   confirmation?: Boolean;
   confirmation_not?: Boolean;
-  Appointments_every?: AppointmentWhereInput;
-  Appointments_some?: AppointmentWhereInput;
-  Appointments_none?: AppointmentWhereInput;
   sentMessages_every?: ClientMessageWhereInput;
   sentMessages_some?: ClientMessageWhereInput;
   sentMessages_none?: ClientMessageWhereInput;
@@ -856,6 +922,9 @@ export interface UserWhereInput {
   reviews_every?: ReviewWhereInput;
   reviews_some?: ReviewWhereInput;
   reviews_none?: ReviewWhereInput;
+  appointments_every?: AppointmentWhereInput;
+  appointments_some?: AppointmentWhereInput;
+  appointments_none?: AppointmentWhereInput;
   AND?: UserWhereInput[] | UserWhereInput;
   OR?: UserWhereInput[] | UserWhereInput;
   NOT?: UserWhereInput[] | UserWhereInput;
@@ -877,7 +946,7 @@ export interface ClientMessageWhereInput {
   id_ends_with?: ID_Input;
   id_not_ends_with?: ID_Input;
   sender?: UserWhereInput;
-  reciever?: DoctorWhereInput;
+  reciever?: ServiceWhereInput;
   subject?: String;
   subject_not?: String;
   subject_in?: String[] | String;
@@ -927,7 +996,7 @@ export interface ReviewWhereInput {
   id_ends_with?: ID_Input;
   id_not_ends_with?: ID_Input;
   user?: UserWhereInput;
-  service?: DoctorWhereInput;
+  service?: ServiceWhereInput;
   title?: String;
   title_not?: String;
   title_in?: String[] | String;
@@ -973,13 +1042,13 @@ export type ClientMessageWhereUniqueInput = AtLeastOne<{
   id: ID_Input;
 }>;
 
-export type DoctorWhereUniqueInput = AtLeastOne<{
-  id: ID_Input;
-  email?: String;
-}>;
-
 export type ReviewWhereUniqueInput = AtLeastOne<{
   id: ID_Input;
+}>;
+
+export type ServiceWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+  email?: String;
 }>;
 
 export type ServiceMessageWhereUniqueInput = AtLeastOne<{
@@ -992,7 +1061,7 @@ export type UserWhereUniqueInput = AtLeastOne<{
 }>;
 
 export interface AppointmentCreateInput {
-  service: DoctorCreateOneWithoutAppointmentsInput;
+  service: ServiceCreateOneWithoutAppointmentsInput;
   client?: UserCreateOneWithoutAppointmentsInput;
   clientName?: String;
   title?: String;
@@ -1003,24 +1072,29 @@ export interface AppointmentCreateInput {
   createdTime: String;
 }
 
-export interface DoctorCreateOneWithoutAppointmentsInput {
-  create?: DoctorCreateWithoutAppointmentsInput;
-  connect?: DoctorWhereUniqueInput;
+export interface ServiceCreateOneWithoutAppointmentsInput {
+  create?: ServiceCreateWithoutAppointmentsInput;
+  connect?: ServiceWhereUniqueInput;
 }
 
-export interface DoctorCreateWithoutAppointmentsInput {
+export interface ServiceCreateWithoutAppointmentsInput {
   fullName: String;
   Bio?: String;
   email: String;
   password: String;
   age?: Int;
   phone?: Int;
+  address?: String;
   gender?: Gender;
   avatar?: String;
-  specialty: DoctorSpecialty;
   sentMessages?: ServiceMessageCreateManyWithoutSenderInput;
   recievedMessages?: ClientMessageCreateManyWithoutRecieverInput;
   reviews?: ReviewCreateManyWithoutServiceInput;
+  office_hours?: String;
+  education?: String;
+  serviceType: ServiceType;
+  doctorField?: DoctorField;
+  lawyerField?: LawyerField;
 }
 
 export interface ServiceMessageCreateManyWithoutSenderInput {
@@ -1050,27 +1124,9 @@ export interface UserCreateWithoutRecievedMessagesInput {
   gender?: Gender;
   avatar?: String;
   confirmation?: Boolean;
-  Appointments?: AppointmentCreateManyWithoutClientInput;
   sentMessages?: ClientMessageCreateManyWithoutSenderInput;
   reviews?: ReviewCreateManyWithoutUserInput;
-}
-
-export interface AppointmentCreateManyWithoutClientInput {
-  create?:
-    | AppointmentCreateWithoutClientInput[]
-    | AppointmentCreateWithoutClientInput;
-  connect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
-}
-
-export interface AppointmentCreateWithoutClientInput {
-  service: DoctorCreateOneWithoutAppointmentsInput;
-  clientName?: String;
-  title?: String;
-  startTime: String;
-  endTime: String;
-  duration: AppointmentDuration;
-  local: Boolean;
-  createdTime: String;
+  appointments?: AppointmentCreateManyWithoutClientInput;
 }
 
 export interface ClientMessageCreateManyWithoutSenderInput {
@@ -1081,29 +1137,34 @@ export interface ClientMessageCreateManyWithoutSenderInput {
 }
 
 export interface ClientMessageCreateWithoutSenderInput {
-  reciever: DoctorCreateOneWithoutRecievedMessagesInput;
+  reciever: ServiceCreateOneWithoutRecievedMessagesInput;
   subject: String;
   body: String;
 }
 
-export interface DoctorCreateOneWithoutRecievedMessagesInput {
-  create?: DoctorCreateWithoutRecievedMessagesInput;
-  connect?: DoctorWhereUniqueInput;
+export interface ServiceCreateOneWithoutRecievedMessagesInput {
+  create?: ServiceCreateWithoutRecievedMessagesInput;
+  connect?: ServiceWhereUniqueInput;
 }
 
-export interface DoctorCreateWithoutRecievedMessagesInput {
+export interface ServiceCreateWithoutRecievedMessagesInput {
   fullName: String;
   Bio?: String;
   email: String;
   password: String;
   age?: Int;
   phone?: Int;
+  address?: String;
   gender?: Gender;
   avatar?: String;
   appointments?: AppointmentCreateManyWithoutServiceInput;
-  specialty: DoctorSpecialty;
   sentMessages?: ServiceMessageCreateManyWithoutSenderInput;
   reviews?: ReviewCreateManyWithoutServiceInput;
+  office_hours?: String;
+  education?: String;
+  serviceType: ServiceType;
+  doctorField?: DoctorField;
+  lawyerField?: LawyerField;
 }
 
 export interface AppointmentCreateManyWithoutServiceInput {
@@ -1151,29 +1212,34 @@ export interface ServiceMessageCreateManyWithoutRecieverInput {
 }
 
 export interface ServiceMessageCreateWithoutRecieverInput {
-  sender: DoctorCreateOneWithoutSentMessagesInput;
+  sender: ServiceCreateOneWithoutSentMessagesInput;
   subject: String;
   body: String;
 }
 
-export interface DoctorCreateOneWithoutSentMessagesInput {
-  create?: DoctorCreateWithoutSentMessagesInput;
-  connect?: DoctorWhereUniqueInput;
+export interface ServiceCreateOneWithoutSentMessagesInput {
+  create?: ServiceCreateWithoutSentMessagesInput;
+  connect?: ServiceWhereUniqueInput;
 }
 
-export interface DoctorCreateWithoutSentMessagesInput {
+export interface ServiceCreateWithoutSentMessagesInput {
   fullName: String;
   Bio?: String;
   email: String;
   password: String;
   age?: Int;
   phone?: Int;
+  address?: String;
   gender?: Gender;
   avatar?: String;
   appointments?: AppointmentCreateManyWithoutServiceInput;
-  specialty: DoctorSpecialty;
   recievedMessages?: ClientMessageCreateManyWithoutRecieverInput;
   reviews?: ReviewCreateManyWithoutServiceInput;
+  office_hours?: String;
+  education?: String;
+  serviceType: ServiceType;
+  doctorField?: DoctorField;
+  lawyerField?: LawyerField;
 }
 
 export interface ClientMessageCreateManyWithoutRecieverInput {
@@ -1203,9 +1269,9 @@ export interface UserCreateWithoutSentMessagesInput {
   gender?: Gender;
   avatar?: String;
   confirmation?: Boolean;
-  Appointments?: AppointmentCreateManyWithoutClientInput;
   recievedMessages?: ServiceMessageCreateManyWithoutRecieverInput;
   reviews?: ReviewCreateManyWithoutUserInput;
+  appointments?: AppointmentCreateManyWithoutClientInput;
 }
 
 export interface ReviewCreateManyWithoutUserInput {
@@ -1214,30 +1280,53 @@ export interface ReviewCreateManyWithoutUserInput {
 }
 
 export interface ReviewCreateWithoutUserInput {
-  service: DoctorCreateOneWithoutReviewsInput;
+  service: ServiceCreateOneWithoutReviewsInput;
   title: String;
   content: String;
   rating: Int;
 }
 
-export interface DoctorCreateOneWithoutReviewsInput {
-  create?: DoctorCreateWithoutReviewsInput;
-  connect?: DoctorWhereUniqueInput;
+export interface ServiceCreateOneWithoutReviewsInput {
+  create?: ServiceCreateWithoutReviewsInput;
+  connect?: ServiceWhereUniqueInput;
 }
 
-export interface DoctorCreateWithoutReviewsInput {
+export interface ServiceCreateWithoutReviewsInput {
   fullName: String;
   Bio?: String;
   email: String;
   password: String;
   age?: Int;
   phone?: Int;
+  address?: String;
   gender?: Gender;
   avatar?: String;
   appointments?: AppointmentCreateManyWithoutServiceInput;
-  specialty: DoctorSpecialty;
   sentMessages?: ServiceMessageCreateManyWithoutSenderInput;
   recievedMessages?: ClientMessageCreateManyWithoutRecieverInput;
+  office_hours?: String;
+  education?: String;
+  serviceType: ServiceType;
+  doctorField?: DoctorField;
+  lawyerField?: LawyerField;
+}
+
+export interface AppointmentCreateManyWithoutClientInput {
+  create?:
+    | AppointmentCreateWithoutClientInput[]
+    | AppointmentCreateWithoutClientInput;
+  connect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
+}
+
+export interface AppointmentCreateWithoutClientInput {
+  service: ServiceCreateOneWithoutAppointmentsInput;
+  clientName?: String;
+  title?: String;
+  startTime: String;
+  endTime: String;
+  duration: AppointmentDuration;
+  local: Boolean;
+  createdTime: String;
 }
 
 export interface ReviewCreateManyWithoutServiceInput {
@@ -1266,13 +1355,13 @@ export interface UserCreateWithoutReviewsInput {
   gender?: Gender;
   avatar?: String;
   confirmation?: Boolean;
-  Appointments?: AppointmentCreateManyWithoutClientInput;
   sentMessages?: ClientMessageCreateManyWithoutSenderInput;
   recievedMessages?: ServiceMessageCreateManyWithoutRecieverInput;
+  appointments?: AppointmentCreateManyWithoutClientInput;
 }
 
 export interface AppointmentUpdateInput {
-  service?: DoctorUpdateOneRequiredWithoutAppointmentsInput;
+  service?: ServiceUpdateOneRequiredWithoutAppointmentsInput;
   client?: UserUpdateOneWithoutAppointmentsInput;
   clientName?: String;
   title?: String;
@@ -1283,26 +1372,31 @@ export interface AppointmentUpdateInput {
   createdTime?: String;
 }
 
-export interface DoctorUpdateOneRequiredWithoutAppointmentsInput {
-  create?: DoctorCreateWithoutAppointmentsInput;
-  update?: DoctorUpdateWithoutAppointmentsDataInput;
-  upsert?: DoctorUpsertWithoutAppointmentsInput;
-  connect?: DoctorWhereUniqueInput;
+export interface ServiceUpdateOneRequiredWithoutAppointmentsInput {
+  create?: ServiceCreateWithoutAppointmentsInput;
+  update?: ServiceUpdateWithoutAppointmentsDataInput;
+  upsert?: ServiceUpsertWithoutAppointmentsInput;
+  connect?: ServiceWhereUniqueInput;
 }
 
-export interface DoctorUpdateWithoutAppointmentsDataInput {
+export interface ServiceUpdateWithoutAppointmentsDataInput {
   fullName?: String;
   Bio?: String;
   email?: String;
   password?: String;
   age?: Int;
   phone?: Int;
+  address?: String;
   gender?: Gender;
   avatar?: String;
-  specialty?: DoctorSpecialty;
   sentMessages?: ServiceMessageUpdateManyWithoutSenderInput;
   recievedMessages?: ClientMessageUpdateManyWithoutRecieverInput;
   reviews?: ReviewUpdateManyWithoutServiceInput;
+  office_hours?: String;
+  education?: String;
+  serviceType?: ServiceType;
+  doctorField?: DoctorField;
+  lawyerField?: LawyerField;
 }
 
 export interface ServiceMessageUpdateManyWithoutSenderInput {
@@ -1356,9 +1450,375 @@ export interface UserUpdateWithoutRecievedMessagesDataInput {
   gender?: Gender;
   avatar?: String;
   confirmation?: Boolean;
-  Appointments?: AppointmentUpdateManyWithoutClientInput;
   sentMessages?: ClientMessageUpdateManyWithoutSenderInput;
   reviews?: ReviewUpdateManyWithoutUserInput;
+  appointments?: AppointmentUpdateManyWithoutClientInput;
+}
+
+export interface ClientMessageUpdateManyWithoutSenderInput {
+  create?:
+    | ClientMessageCreateWithoutSenderInput[]
+    | ClientMessageCreateWithoutSenderInput;
+  delete?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
+  connect?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
+  set?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
+  disconnect?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
+  update?:
+    | ClientMessageUpdateWithWhereUniqueWithoutSenderInput[]
+    | ClientMessageUpdateWithWhereUniqueWithoutSenderInput;
+  upsert?:
+    | ClientMessageUpsertWithWhereUniqueWithoutSenderInput[]
+    | ClientMessageUpsertWithWhereUniqueWithoutSenderInput;
+  deleteMany?: ClientMessageScalarWhereInput[] | ClientMessageScalarWhereInput;
+  updateMany?:
+    | ClientMessageUpdateManyWithWhereNestedInput[]
+    | ClientMessageUpdateManyWithWhereNestedInput;
+}
+
+export interface ClientMessageUpdateWithWhereUniqueWithoutSenderInput {
+  where: ClientMessageWhereUniqueInput;
+  data: ClientMessageUpdateWithoutSenderDataInput;
+}
+
+export interface ClientMessageUpdateWithoutSenderDataInput {
+  reciever?: ServiceUpdateOneRequiredWithoutRecievedMessagesInput;
+  subject?: String;
+  body?: String;
+}
+
+export interface ServiceUpdateOneRequiredWithoutRecievedMessagesInput {
+  create?: ServiceCreateWithoutRecievedMessagesInput;
+  update?: ServiceUpdateWithoutRecievedMessagesDataInput;
+  upsert?: ServiceUpsertWithoutRecievedMessagesInput;
+  connect?: ServiceWhereUniqueInput;
+}
+
+export interface ServiceUpdateWithoutRecievedMessagesDataInput {
+  fullName?: String;
+  Bio?: String;
+  email?: String;
+  password?: String;
+  age?: Int;
+  phone?: Int;
+  address?: String;
+  gender?: Gender;
+  avatar?: String;
+  appointments?: AppointmentUpdateManyWithoutServiceInput;
+  sentMessages?: ServiceMessageUpdateManyWithoutSenderInput;
+  reviews?: ReviewUpdateManyWithoutServiceInput;
+  office_hours?: String;
+  education?: String;
+  serviceType?: ServiceType;
+  doctorField?: DoctorField;
+  lawyerField?: LawyerField;
+}
+
+export interface AppointmentUpdateManyWithoutServiceInput {
+  create?:
+    | AppointmentCreateWithoutServiceInput[]
+    | AppointmentCreateWithoutServiceInput;
+  delete?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
+  connect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
+  set?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
+  disconnect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
+  update?:
+    | AppointmentUpdateWithWhereUniqueWithoutServiceInput[]
+    | AppointmentUpdateWithWhereUniqueWithoutServiceInput;
+  upsert?:
+    | AppointmentUpsertWithWhereUniqueWithoutServiceInput[]
+    | AppointmentUpsertWithWhereUniqueWithoutServiceInput;
+  deleteMany?: AppointmentScalarWhereInput[] | AppointmentScalarWhereInput;
+  updateMany?:
+    | AppointmentUpdateManyWithWhereNestedInput[]
+    | AppointmentUpdateManyWithWhereNestedInput;
+}
+
+export interface AppointmentUpdateWithWhereUniqueWithoutServiceInput {
+  where: AppointmentWhereUniqueInput;
+  data: AppointmentUpdateWithoutServiceDataInput;
+}
+
+export interface AppointmentUpdateWithoutServiceDataInput {
+  client?: UserUpdateOneWithoutAppointmentsInput;
+  clientName?: String;
+  title?: String;
+  startTime?: String;
+  endTime?: String;
+  duration?: AppointmentDuration;
+  local?: Boolean;
+  createdTime?: String;
+}
+
+export interface UserUpdateOneWithoutAppointmentsInput {
+  create?: UserCreateWithoutAppointmentsInput;
+  update?: UserUpdateWithoutAppointmentsDataInput;
+  upsert?: UserUpsertWithoutAppointmentsInput;
+  delete?: Boolean;
+  disconnect?: Boolean;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserUpdateWithoutAppointmentsDataInput {
+  fullName?: String;
+  email?: String;
+  password?: String;
+  age?: Int;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  confirmation?: Boolean;
+  sentMessages?: ClientMessageUpdateManyWithoutSenderInput;
+  recievedMessages?: ServiceMessageUpdateManyWithoutRecieverInput;
+  reviews?: ReviewUpdateManyWithoutUserInput;
+}
+
+export interface ServiceMessageUpdateManyWithoutRecieverInput {
+  create?:
+    | ServiceMessageCreateWithoutRecieverInput[]
+    | ServiceMessageCreateWithoutRecieverInput;
+  delete?: ServiceMessageWhereUniqueInput[] | ServiceMessageWhereUniqueInput;
+  connect?: ServiceMessageWhereUniqueInput[] | ServiceMessageWhereUniqueInput;
+  set?: ServiceMessageWhereUniqueInput[] | ServiceMessageWhereUniqueInput;
+  disconnect?:
+    | ServiceMessageWhereUniqueInput[]
+    | ServiceMessageWhereUniqueInput;
+  update?:
+    | ServiceMessageUpdateWithWhereUniqueWithoutRecieverInput[]
+    | ServiceMessageUpdateWithWhereUniqueWithoutRecieverInput;
+  upsert?:
+    | ServiceMessageUpsertWithWhereUniqueWithoutRecieverInput[]
+    | ServiceMessageUpsertWithWhereUniqueWithoutRecieverInput;
+  deleteMany?:
+    | ServiceMessageScalarWhereInput[]
+    | ServiceMessageScalarWhereInput;
+  updateMany?:
+    | ServiceMessageUpdateManyWithWhereNestedInput[]
+    | ServiceMessageUpdateManyWithWhereNestedInput;
+}
+
+export interface ServiceMessageUpdateWithWhereUniqueWithoutRecieverInput {
+  where: ServiceMessageWhereUniqueInput;
+  data: ServiceMessageUpdateWithoutRecieverDataInput;
+}
+
+export interface ServiceMessageUpdateWithoutRecieverDataInput {
+  sender?: ServiceUpdateOneRequiredWithoutSentMessagesInput;
+  subject?: String;
+  body?: String;
+}
+
+export interface ServiceUpdateOneRequiredWithoutSentMessagesInput {
+  create?: ServiceCreateWithoutSentMessagesInput;
+  update?: ServiceUpdateWithoutSentMessagesDataInput;
+  upsert?: ServiceUpsertWithoutSentMessagesInput;
+  connect?: ServiceWhereUniqueInput;
+}
+
+export interface ServiceUpdateWithoutSentMessagesDataInput {
+  fullName?: String;
+  Bio?: String;
+  email?: String;
+  password?: String;
+  age?: Int;
+  phone?: Int;
+  address?: String;
+  gender?: Gender;
+  avatar?: String;
+  appointments?: AppointmentUpdateManyWithoutServiceInput;
+  recievedMessages?: ClientMessageUpdateManyWithoutRecieverInput;
+  reviews?: ReviewUpdateManyWithoutServiceInput;
+  office_hours?: String;
+  education?: String;
+  serviceType?: ServiceType;
+  doctorField?: DoctorField;
+  lawyerField?: LawyerField;
+}
+
+export interface ClientMessageUpdateManyWithoutRecieverInput {
+  create?:
+    | ClientMessageCreateWithoutRecieverInput[]
+    | ClientMessageCreateWithoutRecieverInput;
+  delete?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
+  connect?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
+  set?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
+  disconnect?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
+  update?:
+    | ClientMessageUpdateWithWhereUniqueWithoutRecieverInput[]
+    | ClientMessageUpdateWithWhereUniqueWithoutRecieverInput;
+  upsert?:
+    | ClientMessageUpsertWithWhereUniqueWithoutRecieverInput[]
+    | ClientMessageUpsertWithWhereUniqueWithoutRecieverInput;
+  deleteMany?: ClientMessageScalarWhereInput[] | ClientMessageScalarWhereInput;
+  updateMany?:
+    | ClientMessageUpdateManyWithWhereNestedInput[]
+    | ClientMessageUpdateManyWithWhereNestedInput;
+}
+
+export interface ClientMessageUpdateWithWhereUniqueWithoutRecieverInput {
+  where: ClientMessageWhereUniqueInput;
+  data: ClientMessageUpdateWithoutRecieverDataInput;
+}
+
+export interface ClientMessageUpdateWithoutRecieverDataInput {
+  sender?: UserUpdateOneRequiredWithoutSentMessagesInput;
+  subject?: String;
+  body?: String;
+}
+
+export interface UserUpdateOneRequiredWithoutSentMessagesInput {
+  create?: UserCreateWithoutSentMessagesInput;
+  update?: UserUpdateWithoutSentMessagesDataInput;
+  upsert?: UserUpsertWithoutSentMessagesInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserUpdateWithoutSentMessagesDataInput {
+  fullName?: String;
+  email?: String;
+  password?: String;
+  age?: Int;
+  phone?: Int;
+  gender?: Gender;
+  avatar?: String;
+  confirmation?: Boolean;
+  recievedMessages?: ServiceMessageUpdateManyWithoutRecieverInput;
+  reviews?: ReviewUpdateManyWithoutUserInput;
+  appointments?: AppointmentUpdateManyWithoutClientInput;
+}
+
+export interface ReviewUpdateManyWithoutUserInput {
+  create?: ReviewCreateWithoutUserInput[] | ReviewCreateWithoutUserInput;
+  delete?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
+  connect?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
+  set?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
+  disconnect?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
+  update?:
+    | ReviewUpdateWithWhereUniqueWithoutUserInput[]
+    | ReviewUpdateWithWhereUniqueWithoutUserInput;
+  upsert?:
+    | ReviewUpsertWithWhereUniqueWithoutUserInput[]
+    | ReviewUpsertWithWhereUniqueWithoutUserInput;
+  deleteMany?: ReviewScalarWhereInput[] | ReviewScalarWhereInput;
+  updateMany?:
+    | ReviewUpdateManyWithWhereNestedInput[]
+    | ReviewUpdateManyWithWhereNestedInput;
+}
+
+export interface ReviewUpdateWithWhereUniqueWithoutUserInput {
+  where: ReviewWhereUniqueInput;
+  data: ReviewUpdateWithoutUserDataInput;
+}
+
+export interface ReviewUpdateWithoutUserDataInput {
+  service?: ServiceUpdateOneRequiredWithoutReviewsInput;
+  title?: String;
+  content?: String;
+  rating?: Int;
+}
+
+export interface ServiceUpdateOneRequiredWithoutReviewsInput {
+  create?: ServiceCreateWithoutReviewsInput;
+  update?: ServiceUpdateWithoutReviewsDataInput;
+  upsert?: ServiceUpsertWithoutReviewsInput;
+  connect?: ServiceWhereUniqueInput;
+}
+
+export interface ServiceUpdateWithoutReviewsDataInput {
+  fullName?: String;
+  Bio?: String;
+  email?: String;
+  password?: String;
+  age?: Int;
+  phone?: Int;
+  address?: String;
+  gender?: Gender;
+  avatar?: String;
+  appointments?: AppointmentUpdateManyWithoutServiceInput;
+  sentMessages?: ServiceMessageUpdateManyWithoutSenderInput;
+  recievedMessages?: ClientMessageUpdateManyWithoutRecieverInput;
+  office_hours?: String;
+  education?: String;
+  serviceType?: ServiceType;
+  doctorField?: DoctorField;
+  lawyerField?: LawyerField;
+}
+
+export interface ServiceUpsertWithoutReviewsInput {
+  update: ServiceUpdateWithoutReviewsDataInput;
+  create: ServiceCreateWithoutReviewsInput;
+}
+
+export interface ReviewUpsertWithWhereUniqueWithoutUserInput {
+  where: ReviewWhereUniqueInput;
+  update: ReviewUpdateWithoutUserDataInput;
+  create: ReviewCreateWithoutUserInput;
+}
+
+export interface ReviewScalarWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  title?: String;
+  title_not?: String;
+  title_in?: String[] | String;
+  title_not_in?: String[] | String;
+  title_lt?: String;
+  title_lte?: String;
+  title_gt?: String;
+  title_gte?: String;
+  title_contains?: String;
+  title_not_contains?: String;
+  title_starts_with?: String;
+  title_not_starts_with?: String;
+  title_ends_with?: String;
+  title_not_ends_with?: String;
+  content?: String;
+  content_not?: String;
+  content_in?: String[] | String;
+  content_not_in?: String[] | String;
+  content_lt?: String;
+  content_lte?: String;
+  content_gt?: String;
+  content_gte?: String;
+  content_contains?: String;
+  content_not_contains?: String;
+  content_starts_with?: String;
+  content_not_starts_with?: String;
+  content_ends_with?: String;
+  content_not_ends_with?: String;
+  rating?: Int;
+  rating_not?: Int;
+  rating_in?: Int[] | Int;
+  rating_not_in?: Int[] | Int;
+  rating_lt?: Int;
+  rating_lte?: Int;
+  rating_gt?: Int;
+  rating_gte?: Int;
+  AND?: ReviewScalarWhereInput[] | ReviewScalarWhereInput;
+  OR?: ReviewScalarWhereInput[] | ReviewScalarWhereInput;
+  NOT?: ReviewScalarWhereInput[] | ReviewScalarWhereInput;
+}
+
+export interface ReviewUpdateManyWithWhereNestedInput {
+  where: ReviewScalarWhereInput;
+  data: ReviewUpdateManyDataInput;
+}
+
+export interface ReviewUpdateManyDataInput {
+  title?: String;
+  content?: String;
+  rating?: Int;
 }
 
 export interface AppointmentUpdateManyWithoutClientInput {
@@ -1387,7 +1847,7 @@ export interface AppointmentUpdateWithWhereUniqueWithoutClientInput {
 }
 
 export interface AppointmentUpdateWithoutClientDataInput {
-  service?: DoctorUpdateOneRequiredWithoutAppointmentsInput;
+  service?: ServiceUpdateOneRequiredWithoutAppointmentsInput;
   clientName?: String;
   title?: String;
   startTime?: String;
@@ -1514,357 +1974,6 @@ export interface AppointmentUpdateManyDataInput {
   createdTime?: String;
 }
 
-export interface ClientMessageUpdateManyWithoutSenderInput {
-  create?:
-    | ClientMessageCreateWithoutSenderInput[]
-    | ClientMessageCreateWithoutSenderInput;
-  delete?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
-  connect?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
-  set?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
-  disconnect?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
-  update?:
-    | ClientMessageUpdateWithWhereUniqueWithoutSenderInput[]
-    | ClientMessageUpdateWithWhereUniqueWithoutSenderInput;
-  upsert?:
-    | ClientMessageUpsertWithWhereUniqueWithoutSenderInput[]
-    | ClientMessageUpsertWithWhereUniqueWithoutSenderInput;
-  deleteMany?: ClientMessageScalarWhereInput[] | ClientMessageScalarWhereInput;
-  updateMany?:
-    | ClientMessageUpdateManyWithWhereNestedInput[]
-    | ClientMessageUpdateManyWithWhereNestedInput;
-}
-
-export interface ClientMessageUpdateWithWhereUniqueWithoutSenderInput {
-  where: ClientMessageWhereUniqueInput;
-  data: ClientMessageUpdateWithoutSenderDataInput;
-}
-
-export interface ClientMessageUpdateWithoutSenderDataInput {
-  reciever?: DoctorUpdateOneRequiredWithoutRecievedMessagesInput;
-  subject?: String;
-  body?: String;
-}
-
-export interface DoctorUpdateOneRequiredWithoutRecievedMessagesInput {
-  create?: DoctorCreateWithoutRecievedMessagesInput;
-  update?: DoctorUpdateWithoutRecievedMessagesDataInput;
-  upsert?: DoctorUpsertWithoutRecievedMessagesInput;
-  connect?: DoctorWhereUniqueInput;
-}
-
-export interface DoctorUpdateWithoutRecievedMessagesDataInput {
-  fullName?: String;
-  Bio?: String;
-  email?: String;
-  password?: String;
-  age?: Int;
-  phone?: Int;
-  gender?: Gender;
-  avatar?: String;
-  appointments?: AppointmentUpdateManyWithoutServiceInput;
-  specialty?: DoctorSpecialty;
-  sentMessages?: ServiceMessageUpdateManyWithoutSenderInput;
-  reviews?: ReviewUpdateManyWithoutServiceInput;
-}
-
-export interface AppointmentUpdateManyWithoutServiceInput {
-  create?:
-    | AppointmentCreateWithoutServiceInput[]
-    | AppointmentCreateWithoutServiceInput;
-  delete?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
-  connect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
-  set?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
-  disconnect?: AppointmentWhereUniqueInput[] | AppointmentWhereUniqueInput;
-  update?:
-    | AppointmentUpdateWithWhereUniqueWithoutServiceInput[]
-    | AppointmentUpdateWithWhereUniqueWithoutServiceInput;
-  upsert?:
-    | AppointmentUpsertWithWhereUniqueWithoutServiceInput[]
-    | AppointmentUpsertWithWhereUniqueWithoutServiceInput;
-  deleteMany?: AppointmentScalarWhereInput[] | AppointmentScalarWhereInput;
-  updateMany?:
-    | AppointmentUpdateManyWithWhereNestedInput[]
-    | AppointmentUpdateManyWithWhereNestedInput;
-}
-
-export interface AppointmentUpdateWithWhereUniqueWithoutServiceInput {
-  where: AppointmentWhereUniqueInput;
-  data: AppointmentUpdateWithoutServiceDataInput;
-}
-
-export interface AppointmentUpdateWithoutServiceDataInput {
-  client?: UserUpdateOneWithoutAppointmentsInput;
-  clientName?: String;
-  title?: String;
-  startTime?: String;
-  endTime?: String;
-  duration?: AppointmentDuration;
-  local?: Boolean;
-  createdTime?: String;
-}
-
-export interface UserUpdateOneWithoutAppointmentsInput {
-  create?: UserCreateWithoutAppointmentsInput;
-  update?: UserUpdateWithoutAppointmentsDataInput;
-  upsert?: UserUpsertWithoutAppointmentsInput;
-  delete?: Boolean;
-  disconnect?: Boolean;
-  connect?: UserWhereUniqueInput;
-}
-
-export interface UserUpdateWithoutAppointmentsDataInput {
-  fullName?: String;
-  email?: String;
-  password?: String;
-  age?: Int;
-  phone?: Int;
-  gender?: Gender;
-  avatar?: String;
-  confirmation?: Boolean;
-  sentMessages?: ClientMessageUpdateManyWithoutSenderInput;
-  recievedMessages?: ServiceMessageUpdateManyWithoutRecieverInput;
-  reviews?: ReviewUpdateManyWithoutUserInput;
-}
-
-export interface ServiceMessageUpdateManyWithoutRecieverInput {
-  create?:
-    | ServiceMessageCreateWithoutRecieverInput[]
-    | ServiceMessageCreateWithoutRecieverInput;
-  delete?: ServiceMessageWhereUniqueInput[] | ServiceMessageWhereUniqueInput;
-  connect?: ServiceMessageWhereUniqueInput[] | ServiceMessageWhereUniqueInput;
-  set?: ServiceMessageWhereUniqueInput[] | ServiceMessageWhereUniqueInput;
-  disconnect?:
-    | ServiceMessageWhereUniqueInput[]
-    | ServiceMessageWhereUniqueInput;
-  update?:
-    | ServiceMessageUpdateWithWhereUniqueWithoutRecieverInput[]
-    | ServiceMessageUpdateWithWhereUniqueWithoutRecieverInput;
-  upsert?:
-    | ServiceMessageUpsertWithWhereUniqueWithoutRecieverInput[]
-    | ServiceMessageUpsertWithWhereUniqueWithoutRecieverInput;
-  deleteMany?:
-    | ServiceMessageScalarWhereInput[]
-    | ServiceMessageScalarWhereInput;
-  updateMany?:
-    | ServiceMessageUpdateManyWithWhereNestedInput[]
-    | ServiceMessageUpdateManyWithWhereNestedInput;
-}
-
-export interface ServiceMessageUpdateWithWhereUniqueWithoutRecieverInput {
-  where: ServiceMessageWhereUniqueInput;
-  data: ServiceMessageUpdateWithoutRecieverDataInput;
-}
-
-export interface ServiceMessageUpdateWithoutRecieverDataInput {
-  sender?: DoctorUpdateOneRequiredWithoutSentMessagesInput;
-  subject?: String;
-  body?: String;
-}
-
-export interface DoctorUpdateOneRequiredWithoutSentMessagesInput {
-  create?: DoctorCreateWithoutSentMessagesInput;
-  update?: DoctorUpdateWithoutSentMessagesDataInput;
-  upsert?: DoctorUpsertWithoutSentMessagesInput;
-  connect?: DoctorWhereUniqueInput;
-}
-
-export interface DoctorUpdateWithoutSentMessagesDataInput {
-  fullName?: String;
-  Bio?: String;
-  email?: String;
-  password?: String;
-  age?: Int;
-  phone?: Int;
-  gender?: Gender;
-  avatar?: String;
-  appointments?: AppointmentUpdateManyWithoutServiceInput;
-  specialty?: DoctorSpecialty;
-  recievedMessages?: ClientMessageUpdateManyWithoutRecieverInput;
-  reviews?: ReviewUpdateManyWithoutServiceInput;
-}
-
-export interface ClientMessageUpdateManyWithoutRecieverInput {
-  create?:
-    | ClientMessageCreateWithoutRecieverInput[]
-    | ClientMessageCreateWithoutRecieverInput;
-  delete?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
-  connect?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
-  set?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
-  disconnect?: ClientMessageWhereUniqueInput[] | ClientMessageWhereUniqueInput;
-  update?:
-    | ClientMessageUpdateWithWhereUniqueWithoutRecieverInput[]
-    | ClientMessageUpdateWithWhereUniqueWithoutRecieverInput;
-  upsert?:
-    | ClientMessageUpsertWithWhereUniqueWithoutRecieverInput[]
-    | ClientMessageUpsertWithWhereUniqueWithoutRecieverInput;
-  deleteMany?: ClientMessageScalarWhereInput[] | ClientMessageScalarWhereInput;
-  updateMany?:
-    | ClientMessageUpdateManyWithWhereNestedInput[]
-    | ClientMessageUpdateManyWithWhereNestedInput;
-}
-
-export interface ClientMessageUpdateWithWhereUniqueWithoutRecieverInput {
-  where: ClientMessageWhereUniqueInput;
-  data: ClientMessageUpdateWithoutRecieverDataInput;
-}
-
-export interface ClientMessageUpdateWithoutRecieverDataInput {
-  sender?: UserUpdateOneRequiredWithoutSentMessagesInput;
-  subject?: String;
-  body?: String;
-}
-
-export interface UserUpdateOneRequiredWithoutSentMessagesInput {
-  create?: UserCreateWithoutSentMessagesInput;
-  update?: UserUpdateWithoutSentMessagesDataInput;
-  upsert?: UserUpsertWithoutSentMessagesInput;
-  connect?: UserWhereUniqueInput;
-}
-
-export interface UserUpdateWithoutSentMessagesDataInput {
-  fullName?: String;
-  email?: String;
-  password?: String;
-  age?: Int;
-  phone?: Int;
-  gender?: Gender;
-  avatar?: String;
-  confirmation?: Boolean;
-  Appointments?: AppointmentUpdateManyWithoutClientInput;
-  recievedMessages?: ServiceMessageUpdateManyWithoutRecieverInput;
-  reviews?: ReviewUpdateManyWithoutUserInput;
-}
-
-export interface ReviewUpdateManyWithoutUserInput {
-  create?: ReviewCreateWithoutUserInput[] | ReviewCreateWithoutUserInput;
-  delete?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
-  connect?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
-  set?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
-  disconnect?: ReviewWhereUniqueInput[] | ReviewWhereUniqueInput;
-  update?:
-    | ReviewUpdateWithWhereUniqueWithoutUserInput[]
-    | ReviewUpdateWithWhereUniqueWithoutUserInput;
-  upsert?:
-    | ReviewUpsertWithWhereUniqueWithoutUserInput[]
-    | ReviewUpsertWithWhereUniqueWithoutUserInput;
-  deleteMany?: ReviewScalarWhereInput[] | ReviewScalarWhereInput;
-  updateMany?:
-    | ReviewUpdateManyWithWhereNestedInput[]
-    | ReviewUpdateManyWithWhereNestedInput;
-}
-
-export interface ReviewUpdateWithWhereUniqueWithoutUserInput {
-  where: ReviewWhereUniqueInput;
-  data: ReviewUpdateWithoutUserDataInput;
-}
-
-export interface ReviewUpdateWithoutUserDataInput {
-  service?: DoctorUpdateOneRequiredWithoutReviewsInput;
-  title?: String;
-  content?: String;
-  rating?: Int;
-}
-
-export interface DoctorUpdateOneRequiredWithoutReviewsInput {
-  create?: DoctorCreateWithoutReviewsInput;
-  update?: DoctorUpdateWithoutReviewsDataInput;
-  upsert?: DoctorUpsertWithoutReviewsInput;
-  connect?: DoctorWhereUniqueInput;
-}
-
-export interface DoctorUpdateWithoutReviewsDataInput {
-  fullName?: String;
-  Bio?: String;
-  email?: String;
-  password?: String;
-  age?: Int;
-  phone?: Int;
-  gender?: Gender;
-  avatar?: String;
-  appointments?: AppointmentUpdateManyWithoutServiceInput;
-  specialty?: DoctorSpecialty;
-  sentMessages?: ServiceMessageUpdateManyWithoutSenderInput;
-  recievedMessages?: ClientMessageUpdateManyWithoutRecieverInput;
-}
-
-export interface DoctorUpsertWithoutReviewsInput {
-  update: DoctorUpdateWithoutReviewsDataInput;
-  create: DoctorCreateWithoutReviewsInput;
-}
-
-export interface ReviewUpsertWithWhereUniqueWithoutUserInput {
-  where: ReviewWhereUniqueInput;
-  update: ReviewUpdateWithoutUserDataInput;
-  create: ReviewCreateWithoutUserInput;
-}
-
-export interface ReviewScalarWhereInput {
-  id?: ID_Input;
-  id_not?: ID_Input;
-  id_in?: ID_Input[] | ID_Input;
-  id_not_in?: ID_Input[] | ID_Input;
-  id_lt?: ID_Input;
-  id_lte?: ID_Input;
-  id_gt?: ID_Input;
-  id_gte?: ID_Input;
-  id_contains?: ID_Input;
-  id_not_contains?: ID_Input;
-  id_starts_with?: ID_Input;
-  id_not_starts_with?: ID_Input;
-  id_ends_with?: ID_Input;
-  id_not_ends_with?: ID_Input;
-  title?: String;
-  title_not?: String;
-  title_in?: String[] | String;
-  title_not_in?: String[] | String;
-  title_lt?: String;
-  title_lte?: String;
-  title_gt?: String;
-  title_gte?: String;
-  title_contains?: String;
-  title_not_contains?: String;
-  title_starts_with?: String;
-  title_not_starts_with?: String;
-  title_ends_with?: String;
-  title_not_ends_with?: String;
-  content?: String;
-  content_not?: String;
-  content_in?: String[] | String;
-  content_not_in?: String[] | String;
-  content_lt?: String;
-  content_lte?: String;
-  content_gt?: String;
-  content_gte?: String;
-  content_contains?: String;
-  content_not_contains?: String;
-  content_starts_with?: String;
-  content_not_starts_with?: String;
-  content_ends_with?: String;
-  content_not_ends_with?: String;
-  rating?: Int;
-  rating_not?: Int;
-  rating_in?: Int[] | Int;
-  rating_not_in?: Int[] | Int;
-  rating_lt?: Int;
-  rating_lte?: Int;
-  rating_gt?: Int;
-  rating_gte?: Int;
-  AND?: ReviewScalarWhereInput[] | ReviewScalarWhereInput;
-  OR?: ReviewScalarWhereInput[] | ReviewScalarWhereInput;
-  NOT?: ReviewScalarWhereInput[] | ReviewScalarWhereInput;
-}
-
-export interface ReviewUpdateManyWithWhereNestedInput {
-  where: ReviewScalarWhereInput;
-  data: ReviewUpdateManyDataInput;
-}
-
-export interface ReviewUpdateManyDataInput {
-  title?: String;
-  content?: String;
-  rating?: Int;
-}
-
 export interface UserUpsertWithoutSentMessagesInput {
   update: UserUpdateWithoutSentMessagesDataInput;
   create: UserCreateWithoutSentMessagesInput;
@@ -1980,9 +2089,9 @@ export interface UserUpdateWithoutReviewsDataInput {
   gender?: Gender;
   avatar?: String;
   confirmation?: Boolean;
-  Appointments?: AppointmentUpdateManyWithoutClientInput;
   sentMessages?: ClientMessageUpdateManyWithoutSenderInput;
   recievedMessages?: ServiceMessageUpdateManyWithoutRecieverInput;
+  appointments?: AppointmentUpdateManyWithoutClientInput;
 }
 
 export interface UserUpsertWithoutReviewsInput {
@@ -1996,9 +2105,9 @@ export interface ReviewUpsertWithWhereUniqueWithoutServiceInput {
   create: ReviewCreateWithoutServiceInput;
 }
 
-export interface DoctorUpsertWithoutSentMessagesInput {
-  update: DoctorUpdateWithoutSentMessagesDataInput;
-  create: DoctorCreateWithoutSentMessagesInput;
+export interface ServiceUpsertWithoutSentMessagesInput {
+  update: ServiceUpdateWithoutSentMessagesDataInput;
+  create: ServiceCreateWithoutSentMessagesInput;
 }
 
 export interface ServiceMessageUpsertWithWhereUniqueWithoutRecieverInput {
@@ -2076,9 +2185,9 @@ export interface AppointmentUpsertWithWhereUniqueWithoutServiceInput {
   create: AppointmentCreateWithoutServiceInput;
 }
 
-export interface DoctorUpsertWithoutRecievedMessagesInput {
-  update: DoctorUpdateWithoutRecievedMessagesDataInput;
-  create: DoctorCreateWithoutRecievedMessagesInput;
+export interface ServiceUpsertWithoutRecievedMessagesInput {
+  update: ServiceUpdateWithoutRecievedMessagesDataInput;
+  create: ServiceCreateWithoutRecievedMessagesInput;
 }
 
 export interface ClientMessageUpsertWithWhereUniqueWithoutSenderInput {
@@ -2098,9 +2207,9 @@ export interface ServiceMessageUpsertWithWhereUniqueWithoutSenderInput {
   create: ServiceMessageCreateWithoutSenderInput;
 }
 
-export interface DoctorUpsertWithoutAppointmentsInput {
-  update: DoctorUpdateWithoutAppointmentsDataInput;
-  create: DoctorCreateWithoutAppointmentsInput;
+export interface ServiceUpsertWithoutAppointmentsInput {
+  update: ServiceUpdateWithoutAppointmentsDataInput;
+  create: ServiceCreateWithoutAppointmentsInput;
 }
 
 export interface AppointmentUpdateManyMutationInput {
@@ -2115,14 +2224,14 @@ export interface AppointmentUpdateManyMutationInput {
 
 export interface ClientMessageCreateInput {
   sender: UserCreateOneWithoutSentMessagesInput;
-  reciever: DoctorCreateOneWithoutRecievedMessagesInput;
+  reciever: ServiceCreateOneWithoutRecievedMessagesInput;
   subject: String;
   body: String;
 }
 
 export interface ClientMessageUpdateInput {
   sender?: UserUpdateOneRequiredWithoutSentMessagesInput;
-  reciever?: DoctorUpdateOneRequiredWithoutRecievedMessagesInput;
+  reciever?: ServiceUpdateOneRequiredWithoutRecievedMessagesInput;
   subject?: String;
   body?: String;
 }
@@ -2132,53 +2241,9 @@ export interface ClientMessageUpdateManyMutationInput {
   body?: String;
 }
 
-export interface DoctorCreateInput {
-  fullName: String;
-  Bio?: String;
-  email: String;
-  password: String;
-  age?: Int;
-  phone?: Int;
-  gender?: Gender;
-  avatar?: String;
-  appointments?: AppointmentCreateManyWithoutServiceInput;
-  specialty: DoctorSpecialty;
-  sentMessages?: ServiceMessageCreateManyWithoutSenderInput;
-  recievedMessages?: ClientMessageCreateManyWithoutRecieverInput;
-  reviews?: ReviewCreateManyWithoutServiceInput;
-}
-
-export interface DoctorUpdateInput {
-  fullName?: String;
-  Bio?: String;
-  email?: String;
-  password?: String;
-  age?: Int;
-  phone?: Int;
-  gender?: Gender;
-  avatar?: String;
-  appointments?: AppointmentUpdateManyWithoutServiceInput;
-  specialty?: DoctorSpecialty;
-  sentMessages?: ServiceMessageUpdateManyWithoutSenderInput;
-  recievedMessages?: ClientMessageUpdateManyWithoutRecieverInput;
-  reviews?: ReviewUpdateManyWithoutServiceInput;
-}
-
-export interface DoctorUpdateManyMutationInput {
-  fullName?: String;
-  Bio?: String;
-  email?: String;
-  password?: String;
-  age?: Int;
-  phone?: Int;
-  gender?: Gender;
-  avatar?: String;
-  specialty?: DoctorSpecialty;
-}
-
 export interface ReviewCreateInput {
   user: UserCreateOneWithoutReviewsInput;
-  service: DoctorCreateOneWithoutReviewsInput;
+  service: ServiceCreateOneWithoutReviewsInput;
   title: String;
   content: String;
   rating: Int;
@@ -2186,7 +2251,7 @@ export interface ReviewCreateInput {
 
 export interface ReviewUpdateInput {
   user?: UserUpdateOneRequiredWithoutReviewsInput;
-  service?: DoctorUpdateOneRequiredWithoutReviewsInput;
+  service?: ServiceUpdateOneRequiredWithoutReviewsInput;
   title?: String;
   content?: String;
   rating?: Int;
@@ -2198,15 +2263,74 @@ export interface ReviewUpdateManyMutationInput {
   rating?: Int;
 }
 
+export interface ServiceCreateInput {
+  fullName: String;
+  Bio?: String;
+  email: String;
+  password: String;
+  age?: Int;
+  phone?: Int;
+  address?: String;
+  gender?: Gender;
+  avatar?: String;
+  appointments?: AppointmentCreateManyWithoutServiceInput;
+  sentMessages?: ServiceMessageCreateManyWithoutSenderInput;
+  recievedMessages?: ClientMessageCreateManyWithoutRecieverInput;
+  reviews?: ReviewCreateManyWithoutServiceInput;
+  office_hours?: String;
+  education?: String;
+  serviceType: ServiceType;
+  doctorField?: DoctorField;
+  lawyerField?: LawyerField;
+}
+
+export interface ServiceUpdateInput {
+  fullName?: String;
+  Bio?: String;
+  email?: String;
+  password?: String;
+  age?: Int;
+  phone?: Int;
+  address?: String;
+  gender?: Gender;
+  avatar?: String;
+  appointments?: AppointmentUpdateManyWithoutServiceInput;
+  sentMessages?: ServiceMessageUpdateManyWithoutSenderInput;
+  recievedMessages?: ClientMessageUpdateManyWithoutRecieverInput;
+  reviews?: ReviewUpdateManyWithoutServiceInput;
+  office_hours?: String;
+  education?: String;
+  serviceType?: ServiceType;
+  doctorField?: DoctorField;
+  lawyerField?: LawyerField;
+}
+
+export interface ServiceUpdateManyMutationInput {
+  fullName?: String;
+  Bio?: String;
+  email?: String;
+  password?: String;
+  age?: Int;
+  phone?: Int;
+  address?: String;
+  gender?: Gender;
+  avatar?: String;
+  office_hours?: String;
+  education?: String;
+  serviceType?: ServiceType;
+  doctorField?: DoctorField;
+  lawyerField?: LawyerField;
+}
+
 export interface ServiceMessageCreateInput {
-  sender: DoctorCreateOneWithoutSentMessagesInput;
+  sender: ServiceCreateOneWithoutSentMessagesInput;
   reciever: UserCreateOneWithoutRecievedMessagesInput;
   subject: String;
   body: String;
 }
 
 export interface ServiceMessageUpdateInput {
-  sender?: DoctorUpdateOneRequiredWithoutSentMessagesInput;
+  sender?: ServiceUpdateOneRequiredWithoutSentMessagesInput;
   reciever?: UserUpdateOneRequiredWithoutRecievedMessagesInput;
   subject?: String;
   body?: String;
@@ -2226,10 +2350,10 @@ export interface UserCreateInput {
   gender?: Gender;
   avatar?: String;
   confirmation?: Boolean;
-  Appointments?: AppointmentCreateManyWithoutClientInput;
   sentMessages?: ClientMessageCreateManyWithoutSenderInput;
   recievedMessages?: ServiceMessageCreateManyWithoutRecieverInput;
   reviews?: ReviewCreateManyWithoutUserInput;
+  appointments?: AppointmentCreateManyWithoutClientInput;
 }
 
 export interface UserUpdateInput {
@@ -2241,10 +2365,10 @@ export interface UserUpdateInput {
   gender?: Gender;
   avatar?: String;
   confirmation?: Boolean;
-  Appointments?: AppointmentUpdateManyWithoutClientInput;
   sentMessages?: ClientMessageUpdateManyWithoutSenderInput;
   recievedMessages?: ServiceMessageUpdateManyWithoutRecieverInput;
   reviews?: ReviewUpdateManyWithoutUserInput;
+  appointments?: AppointmentUpdateManyWithoutClientInput;
 }
 
 export interface UserUpdateManyMutationInput {
@@ -2286,17 +2410,6 @@ export interface ClientMessageSubscriptionWhereInput {
     | ClientMessageSubscriptionWhereInput;
 }
 
-export interface DoctorSubscriptionWhereInput {
-  mutation_in?: MutationType[] | MutationType;
-  updatedFields_contains?: String;
-  updatedFields_contains_every?: String[] | String;
-  updatedFields_contains_some?: String[] | String;
-  node?: DoctorWhereInput;
-  AND?: DoctorSubscriptionWhereInput[] | DoctorSubscriptionWhereInput;
-  OR?: DoctorSubscriptionWhereInput[] | DoctorSubscriptionWhereInput;
-  NOT?: DoctorSubscriptionWhereInput[] | DoctorSubscriptionWhereInput;
-}
-
 export interface ReviewSubscriptionWhereInput {
   mutation_in?: MutationType[] | MutationType;
   updatedFields_contains?: String;
@@ -2306,6 +2419,17 @@ export interface ReviewSubscriptionWhereInput {
   AND?: ReviewSubscriptionWhereInput[] | ReviewSubscriptionWhereInput;
   OR?: ReviewSubscriptionWhereInput[] | ReviewSubscriptionWhereInput;
   NOT?: ReviewSubscriptionWhereInput[] | ReviewSubscriptionWhereInput;
+}
+
+export interface ServiceSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: ServiceWhereInput;
+  AND?: ServiceSubscriptionWhereInput[] | ServiceSubscriptionWhereInput;
+  OR?: ServiceSubscriptionWhereInput[] | ServiceSubscriptionWhereInput;
+  NOT?: ServiceSubscriptionWhereInput[] | ServiceSubscriptionWhereInput;
 }
 
 export interface ServiceMessageSubscriptionWhereInput {
@@ -2353,7 +2477,7 @@ export interface Appointment {
 
 export interface AppointmentPromise extends Promise<Appointment>, Fragmentable {
   id: () => Promise<ID_Output>;
-  service: <T = DoctorPromise>() => T;
+  service: <T = ServicePromise>() => T;
   client: <T = UserPromise>() => T;
   clientName: () => Promise<String>;
   title: () => Promise<String>;
@@ -2368,7 +2492,7 @@ export interface AppointmentSubscription
   extends Promise<AsyncIterator<Appointment>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  service: <T = DoctorSubscription>() => T;
+  service: <T = ServiceSubscription>() => T;
   client: <T = UserSubscription>() => T;
   clientName: () => Promise<AsyncIterator<String>>;
   title: () => Promise<AsyncIterator<String>>;
@@ -2379,7 +2503,7 @@ export interface AppointmentSubscription
   createdTime: () => Promise<AsyncIterator<String>>;
 }
 
-export interface Doctor {
+export interface Service {
   id: ID_Output;
   fullName: String;
   Bio?: String;
@@ -2387,12 +2511,17 @@ export interface Doctor {
   password: String;
   age?: Int;
   phone?: Int;
+  address?: String;
   gender?: Gender;
   avatar?: String;
-  specialty: DoctorSpecialty;
+  office_hours?: String;
+  education?: String;
+  serviceType: ServiceType;
+  doctorField?: DoctorField;
+  lawyerField?: LawyerField;
 }
 
-export interface DoctorPromise extends Promise<Doctor>, Fragmentable {
+export interface ServicePromise extends Promise<Service>, Fragmentable {
   id: () => Promise<ID_Output>;
   fullName: () => Promise<String>;
   Bio: () => Promise<String>;
@@ -2400,6 +2529,7 @@ export interface DoctorPromise extends Promise<Doctor>, Fragmentable {
   password: () => Promise<String>;
   age: () => Promise<Int>;
   phone: () => Promise<Int>;
+  address: () => Promise<String>;
   gender: () => Promise<Gender>;
   avatar: () => Promise<String>;
   appointments: <T = FragmentableArray<Appointment>>(
@@ -2413,7 +2543,6 @@ export interface DoctorPromise extends Promise<Doctor>, Fragmentable {
       last?: Int;
     }
   ) => T;
-  specialty: () => Promise<DoctorSpecialty>;
   sentMessages: <T = FragmentableArray<ServiceMessage>>(
     args?: {
       where?: ServiceMessageWhereInput;
@@ -2447,10 +2576,15 @@ export interface DoctorPromise extends Promise<Doctor>, Fragmentable {
       last?: Int;
     }
   ) => T;
+  office_hours: () => Promise<String>;
+  education: () => Promise<String>;
+  serviceType: () => Promise<ServiceType>;
+  doctorField: () => Promise<DoctorField>;
+  lawyerField: () => Promise<LawyerField>;
 }
 
-export interface DoctorSubscription
-  extends Promise<AsyncIterator<Doctor>>,
+export interface ServiceSubscription
+  extends Promise<AsyncIterator<Service>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   fullName: () => Promise<AsyncIterator<String>>;
@@ -2459,6 +2593,7 @@ export interface DoctorSubscription
   password: () => Promise<AsyncIterator<String>>;
   age: () => Promise<AsyncIterator<Int>>;
   phone: () => Promise<AsyncIterator<Int>>;
+  address: () => Promise<AsyncIterator<String>>;
   gender: () => Promise<AsyncIterator<Gender>>;
   avatar: () => Promise<AsyncIterator<String>>;
   appointments: <T = Promise<AsyncIterator<AppointmentSubscription>>>(
@@ -2472,7 +2607,6 @@ export interface DoctorSubscription
       last?: Int;
     }
   ) => T;
-  specialty: () => Promise<AsyncIterator<DoctorSpecialty>>;
   sentMessages: <T = Promise<AsyncIterator<ServiceMessageSubscription>>>(
     args?: {
       where?: ServiceMessageWhereInput;
@@ -2506,6 +2640,11 @@ export interface DoctorSubscription
       last?: Int;
     }
   ) => T;
+  office_hours: () => Promise<AsyncIterator<String>>;
+  education: () => Promise<AsyncIterator<String>>;
+  serviceType: () => Promise<AsyncIterator<ServiceType>>;
+  doctorField: () => Promise<AsyncIterator<DoctorField>>;
+  lawyerField: () => Promise<AsyncIterator<LawyerField>>;
 }
 
 export interface ServiceMessage {
@@ -2518,7 +2657,7 @@ export interface ServiceMessagePromise
   extends Promise<ServiceMessage>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  sender: <T = DoctorPromise>() => T;
+  sender: <T = ServicePromise>() => T;
   reciever: <T = UserPromise>() => T;
   subject: () => Promise<String>;
   body: () => Promise<String>;
@@ -2528,7 +2667,7 @@ export interface ServiceMessageSubscription
   extends Promise<AsyncIterator<ServiceMessage>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  sender: <T = DoctorSubscription>() => T;
+  sender: <T = ServiceSubscription>() => T;
   reciever: <T = UserSubscription>() => T;
   subject: () => Promise<AsyncIterator<String>>;
   body: () => Promise<AsyncIterator<String>>;
@@ -2556,17 +2695,6 @@ export interface UserPromise extends Promise<User>, Fragmentable {
   gender: () => Promise<Gender>;
   avatar: () => Promise<String>;
   confirmation: () => Promise<Boolean>;
-  Appointments: <T = FragmentableArray<Appointment>>(
-    args?: {
-      where?: AppointmentWhereInput;
-      orderBy?: AppointmentOrderByInput;
-      skip?: Int;
-      after?: String;
-      before?: String;
-      first?: Int;
-      last?: Int;
-    }
-  ) => T;
   sentMessages: <T = FragmentableArray<ClientMessage>>(
     args?: {
       where?: ClientMessageWhereInput;
@@ -2600,6 +2728,17 @@ export interface UserPromise extends Promise<User>, Fragmentable {
       last?: Int;
     }
   ) => T;
+  appointments: <T = FragmentableArray<Appointment>>(
+    args?: {
+      where?: AppointmentWhereInput;
+      orderBy?: AppointmentOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
 }
 
 export interface UserSubscription
@@ -2614,17 +2753,6 @@ export interface UserSubscription
   gender: () => Promise<AsyncIterator<Gender>>;
   avatar: () => Promise<AsyncIterator<String>>;
   confirmation: () => Promise<AsyncIterator<Boolean>>;
-  Appointments: <T = Promise<AsyncIterator<AppointmentSubscription>>>(
-    args?: {
-      where?: AppointmentWhereInput;
-      orderBy?: AppointmentOrderByInput;
-      skip?: Int;
-      after?: String;
-      before?: String;
-      first?: Int;
-      last?: Int;
-    }
-  ) => T;
   sentMessages: <T = Promise<AsyncIterator<ClientMessageSubscription>>>(
     args?: {
       where?: ClientMessageWhereInput;
@@ -2658,6 +2786,17 @@ export interface UserSubscription
       last?: Int;
     }
   ) => T;
+  appointments: <T = Promise<AsyncIterator<AppointmentSubscription>>>(
+    args?: {
+      where?: AppointmentWhereInput;
+      orderBy?: AppointmentOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
 }
 
 export interface ClientMessage {
@@ -2671,7 +2810,7 @@ export interface ClientMessagePromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   sender: <T = UserPromise>() => T;
-  reciever: <T = DoctorPromise>() => T;
+  reciever: <T = ServicePromise>() => T;
   subject: () => Promise<String>;
   body: () => Promise<String>;
 }
@@ -2681,7 +2820,7 @@ export interface ClientMessageSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   sender: <T = UserSubscription>() => T;
-  reciever: <T = DoctorSubscription>() => T;
+  reciever: <T = ServiceSubscription>() => T;
   subject: () => Promise<AsyncIterator<String>>;
   body: () => Promise<AsyncIterator<String>>;
 }
@@ -2696,7 +2835,7 @@ export interface Review {
 export interface ReviewPromise extends Promise<Review>, Fragmentable {
   id: () => Promise<ID_Output>;
   user: <T = UserPromise>() => T;
-  service: <T = DoctorPromise>() => T;
+  service: <T = ServicePromise>() => T;
   title: () => Promise<String>;
   content: () => Promise<String>;
   rating: () => Promise<Int>;
@@ -2707,7 +2846,7 @@ export interface ReviewSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   user: <T = UserSubscription>() => T;
-  service: <T = DoctorSubscription>() => T;
+  service: <T = ServiceSubscription>() => T;
   title: () => Promise<AsyncIterator<String>>;
   content: () => Promise<AsyncIterator<String>>;
   rating: () => Promise<AsyncIterator<Int>>;
@@ -2848,60 +2987,6 @@ export interface AggregateClientMessageSubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface DoctorConnection {
-  pageInfo: PageInfo;
-  edges: DoctorEdge[];
-}
-
-export interface DoctorConnectionPromise
-  extends Promise<DoctorConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<DoctorEdge>>() => T;
-  aggregate: <T = AggregateDoctorPromise>() => T;
-}
-
-export interface DoctorConnectionSubscription
-  extends Promise<AsyncIterator<DoctorConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<DoctorEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateDoctorSubscription>() => T;
-}
-
-export interface DoctorEdge {
-  node: Doctor;
-  cursor: String;
-}
-
-export interface DoctorEdgePromise extends Promise<DoctorEdge>, Fragmentable {
-  node: <T = DoctorPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface DoctorEdgeSubscription
-  extends Promise<AsyncIterator<DoctorEdge>>,
-    Fragmentable {
-  node: <T = DoctorSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface AggregateDoctor {
-  count: Int;
-}
-
-export interface AggregateDoctorPromise
-  extends Promise<AggregateDoctor>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregateDoctorSubscription
-  extends Promise<AsyncIterator<AggregateDoctor>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
-}
-
 export interface ReviewConnection {
   pageInfo: PageInfo;
   edges: ReviewEdge[];
@@ -2952,6 +3037,60 @@ export interface AggregateReviewPromise
 
 export interface AggregateReviewSubscription
   extends Promise<AsyncIterator<AggregateReview>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface ServiceConnection {
+  pageInfo: PageInfo;
+  edges: ServiceEdge[];
+}
+
+export interface ServiceConnectionPromise
+  extends Promise<ServiceConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<ServiceEdge>>() => T;
+  aggregate: <T = AggregateServicePromise>() => T;
+}
+
+export interface ServiceConnectionSubscription
+  extends Promise<AsyncIterator<ServiceConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<ServiceEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateServiceSubscription>() => T;
+}
+
+export interface ServiceEdge {
+  node: Service;
+  cursor: String;
+}
+
+export interface ServiceEdgePromise extends Promise<ServiceEdge>, Fragmentable {
+  node: <T = ServicePromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface ServiceEdgeSubscription
+  extends Promise<AsyncIterator<ServiceEdge>>,
+    Fragmentable {
+  node: <T = ServiceSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateService {
+  count: Int;
+}
+
+export interface AggregateServicePromise
+  extends Promise<AggregateService>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateServiceSubscription
+  extends Promise<AsyncIterator<AggregateService>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
 }
@@ -3191,74 +3330,6 @@ export interface ClientMessagePreviousValuesSubscription
   body: () => Promise<AsyncIterator<String>>;
 }
 
-export interface DoctorSubscriptionPayload {
-  mutation: MutationType;
-  node: Doctor;
-  updatedFields: String[];
-  previousValues: DoctorPreviousValues;
-}
-
-export interface DoctorSubscriptionPayloadPromise
-  extends Promise<DoctorSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = DoctorPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = DoctorPreviousValuesPromise>() => T;
-}
-
-export interface DoctorSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<DoctorSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = DoctorSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = DoctorPreviousValuesSubscription>() => T;
-}
-
-export interface DoctorPreviousValues {
-  id: ID_Output;
-  fullName: String;
-  Bio?: String;
-  email: String;
-  password: String;
-  age?: Int;
-  phone?: Int;
-  gender?: Gender;
-  avatar?: String;
-  specialty: DoctorSpecialty;
-}
-
-export interface DoctorPreviousValuesPromise
-  extends Promise<DoctorPreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  fullName: () => Promise<String>;
-  Bio: () => Promise<String>;
-  email: () => Promise<String>;
-  password: () => Promise<String>;
-  age: () => Promise<Int>;
-  phone: () => Promise<Int>;
-  gender: () => Promise<Gender>;
-  avatar: () => Promise<String>;
-  specialty: () => Promise<DoctorSpecialty>;
-}
-
-export interface DoctorPreviousValuesSubscription
-  extends Promise<AsyncIterator<DoctorPreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  fullName: () => Promise<AsyncIterator<String>>;
-  Bio: () => Promise<AsyncIterator<String>>;
-  email: () => Promise<AsyncIterator<String>>;
-  password: () => Promise<AsyncIterator<String>>;
-  age: () => Promise<AsyncIterator<Int>>;
-  phone: () => Promise<AsyncIterator<Int>>;
-  gender: () => Promise<AsyncIterator<Gender>>;
-  avatar: () => Promise<AsyncIterator<String>>;
-  specialty: () => Promise<AsyncIterator<DoctorSpecialty>>;
-}
-
 export interface ReviewSubscriptionPayload {
   mutation: MutationType;
   node: Review;
@@ -3307,6 +3378,89 @@ export interface ReviewPreviousValuesSubscription
   title: () => Promise<AsyncIterator<String>>;
   content: () => Promise<AsyncIterator<String>>;
   rating: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface ServiceSubscriptionPayload {
+  mutation: MutationType;
+  node: Service;
+  updatedFields: String[];
+  previousValues: ServicePreviousValues;
+}
+
+export interface ServiceSubscriptionPayloadPromise
+  extends Promise<ServiceSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = ServicePromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = ServicePreviousValuesPromise>() => T;
+}
+
+export interface ServiceSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<ServiceSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = ServiceSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = ServicePreviousValuesSubscription>() => T;
+}
+
+export interface ServicePreviousValues {
+  id: ID_Output;
+  fullName: String;
+  Bio?: String;
+  email: String;
+  password: String;
+  age?: Int;
+  phone?: Int;
+  address?: String;
+  gender?: Gender;
+  avatar?: String;
+  office_hours?: String;
+  education?: String;
+  serviceType: ServiceType;
+  doctorField?: DoctorField;
+  lawyerField?: LawyerField;
+}
+
+export interface ServicePreviousValuesPromise
+  extends Promise<ServicePreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  fullName: () => Promise<String>;
+  Bio: () => Promise<String>;
+  email: () => Promise<String>;
+  password: () => Promise<String>;
+  age: () => Promise<Int>;
+  phone: () => Promise<Int>;
+  address: () => Promise<String>;
+  gender: () => Promise<Gender>;
+  avatar: () => Promise<String>;
+  office_hours: () => Promise<String>;
+  education: () => Promise<String>;
+  serviceType: () => Promise<ServiceType>;
+  doctorField: () => Promise<DoctorField>;
+  lawyerField: () => Promise<LawyerField>;
+}
+
+export interface ServicePreviousValuesSubscription
+  extends Promise<AsyncIterator<ServicePreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  fullName: () => Promise<AsyncIterator<String>>;
+  Bio: () => Promise<AsyncIterator<String>>;
+  email: () => Promise<AsyncIterator<String>>;
+  password: () => Promise<AsyncIterator<String>>;
+  age: () => Promise<AsyncIterator<Int>>;
+  phone: () => Promise<AsyncIterator<Int>>;
+  address: () => Promise<AsyncIterator<String>>;
+  gender: () => Promise<AsyncIterator<Gender>>;
+  avatar: () => Promise<AsyncIterator<String>>;
+  office_hours: () => Promise<AsyncIterator<String>>;
+  education: () => Promise<AsyncIterator<String>>;
+  serviceType: () => Promise<AsyncIterator<ServiceType>>;
+  doctorField: () => Promise<AsyncIterator<DoctorField>>;
+  lawyerField: () => Promise<AsyncIterator<LawyerField>>;
 }
 
 export interface ServiceMessageSubscriptionPayload {
@@ -3454,7 +3608,7 @@ export const models: Model[] = [
     embedded: false
   },
   {
-    name: "Doctor",
+    name: "Service",
     embedded: false
   },
   {
@@ -3474,7 +3628,11 @@ export const models: Model[] = [
     embedded: false
   },
   {
-    name: "DoctorSpecialty",
+    name: "DoctorField",
+    embedded: false
+  },
+  {
+    name: "LawyerField",
     embedded: false
   },
   {
@@ -3483,6 +3641,10 @@ export const models: Model[] = [
   },
   {
     name: "ServiceMessage",
+    embedded: false
+  },
+  {
+    name: "ServiceType",
     embedded: false
   }
 ];

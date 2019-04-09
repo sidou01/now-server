@@ -8,13 +8,13 @@ type User {
   gender: Gender
   avatar: String # url to an image. might add enum to get small or big.
   confirmation: Boolean! @default(value: "false")
-  Appointments: [Appointment!]
   sentMessages: [ClientMessage!]
   recievedMessages: [ServiceMessage!]
   reviews: [Review!]
+  appointments: [Appointment!]
 }
 
-type Doctor {
+type Service {
   id: ID! @unique
   fullName: String!
   Bio: String
@@ -22,18 +22,25 @@ type Doctor {
   password: String!
   age: Int
   phone: Int
+  address: String
   gender: Gender
   avatar: String
   appointments: [Appointment!]
-  specialty: DoctorSpecialty!
   sentMessages: [ServiceMessage!]
   recievedMessages: [ClientMessage!]
   reviews: [Review!]
+  office_hours: String
+  education: String
+  serviceType: ServiceType!
+
+  doctorField: DoctorField
+  lawyerField: LawyerField
 }
+
 
 type Appointment {
   id: ID! @unique
-  service: Doctor!
+  service: Service!
   client: User
   clientName: String
   title: String
@@ -47,7 +54,7 @@ type Appointment {
 type Review {
   id: ID! @unique
   user: User!
-  service: Doctor!
+  service: Service!
   title: String!
   content: String!
   rating: Int!
@@ -63,7 +70,7 @@ enum Gender {
   MALE
   FEMALE
 }
-enum DoctorSpecialty {
+enum DoctorField {
   Generaliste
   Psychiatre
   Psychologue
@@ -72,18 +79,32 @@ enum DoctorSpecialty {
   Gynecologue
 }
 
+enum LawyerField {
+  Bankruptcy_Law
+  Corporate_Law
+  Civil_Rights_Law
+  Criminal_Law
+  Family_Law
+}
+
 type ClientMessage {
   id: ID! @unique
   sender: User!
-  reciever: Doctor!
+  reciever: Service!
   subject: String!
   body: String!
 }
 
 type ServiceMessage {
   id: ID! @unique
-  sender: Doctor!
+  sender: Service!
   reciever: User!
   subject: String!
   body: String!
+}
+
+
+enum ServiceType {
+  Doctor
+  Lawyer
 }

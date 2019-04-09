@@ -9,7 +9,7 @@ var models = [
     embedded: false
   },
   {
-    name: "Doctor",
+    name: "Service",
     embedded: false
   },
   {
@@ -29,7 +29,11 @@ var models = [
     embedded: false
   },
   {
-    name: "DoctorSpecialty",
+    name: "DoctorField",
+    embedded: false
+  },
+  {
+    name: "LawyerField",
     embedded: false
   },
   {
@@ -38,6 +42,10 @@ var models = [
   },
   {
     name: "ServiceMessage",
+    embedded: false
+  },
+  {
+    name: "ServiceType",
     embedded: false
   }
 ];

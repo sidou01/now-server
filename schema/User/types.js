@@ -21,17 +21,14 @@ export default `
       """
       me: User!
       """
-      this query is only used for testing and will be deleted in production.
-      """
-      allUsers: [User!]! @deprecated
-      """
       Query user appointments (calendar page)
       """
       fetchUserAppointments(first: Int, skip:Int): [Appointment!]
 
-      fetchDoctors(first: Int, skip: Int): [Doctor!]
+      fetchServices(type: ServiceType!, first: Int, skip: Int): [Service!]
       fetchSentMessages(first: Int, skip: Int): [ClientMessage!]
       fetchRecievedMessages(first: Int, skip: Int): [ServiceMessage!]
+
   }
 
   type Mutation {
@@ -98,5 +95,6 @@ export default `
     MALE
     FEMALE
   }
+
 
 `

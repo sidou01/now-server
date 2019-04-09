@@ -2,7 +2,7 @@ export default `
   scalar Date
   type Appointment {
     id: ID!
-    service: Doctor!
+    service: Service!
     client: User
     clientName: String
     title: String

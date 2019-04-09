@@ -14,17 +14,18 @@ import reviewType from './Reviews/types'
 import reviewResolvers from './Reviews/resolvers'
 
 const commonTypes = `
+
     type ClientMessage {
         id: ID!
         sender: User!
-        reciever: Doctor!
+        reciever: Service!
         subject: String!
         body: String!
     }
 
     type ServiceMessage {
         id: ID!
-        sender: Doctor!
+        sender: Service!
         reciever: User!
         subject: String!
         body: String!

@@ -1,6 +1,7 @@
 import {
   UserAppointments,
   AuthenticatedUserInfo,
+  AuthenticatedServiceInfo,
   reviewToService,
   clientSentMessages,
   clientRecievedMessages,
@@ -23,45 +24,14 @@ import { getEndTime } from '../../utils'
 
 export default {
   Query: {
-    me: async (_, __, { user: { id }, prisma }) =>
-      await prisma.user({ id }).$fragment(AuthenticatedUserInfo),
+    me: async (_, __, { prisma, user }) => {
+      if (!user) throw new AuthenticationError('401 unathorized')
+      return await prisma.user({ id: user.id }).$fragment(AuthenticatedUserInfo)
+    },
     //allUsers query will be deleted
-    fetchDoctors: async (_, { first, skip }, { prisma, user }) => {
+    fetchServices: async (_, { type, first, skip }, { prisma, user }) => {
       if (!user) throw new AuthenticationError('401 unathorized')
       return await prisma.doctors(first, skip)
-    },
-    allUsers: async (_, __, { prisma }) => {
-      const output = await prisma.$graphql(`
-      query {
-        users {
-          id
-          fullName
-          email
-          gender
-          age
-          confirmation
-          Appointments {
-            id
-            startTime
-            endTime
-          }
-          recievedMessages {
-            id
-            sender{
-              id
-              fullName
-            }
-            reciever {
-              id
-              fullName
-            }
-            subject
-            body
-          }
-        }
-      }
-    `)
-      return output.users
     },
     //change userId param to context.user.id from token
     fetchUserAppointments: async (_, { first, skip }, { prisma, user }) => {
@@ -268,6 +238,7 @@ export default {
           age,
           avatar,
           phone,
+          client: true,
         },
         jwt_secret,
       )
