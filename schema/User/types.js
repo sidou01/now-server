@@ -70,7 +70,6 @@ export default `
 
   input scheduleAppointmentInput {
     serviceId: ID!
-    clientId: ID!
     title: String
     startTime: Date!
     duration: AppointmentDuration!

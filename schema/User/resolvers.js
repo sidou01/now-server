@@ -28,12 +28,6 @@ export default {
       if (!user) throw new AuthenticationError('401 unathorized')
       return await prisma.user({ id: user.id }).$fragment(AuthenticatedUserInfo)
     },
-    //allUsers query will be deleted
-    fetchServices: async (_, { type, first, skip }, { prisma, user }) => {
-      if (!user) throw new AuthenticationError('401 unathorized')
-      return await prisma.doctors(first, skip)
-    },
-    //change userId param to context.user.id from token
     fetchUserAppointments: async (_, { first, skip }, { prisma, user }) => {
       if (!user) throw new Error('401 unauthorized')
       if (skip === undefined) skip = null
@@ -42,7 +36,7 @@ export default {
         .user({ id: user.id })
         .$fragment(UserAppointments(first, skip))
       if (!output) throw new Error("user doesn't exist with that ID")
-      return output.Appointments
+      return output.appointments
     },
     fetchSentMessages: async (_, { first, skip }, { prisma, user }) => {
       if (!user) throw new Error('401 unauthorized')
@@ -115,7 +109,7 @@ export default {
     },
     scheduleAppointment: async (
       _,
-      { input: { serviceId, clientId, title, startTime, duration } },
+      { input: { serviceId, title, startTime, duration } },
       { prisma, pubsub, user },
     ) => {
       if (!user) throw new Error('401 unauthorized')
@@ -132,7 +126,7 @@ export default {
         },
         client: {
           connect: {
-            id: clientId,
+            id: user.id,
           },
         },
         title,

@@ -16,13 +16,14 @@ export const AllServices = `{
 }`
 export function UserAppointments(first, skip) {
   return `fragment UserAppointments on User {
-          Appointments(first: ${first}, skip: ${skip}){
+          appointments(first: ${first}, skip: ${skip}){
             id
             title
             startTime
             endTime
             duration
 	    createdTime
+	    local
             client {
                 fullName
                 email
@@ -37,7 +38,7 @@ export function UserAppointments(first, skip) {
 	      email
               phone
               gender
-              specialty
+	      serviceType
             }
           }
         }`
@@ -161,7 +162,9 @@ export function serviceReviews(first, skip) {
 		reviews(first:${first}, skip: ${skip}) {
 			id,
 			user {
+			  id
 			  fullName
+			  email
 			}
 			title
 			content
