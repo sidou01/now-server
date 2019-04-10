@@ -27,7 +27,7 @@ export default `
 
       fetchServices(type: ServiceType!, first: Int, skip: Int): [Service!]
       fetchSentMessages(first: Int, skip: Int): [ClientMessage!]
-      fetchRecievedMessages(first: Int, skip: Int): [ServiceMessage!]
+      fetchClientRecievedMessages(first: Int, skip: Int): [ServiceMessage!]
 
   }
 

@@ -207,3 +207,20 @@ export function clientRecievedMessages(first, skip) {
 		}
 	`
 }
+
+export function serviceRecievedMessages(first, skip) {
+  return `
+		fragment clientRecievedMessages on Service {
+			recievedMessages(first: ${first}, skip: ${skip}) {
+				id
+				sender {
+					id,
+					fullName
+					email
+				}
+				subject
+				body
+			}
+		}
+	`
+}

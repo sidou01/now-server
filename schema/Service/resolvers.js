@@ -13,6 +13,7 @@ import {
   serviceAppointments,
   serviceReviews,
   AllServices,
+  serviceRecievedMessages,
 } from '../../fragments'
 
 export default {
@@ -56,6 +57,24 @@ export default {
         .$fragment(serviceAppointments)
       if (!output) throw new Error('no service with that email address')
       return output.appointments
+    },
+    fetchServiceRecievedMessages: async (
+      _,
+      { first, skip },
+      { prisma, user },
+    ) => {
+      if (!user) throw new Error('401 unauthorized')
+      if (user.client) throw new Error('401 unauthorized service only query')
+      if (skip === undefined) skip = null
+      if (first === undefined) first = null
+
+      const output = await prisma
+        .service({ id: user.id })
+        .$fragment(serviceRecievedMessages(first, skip))
+
+      if (!output) throw new Error("user doesn't exist with that ID")
+      console.log(output.recievedMessages)
+      return output.recievedMessages
     },
   },
   Mutation: {

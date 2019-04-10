@@ -50,8 +50,13 @@ export default {
       if (!output) throw new Error("user doesn't exist with that ID")
       return output.sentMessages
     },
-    fetchRecievedMessages: async (_, { first, skip }, { prisma, user }) => {
+    fetchClientRecievedMessages: async (
+      _,
+      { first, skip },
+      { prisma, user },
+    ) => {
       if (!user) throw new Error('401 unauthorized')
+      if (!user.client) throw new Error('401 unauthorized client only query')
       if (skip === undefined) skip = null
       if (first === undefined) first = null
 
