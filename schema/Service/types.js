@@ -50,6 +50,7 @@ type Service {
     serviceReviews(first: Int, skip: Int): [Review!]
     fetchServicesByType(type: ServiceType!, first: Int, skip: Int): [Service!]
     fetchAllServices(first: Int, skip: Int): [Service!]
+    fetchService(serviceId: ID!): Service!
   }
 
   type Mutation {

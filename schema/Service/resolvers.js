@@ -9,17 +9,35 @@ import {
 import { messageToClient } from '../../fragments'
 import { withFilter, AuthenticationError } from 'apollo-server'
 import { pubsub } from '../../server'
-import { serviceAppointments, serviceReviews } from '../../fragments'
+import {
+  serviceAppointments,
+  serviceReviews,
+  AllServices,
+} from '../../fragments'
 
 export default {
   Query: {
-    fetchService: async (_, { serviceId }, { prisma, user }) => {},
-    fetchServicesByType: async (
-      _,
-      { type, first, skip },
-      { prisma, user },
-    ) => {},
-    fetchAllServices: async (_, { first, skip }, { prisma, user }) => {},
+    fetchService: async (_, { serviceId }, { prisma, user }) => {
+      if (!user) throw new Error('401 unauthorized')
+      return await prisma.service({ id: serviceId }).$fragment(AllServices)
+    },
+    fetchServicesByType: async (_, { type, first, skip }, { prisma, user }) => {
+      if (!user) throw new Error('401 unauthorized')
+      return prisma
+        .services({ first, skip, where: { serviceType: type } })
+        .$fragment(AllServices)
+    },
+    fetchAllServices: async (_, { first, skip }, { prisma, user }) => {
+      if (!user) throw new Error('401 unauthorized')
+      if (skip === undefined) skip = null
+      if (first === undefined) first = null
+
+      const output = await prisma
+        .services({ first, skip })
+        .$fragment(AllServices)
+      if (!output) throw new Error('No services added')
+      return output
+    },
     serviceReviews: async (_, { first, skip }, { prisma, user }) => {
       if (!user) throw new Error('401 unauthorized')
       if (skip === undefined) skip = null
@@ -107,7 +125,7 @@ export default {
           gender,
           avatar,
           doctorField,
-          LawyerField,
+          lawyerField,
           type,
         },
       },

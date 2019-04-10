@@ -1,4 +1,19 @@
-//change to a function that takes two arguments: first and skip
+export const AllServices = `{
+        id
+        fullName
+	Bio
+	email
+	phone
+	address
+	office_hours
+	education
+        age
+        gender
+	avatar
+	serviceType
+	doctorField
+	lawyerField
+}`
 export function UserAppointments(first, skip) {
   return `fragment UserAppointments on User {
           Appointments(first: ${first}, skip: ${skip}){
