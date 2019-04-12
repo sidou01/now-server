@@ -26,8 +26,7 @@ export default `
       fetchUserAppointments(first: Int, skip:Int): [Appointment!]
 
       fetchServices(type: ServiceType!, first: Int, skip: Int): [Service!]
-      fetchSentMessages(first: Int, skip: Int): [ClientMessage!]
-      fetchClientRecievedMessages(first: Int, skip: Int): [ServiceMessage!]
+      searchService(query: String!): [Service!]
 
   }
 

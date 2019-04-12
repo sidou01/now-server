@@ -191,6 +191,22 @@ export function clientSentMessages(first, skip) {
 	`
 }
 
+export function serviceSentMessages(first, skip) {
+  return `
+		fragment clientSentMessages on Service {
+			sentMessages(first: ${first}, skip: ${skip}) {
+				id
+				reciever {
+					id,
+					fullName
+					email
+				}
+				subject
+				body
+			}
+		}
+	`
+}
 export function clientRecievedMessages(first, skip) {
   return `
 		fragment clientRecievedMessages on User {

@@ -51,7 +51,6 @@ type Service {
     fetchServicesByType(type: ServiceType!, first: Int, skip: Int): [Service!]
     fetchAllServices(first: Int, skip: Int): [Service!]
     fetchService(serviceId: ID!): Service!
-    fetchServiceRecievedMessages(first: Int, skip: Int): [ClientMessage!]
   }
 
   type Mutation {
