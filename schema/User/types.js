@@ -16,6 +16,7 @@ export default `
   }
 
   type Query {
+      hello: String!
       """
       Query user data (can be  used  in the profile page).
       """
@@ -37,7 +38,7 @@ export default `
     token must be added to the headers for each protected request (authorization).
     Notice that you cannot get the token back if confirmation is still set to false.
     """
-    login(input: loginInput): String!
+    login(input: loginInput): authPayload!
 
 
     scheduleAppointment(input: scheduleAppointmentInput): Appointment!
@@ -58,8 +59,29 @@ export default `
     listen for messages from services (for notifications)
     """
     messageToClientAdded: ServiceMessage!
+
+    """
+    subscribe to confirmation field changing from false to true (should be used after creating a user) 
+    """
+    confirmationEnabled(userId: ID!): User!
   }
 
+  type authPayload{
+    success: Boolean!
+    error: ErrorPayload
+    token: String
+    user: User
+  }
+
+  type ErrorPayload {
+    msg: String!
+    field: formFields!
+  }
+
+  enum formFields {
+    EMAIL
+    PASSWORD
+  }
   input reviewServiceInput {
     serviceId: ID!
     title: String!

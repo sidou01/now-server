@@ -8,6 +8,7 @@ import { prisma } from './prisma-db/generated/prisma-client'
 import jwt from 'jsonwebtoken'
 import { PubSub } from 'graphql-subscriptions'
 import { getUser } from './utils'
+import { CONFIRMATION_ENABLED } from './schema/topics'
 
 export const pubsub = new PubSub()
 const PORT = 4000
@@ -40,11 +41,13 @@ const server = new ApolloServer({
       }
     }
     //HTTP connection
-    const user = getUser(req.headers.authorization, process.env.JWT_SECRET)
     return {
       prisma,
       jwt_secret: process.env.JWT_SECRET,
-      user,
+      user:
+        req.headers && req.headers.authorization
+          ? getUser(req.headers.authorization, process.env.JWT_SECRET)
+          : null,
       pubsub,
     }
   },
@@ -68,8 +71,13 @@ app.get('/email/confirmation/:token', async (req, res) => {
       email: decoded.userEmail,
     },
   })
-  if (userFromDb.email) return res.json('Email verified you can login now.')
-  else
+  if (userFromDb.email) {
+    console.log('userFromDb', userFromDb)
+    pubsub.publish(CONFIRMATION_ENABLED, {
+      confirmationEnabled: userFromDb,
+    })
+    return res.json('Email verified you can login now.')
+  } else
     return res.json(
       'error something went wrong with your email verification (maybe your email expired)',
     )

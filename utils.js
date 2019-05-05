@@ -20,6 +20,6 @@ export function getEndTime(startTime, duration) {
 }
 
 export function getUser(token, secret) {
-  if (!token) return null
+  if (token === 'null') return null
   return jwt.verify(token, secret)
 }

@@ -7,7 +7,7 @@ import {
   REVIEW_TO_SERVICE
 } from "../topics"
 import { messageToClient } from "../../fragments"
-import { withFilter, AuthenticationError } from "apollo-server"
+import { withFilter, AuthenticationError, ForbiddenError } from "apollo-server"
 import { pubsub } from "../../server"
 import {
   serviceAppointments,
@@ -19,7 +19,7 @@ import {
 export default {
   Query: {
     fetchService: async (_, { serviceId }, { prisma, user }) => {
-      if (!user) throw new Error("401 unauthorized")
+      if (!user) throw new ForbiddenError("401 unauthorized")
       return await prisma.service({ id: serviceId }).$fragment(AllServices)
     },
     fetchServicesByType: async (_, { type, first, skip }, { prisma, user }) => {
