@@ -20,7 +20,7 @@ import { withFilter } from 'apollo-server'
 import { pubsub } from '../../server'
 import { messageToService, appointmentToService } from '../../fragments'
 import dayjs from 'dayjs'
-import { getEndTime } from '../../utils'
+import { getEndTime, fetchAvatar } from '../../utils'
 
 export default {
   Query: {
@@ -167,13 +167,15 @@ export default {
 
       const hashedPassword = await bcrypt.hash(password, saltRounds)
 
+      const avatarUrl = await fetchAvatar(email)
+      if (avatarUrl === '/static/images/avatar_tiles/v1/s.png') avatarUrl = null
       const createdUser = await prisma.createUser({
         fullName,
         email,
         password: hashedPassword,
         age,
         phone,
-        avatar,
+        avatar: avatarUrl,
         gender,
       })
 
@@ -251,7 +253,7 @@ export default {
         success: true,
         token,
         user,
-	error: null,
+        error: null,
       }
     },
   },

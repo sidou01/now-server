@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import avatarMe from 'avatar-me'
 
 export function getEndTime(startTime, duration) {
   let endTime
@@ -22,4 +23,13 @@ export function getEndTime(startTime, duration) {
 export function getUser(token, secret) {
   if (token === 'null') return null
   return jwt.verify(token, secret)
+}
+
+export function fetchAvatar(email) {
+  return new Promise((resolve, reject) => {
+    avatarMe.fetchAvatar('jorge@ferreiro.me', 'jorge', (err, avatar) => {
+      if (err) reject(err)
+      if (avatar) resolve(avatar)
+    })
+  })
 }
