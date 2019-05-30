@@ -25,9 +25,9 @@ export function getUser(token, secret) {
   return jwt.verify(token, secret)
 }
 
-export function fetchAvatar(email) {
+export function fetchAvatar(email, name) {
   return new Promise((resolve, reject) => {
-    avatarMe.fetchAvatar('jorge@ferreiro.me', 'jorge', (err, avatar) => {
+    avatarMe.fetchAvatar(email, name, (err, avatar) => {
       if (err) reject(err)
       if (avatar) resolve(avatar)
     })
