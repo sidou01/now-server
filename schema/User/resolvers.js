@@ -182,7 +182,7 @@ export default {
         process.env.JWT_EMAIL_SECRET,
         (_, emailToken) => {
           sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-          const url = `http://localhost:4000/email/confirmation/${emailToken}`
+          const url = `http://ec2-34-227-32-199.compute-1.amazonaws.com:4000/email/confirmation/${emailToken}`
           const msg = {
             to: `${createdUser.email}`,
             from: 'now@company.com',
@@ -230,7 +230,10 @@ export default {
         // throw new AuthenticationError('you must confirm your email first!')
         return {
           success: false,
-          error: 'you must confirm your email first!',
+          error: {
+            msg: 'Please verify your email',
+            field: 'EMAIL',
+          },
         }
       const token = jwt.sign(
         {
@@ -248,6 +251,7 @@ export default {
         success: true,
         token,
         user,
+	error: null,
       }
     },
   },

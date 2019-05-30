@@ -15,6 +15,9 @@ const PORT = 4000
 
 const server = new ApolloServer({
   schema,
+  engine: {
+    apiKey: process.env.ENGINE_API_KEY
+  },
   subscriptions: {
     onConnect: connectionParams => {
       if (connectionParams.authorization) {
@@ -27,7 +30,7 @@ const server = new ApolloServer({
         }
       }
 
-      throw new Error('Missing auth token!')
+      //throw new Error('Missing auth token!')
     },
   },
   context: ({ req, connection }) => {
@@ -37,7 +40,7 @@ const server = new ApolloServer({
         prisma,
         jwt_secret: process.env.JWT_SECRET,
         pubsub,
-        user: connection.context.user,
+        user: connection.context.user ? connection.context.user : null,
       }
     }
     //HTTP connection

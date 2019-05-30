@@ -1,10 +1,6 @@
-endpoint: http://localhost:4466/prisma-db/dev
+endpoint: http://localhost:4466/backend-db/prod
 datamodel: datamodel.prisma
 
 generate:
   - generator: javascript-client
     output: ./generated/prisma-client/
-
-hooks:
-  post-deploy:
-    - prisma generate
