@@ -5,7 +5,7 @@
     git clone https://github.com/sidou01/now-server
     ```
 1. install [docker](https://docs.docker.com/install/) and [docker-compose](https://docs.docker.com/compose/install/).
-1. cd into the now-server folder and install the dependcies.
+1. cd into the now-server folder and install the dependencies.
     ```bash
     cd now-server && yarn install 
     ```
