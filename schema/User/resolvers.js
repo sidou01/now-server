@@ -167,7 +167,7 @@ export default {
 
       const hashedPassword = await bcrypt.hash(password, saltRounds)
 
-      const avatarUrl = await fetchAvatar(email, fullName)
+      let avatarUrl = await fetchAvatar(email, fullName)
       if (avatarUrl === '/static/images/avatar_tiles/v1/s.png') avatarUrl = null
       const createdUser = await prisma.createUser({
         fullName,
