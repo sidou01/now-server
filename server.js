@@ -16,7 +16,7 @@ const PORT = 4000
 const server = new ApolloServer({
   schema,
   engine: {
-    apiKey: process.env.ENGINE_API_KEY
+    apiKey: process.env.ENGINE_API_KEY,
   },
   subscriptions: {
     onConnect: connectionParams => {

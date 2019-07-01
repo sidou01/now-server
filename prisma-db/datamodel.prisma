@@ -6,7 +6,7 @@ type User {
   age: Int!
   phone: Int
   gender: Gender
-  avatar: String # url to an image. might add enum to get small or big.
+  avatar: String # url to an image
   confirmation: Boolean! @default(value: "false")
   sentMessages: [ClientMessage!]
   recievedMessages: [ServiceMessage!]
