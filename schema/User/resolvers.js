@@ -208,22 +208,16 @@ export default {
       // if (!user) throw new Error("User deosn't exist")
       if (!user) {
         return {
-          success: false,
-          error: {
-            msg: 'No user associated with that email found.',
-            field: 'EMAIL',
-          },
+          msg: 'No user associated with that email found.',
+          field: 'EMAIL',
         }
       }
       const auth = await bcrypt.compare(password, user.password)
       // if (!auth) throw new Error('your email or password is wrong')
       if (!auth) {
         return {
-          success: false,
-          error: {
-            msg: 'Your password is wrong, Try again.',
-            field: 'PASSWORD',
-          },
+          msg: 'Your password is wrong, Try again.',
+          field: 'PASSWORD',
         }
       }
 
@@ -231,11 +225,8 @@ export default {
       if (!confirmation)
         // throw new AuthenticationError('you must confirm your email first!')
         return {
-          success: false,
-          error: {
-            msg: 'Please verify your email',
-            field: 'EMAIL',
-          },
+          msg: 'Please verify your email',
+          field: 'EMAIL',
         }
       const token = jwt.sign(
         {
@@ -250,10 +241,7 @@ export default {
         jwt_secret,
       )
       return {
-        success: true,
         token,
-        user,
-        error: null,
       }
     },
   },
@@ -273,6 +261,12 @@ export default {
           return payload.confirmationEnabled.id === userId
         },
       ),
+    },
+  },
+  authPayload: {
+    __resolveType(parent, context, info) {
+      if (parent.token) return 'SuccessPayload'
+      if (parent.msg) return 'ErrorPayload'
     },
   },
 }

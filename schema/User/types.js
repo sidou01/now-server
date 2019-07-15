@@ -66,11 +66,10 @@ export default `
     confirmationEnabled(userId: ID!): User!
   }
 
-  type authPayload{
-    success: Boolean!
-    error: ErrorPayload
-    token: String
-    user: User
+  union authPayload = SuccessPayload | ErrorPayload 
+
+  type SuccessPayload {
+    token: String!
   }
 
   type ErrorPayload {
