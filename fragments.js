@@ -19,8 +19,8 @@ export function UserAppointments(first, skip) {
           appointments(first: ${first}, skip: ${skip}){
             id
             title
-            startTime
-            endTime
+            start
+            end
             duration
 	    createdTime
 	    local
@@ -112,8 +112,8 @@ export const serviceAppointments = `
         appointments {
             id
             title
-            startTime
-            endTime
+            start
+            end
 	    createdTime
             clientName
             local
@@ -129,8 +129,8 @@ export const appointmentToService = `
     fragment appointmentToService on Appointment {
       id
       title
-      startTime
-      endTime
+      start
+      end
       duration
       createdTime
       service {

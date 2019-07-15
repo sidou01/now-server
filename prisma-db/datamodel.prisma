@@ -44,8 +44,8 @@ type Appointment {
   client: User
   clientName: String
   title: String
-  startTime: String! @unique
-  endTime: String! @unique
+  start: String! @unique
+  end: String! @unique
   duration: AppointmentDuration!
   local: Boolean!
   createdTime: String!

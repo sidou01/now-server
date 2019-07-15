@@ -11,7 +11,7 @@ export default {
       return dayjs(value) // value from the client
     },
     serialize(value) {
-      return dayjs(value).format('MM-DD-YYYY HH:mm:ss') // value sent to the client
+      return dayjs(value).format('YYYY-MM-DD HH:mm') // value sent to the client
     },
     parseLiteral(ast) {
       if (ast.kind === Kind.STRING) {
@@ -23,12 +23,12 @@ export default {
   Mutation: {
     scheduleLocalAppointment: async (
       _,
-      { input: { serviceId, clientName, title, startTime, duration } },
+      { input: { serviceId, clientName, title, start, duration } },
       { prisma },
     ) => {
-      const isDuplicate = await prisma.appointment({ startTime })
+      const isDuplicate = await prisma.appointment({ start })
       if (isDuplicate) throw Error('an appointment already exists at that time')
-      endTime = getEndTime(startTime, duration)
+      end = getEndTime(start, duration)
       return await prisma.createAppointment({
         service: {
           connect: {
@@ -37,8 +37,8 @@ export default {
         },
         clientName,
         title,
-        startTime,
-        endTime,
+        start,
+        end,
         duration,
         local: true,
       })

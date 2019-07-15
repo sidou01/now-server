@@ -6,8 +6,8 @@ export default `
     client: User
     clientName: String
     title: String
-    startTime: Date!
-    endTime: Date
+    start: Date!
+    end: Date
     duration: AppointmentDuration!
     local: Boolean!
     createdTime: Date!

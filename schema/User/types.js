@@ -92,7 +92,7 @@ export default `
   input scheduleAppointmentInput {
     serviceId: ID!
     title: String
-    startTime: Date!
+    start: Date!
     duration: AppointmentDuration!
   }
 

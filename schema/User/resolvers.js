@@ -95,14 +95,14 @@ export default {
     },
     scheduleAppointment: async (
       _,
-      { input: { serviceId, title, startTime, duration } },
+      { input: { serviceId, title, start, duration } },
       { prisma, pubsub, user },
     ) => {
       if (!user) throw new Error('401 unauthorized')
 
-      const isDuplicate = await prisma.appointment({ startTime })
+      const isDuplicate = await prisma.appointment({ start })
       if (isDuplicate) throw Error('an appointment already exists at that time')
-      const endTime = getEndTime(startTime, duration)
+      const end = getEndTime(start, duration)
       //can't return client and service data from this resolver
       const output = await prisma.createAppointment({
         service: {
@@ -116,11 +116,11 @@ export default {
           },
         },
         title,
-        startTime,
-        endTime,
+        start,
+        end,
         duration,
         local: false,
-        createdTime: dayjs().format('MM-DD-YYYY HH:mm:ss'),
+        createdTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
       })
       const createdAppointment = await prisma
         .appointment({ id: output.id })
