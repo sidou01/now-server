@@ -18,9 +18,12 @@ type Service {
   office_hours: String
   education: String
   serviceType: ServiceType!
-
   doctorField: DoctorField
   lawyerField: LawyerField
+
+  rating: Float!
+  likes: Int!
+  appointments_made: Int!
 }
 
 
@@ -105,13 +108,15 @@ type Service {
     doctorField: DoctorField
     lawyerField: LawyerField
     type: ServiceType!
+    likes: Int!
+    rating: Float!
   }
 
   input localAppointmentInput {
     serviceId: ID!
     clientName: String!
     title: String
-    startTime: Date!
+    start: Date!
     duration: AppointmentDuration!
   }
   enum ServiceType {

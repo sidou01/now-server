@@ -25,6 +25,7 @@ export default `
       Query user appointments (calendar page)
       """
       fetchUserAppointments(first: Int, skip:Int): [Appointment!]
+      fetchServiceTodaysAppointments(serviceId: ID!): [Appointment!]
 
       fetchServices(type: ServiceType!, first: Int, skip: Int): [Service!]
       searchService(query: String!): [Service!]
@@ -66,11 +67,14 @@ export default `
     confirmationEnabled(userId: ID!): User!
   }
 
-  union authPayload = SuccessPayload | ErrorPayload 
 
-  type SuccessPayload {
-    token: String!
+  type authPayload {
+    success: Boolean!
+    user: User
+    token: String
+    error: ErrorPayload
   }
+
 
   type ErrorPayload {
     msg: String!

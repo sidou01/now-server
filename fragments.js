@@ -5,14 +5,25 @@ export const AllServices = `{
 	email
 	phone
 	address
-	office_hours
+  office_hours
+  serviceType
+  doctorField
 	education
         age
         gender
 	avatar
 	serviceType
 	doctorField
-	lawyerField
+  lawyerField
+  rating
+  likes
+  appointments {
+    id
+    title
+    start
+    end
+    duration
+  }
 }`
 export function UserAppointments(first, skip) {
   return `fragment UserAppointments on User {
@@ -30,10 +41,12 @@ export function UserAppointments(first, skip) {
                 age
                 phone
                 gender
+                
             }
             service {
               id
               fullName
+              avatar
 	      age
 	      email
               phone

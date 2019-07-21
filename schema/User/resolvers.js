@@ -39,6 +39,17 @@ export default {
       if (!output) throw new Error("user doesn't exist with that ID")
       return output.appointments
     },
+    fetchServiceTodaysAppointments: async (_, { serviceId }, { prisma, user }) => {
+      if (!user) throw new Error('401 unauthorized')
+      const output = await prisma.service({ id: serviceId }).$fragment(UserAppointments(20, 0))
+
+      const filtered_output = output.appointments.filter(appointment => dayjs(appointment.start).isSame(dayjs(), 'day') && dayjs(appointment.start).isSame(dayjs(), 'month'))
+      console.log('output', output.appointments)
+      console.log('filtered output', filtered_output)
+      return filtered_output
+
+
+    },
     searchService: async (_, { query }, { prisma, user }) => {
       // if (!user.client)
       //   throw new AuthenticationError("401: unauthorized client only query")
@@ -184,7 +195,7 @@ export default {
         process.env.JWT_EMAIL_SECRET,
         (_, emailToken) => {
           sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-          const url = `http://ec2-34-227-32-199.compute-1.amazonaws.com:4000/email/confirmation/${emailToken}`
+          const url = `http://ec2-3-93-13-29.compute-1.amazonaws.com:4000/email/confirmation/${emailToken}`
           const msg = {
             to: `${createdUser.email}`,
             from: 'now@company.com',
@@ -208,16 +219,23 @@ export default {
       // if (!user) throw new Error("User deosn't exist")
       if (!user) {
         return {
-          msg: 'No user associated with that email found.',
-          field: 'EMAIL',
+          success: false,
+          error: {
+            msg: 'No user associated with that email found.',
+            field: 'EMAIL',
+
+          }
         }
       }
       const auth = await bcrypt.compare(password, user.password)
       // if (!auth) throw new Error('your email or password is wrong')
       if (!auth) {
         return {
-          msg: 'Your password is wrong, Try again.',
-          field: 'PASSWORD',
+          success: false,
+          error: {
+            msg: 'Your password is wrong!',
+            field: 'PASSWORD',
+          }
         }
       }
 
@@ -225,8 +243,11 @@ export default {
       if (!confirmation)
         // throw new AuthenticationError('you must confirm your email first!')
         return {
-          msg: 'Please verify your email',
-          field: 'EMAIL',
+          success: false,
+          error: {
+            msg: 'Please verify your email',
+            field: 'EMAIL',
+          }
         }
       const token = jwt.sign(
         {
@@ -241,7 +262,10 @@ export default {
         jwt_secret,
       )
       return {
+        success: true,
+        user,
         token,
+        error: null
       }
     },
   },

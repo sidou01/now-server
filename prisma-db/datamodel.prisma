@@ -32,9 +32,11 @@ type Service {
   office_hours: String
   education: String
   serviceType: ServiceType!
-
   doctorField: DoctorField
   lawyerField: LawyerField
+
+  likes: Int!
+  rating: Float!
 }
 
 

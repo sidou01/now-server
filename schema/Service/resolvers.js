@@ -17,6 +17,14 @@ import {
 } from "../../fragments"
 
 export default {
+  Service: {
+    appointments_made: async (parent, _, { prisma }) => {
+      const output = await prisma
+        .service({ id: parent.id })
+        .$fragment(serviceAppointments)
+      return output.appointments.length
+    }
+  },
   Query: {
     fetchService: async (_, { serviceId }, { prisma, user }) => {
       if (!user) throw new ForbiddenError("401 unauthorized")
@@ -127,7 +135,9 @@ export default {
           avatar,
           doctorField,
           lawyerField,
-          type
+          type,
+          likes,
+          rating
         }
       },
       { prisma }
@@ -144,7 +154,9 @@ export default {
           gender,
           avatar,
           lawyerField,
-          serviceType: type
+          serviceType: type,
+          rating,
+          likes
         })
       }
       return await prisma.createService({
@@ -157,7 +169,10 @@ export default {
         gender,
         avatar,
         doctorField,
-        serviceType: type
+        serviceType: type,
+        rating,
+        likes
+
       })
     }
   },

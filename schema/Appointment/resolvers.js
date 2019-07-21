@@ -28,7 +28,7 @@ export default {
     ) => {
       const isDuplicate = await prisma.appointment({ start })
       if (isDuplicate) throw Error('an appointment already exists at that time')
-      end = getEndTime(start, duration)
+      const end = getEndTime(start, duration)
       return await prisma.createAppointment({
         service: {
           connect: {
@@ -41,6 +41,7 @@ export default {
         end,
         duration,
         local: true,
+        createdTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
       })
     },
   },

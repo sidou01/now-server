@@ -1135,6 +1135,8 @@ type Service {
   serviceType: ServiceType!
   doctorField: DoctorField
   lawyerField: LawyerField
+  likes: Int!
+  rating: Float!
 }
 
 type ServiceConnection {
@@ -1162,6 +1164,8 @@ input ServiceCreateInput {
   serviceType: ServiceType!
   doctorField: DoctorField
   lawyerField: LawyerField
+  likes: Int!
+  rating: Float!
 }
 
 input ServiceCreateOneWithoutAppointmentsInput {
@@ -1202,6 +1206,8 @@ input ServiceCreateWithoutAppointmentsInput {
   serviceType: ServiceType!
   doctorField: DoctorField
   lawyerField: LawyerField
+  likes: Int!
+  rating: Float!
 }
 
 input ServiceCreateWithoutRecievedMessagesInput {
@@ -1222,6 +1228,8 @@ input ServiceCreateWithoutRecievedMessagesInput {
   serviceType: ServiceType!
   doctorField: DoctorField
   lawyerField: LawyerField
+  likes: Int!
+  rating: Float!
 }
 
 input ServiceCreateWithoutReviewsInput {
@@ -1242,6 +1250,8 @@ input ServiceCreateWithoutReviewsInput {
   serviceType: ServiceType!
   doctorField: DoctorField
   lawyerField: LawyerField
+  likes: Int!
+  rating: Float!
 }
 
 input ServiceCreateWithoutSentMessagesInput {
@@ -1262,6 +1272,8 @@ input ServiceCreateWithoutSentMessagesInput {
   serviceType: ServiceType!
   doctorField: DoctorField
   lawyerField: LawyerField
+  likes: Int!
+  rating: Float!
 }
 
 type ServiceEdge {
@@ -1563,6 +1575,10 @@ enum ServiceOrderByInput {
   doctorField_DESC
   lawyerField_ASC
   lawyerField_DESC
+  likes_ASC
+  likes_DESC
+  rating_ASC
+  rating_DESC
 }
 
 type ServicePreviousValues {
@@ -1581,6 +1597,8 @@ type ServicePreviousValues {
   serviceType: ServiceType!
   doctorField: DoctorField
   lawyerField: LawyerField
+  likes: Int!
+  rating: Float!
 }
 
 type ServiceSubscriptionPayload {
@@ -1625,6 +1643,8 @@ input ServiceUpdateInput {
   serviceType: ServiceType
   doctorField: DoctorField
   lawyerField: LawyerField
+  likes: Int
+  rating: Float
 }
 
 input ServiceUpdateManyMutationInput {
@@ -1642,6 +1662,8 @@ input ServiceUpdateManyMutationInput {
   serviceType: ServiceType
   doctorField: DoctorField
   lawyerField: LawyerField
+  likes: Int
+  rating: Float
 }
 
 input ServiceUpdateOneRequiredWithoutAppointmentsInput {
@@ -1690,6 +1712,8 @@ input ServiceUpdateWithoutAppointmentsDataInput {
   serviceType: ServiceType
   doctorField: DoctorField
   lawyerField: LawyerField
+  likes: Int
+  rating: Float
 }
 
 input ServiceUpdateWithoutRecievedMessagesDataInput {
@@ -1710,6 +1734,8 @@ input ServiceUpdateWithoutRecievedMessagesDataInput {
   serviceType: ServiceType
   doctorField: DoctorField
   lawyerField: LawyerField
+  likes: Int
+  rating: Float
 }
 
 input ServiceUpdateWithoutReviewsDataInput {
@@ -1730,6 +1756,8 @@ input ServiceUpdateWithoutReviewsDataInput {
   serviceType: ServiceType
   doctorField: DoctorField
   lawyerField: LawyerField
+  likes: Int
+  rating: Float
 }
 
 input ServiceUpdateWithoutSentMessagesDataInput {
@@ -1750,6 +1778,8 @@ input ServiceUpdateWithoutSentMessagesDataInput {
   serviceType: ServiceType
   doctorField: DoctorField
   lawyerField: LawyerField
+  likes: Int
+  rating: Float
 }
 
 input ServiceUpsertWithoutAppointmentsInput {
@@ -1943,6 +1973,22 @@ input ServiceWhereInput {
   lawyerField_not: LawyerField
   lawyerField_in: [LawyerField!]
   lawyerField_not_in: [LawyerField!]
+  likes: Int
+  likes_not: Int
+  likes_in: [Int!]
+  likes_not_in: [Int!]
+  likes_lt: Int
+  likes_lte: Int
+  likes_gt: Int
+  likes_gte: Int
+  rating: Float
+  rating_not: Float
+  rating_in: [Float!]
+  rating_not_in: [Float!]
+  rating_lt: Float
+  rating_lte: Float
+  rating_gt: Float
+  rating_gte: Float
   AND: [ServiceWhereInput!]
   OR: [ServiceWhereInput!]
   NOT: [ServiceWhereInput!]
