@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "apollo-server": "^2.3.3",
-    "apollo-server-express": "^2.4.6",
+    "apollo-server-express": "^2.14.2",
     "avatar-me": "^0.1.3",
     "bcrypt": "^3.0.4",
     "body-parser": "^1.18.3",
